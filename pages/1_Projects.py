@@ -59,7 +59,7 @@ if st.button("Create Project"):
                 .table("planning_projects")
                 .insert(
                     {
-                        "name": project_name,
+                        "project_name": project_name,
                         "protocols": project_protocols
                     }
                 )
