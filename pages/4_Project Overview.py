@@ -41,7 +41,7 @@ project = next(
 )
 
 result = get_survey_demand(
-    selected_project,
+    selected_project_name,
     PROTOCOLS
 )
 
