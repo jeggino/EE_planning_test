@@ -2,6 +2,8 @@ import streamlit as st
 
 from database.supabase import get_supabase
 from utils.protocol_loader import load_protocols
+from planner.optimizer import get_survey_demand
+
 
 st.title("📊 Project Overview")
 
@@ -37,6 +39,18 @@ project = next(
     p for p in projects.data
     if p["project_name"] == selected_project_name
 )
+
+result = get_survey_demand(
+    selected_project,
+    PROTOCOLS
+)
+
+st.metric(
+    "Minimum Survey Visits",
+    result["minimum_surveys"]
+)
+
+st.write(result["details"])
 
 # ----------------------------------
 # PROJECT INFO
