@@ -1,23 +1,28 @@
 from datetime import datetime
 
 
-def periods_overlap(start1, end1, start2, end2):
-    return start1 <= end2 and start2 <= end1
-
-
-def parse_period(period, year=2027):
+def parse_period(period):
 
     start = datetime.strptime(
-        f"{year}-{period['start']}",
-        "%Y-%m-%d"
+        period["start"],
+        "%m-%d"
     )
 
     end = datetime.strptime(
-        f"{year}-{period['end']}",
-        "%Y-%m-%d"
+        period["end"],
+        "%m-%d"
     )
 
     return start, end
+
+
+def periods_overlap(start1, end1, start2, end2):
+
+    return (
+        start1 <= end2
+        and
+        start2 <= end1
+    )
 
 
 def get_survey_demand(project, protocols):
@@ -33,13 +38,13 @@ def get_survey_demand(project, protocols):
         species = item["species"]
         function = item["function"]
 
-        p = protocols[species][function]
+        protocol = protocols[species][function]
 
         start, end = parse_period(
-            p["survey_period"]
+            protocol["survey_period"]
         )
 
-        rounds = p["rounds"]
+        rounds = protocol["rounds"]
 
         protocols_data.append(
             {
@@ -54,14 +59,14 @@ def get_survey_demand(project, protocols):
         )
 
     # ------------------------------------
-    # CREATE PERIOD CLUSTERS
+    # PERIOD CLUSTERS
     # ------------------------------------
 
     clusters = []
 
     for protocol in protocols_data:
 
-        added = False
+        matched_cluster = None
 
         for cluster in clusters:
 
@@ -72,22 +77,26 @@ def get_survey_demand(project, protocols):
                 cluster["end"]
             ):
 
-                cluster["protocols"].append(protocol)
-
-                cluster["start"] = max(
-                    cluster["start"],
-                    protocol["start"]
-                )
-
-                cluster["end"] = min(
-                    cluster["end"],
-                    protocol["end"]
-                )
-
-                added = True
+                matched_cluster = cluster
                 break
 
-        if not added:
+        if matched_cluster:
+
+            matched_cluster["protocols"].append(
+                protocol
+            )
+
+            matched_cluster["start"] = max(
+                matched_cluster["start"],
+                protocol["start"]
+            )
+
+            matched_cluster["end"] = min(
+                matched_cluster["end"],
+                protocol["end"]
+            )
+
+        else:
 
             clusters.append(
                 {
@@ -98,67 +107,74 @@ def get_survey_demand(project, protocols):
             )
 
     # ------------------------------------
-    # OPTIMIZE EACH CLUSTER
+    # OPTIMIZATION
     # ------------------------------------
 
-    total_surveys = 0
     cluster_results = []
+    total_visits = 0
 
     for cluster in clusters:
 
-        evening = max(
+        max_evening = max(
             p["evening"]
             for p in cluster["protocols"]
         )
 
-        morning = max(
+        max_morning = max(
             p["morning"]
             for p in cluster["protocols"]
         )
 
-        free = max(
+        max_free = max(
             p["free"]
             for p in cluster["protocols"]
         )
 
-        #
-        # logic:
-        #
-        # evening covers free
-        # morning covers free
-        #
-        # so free only adds visits
-        # if evening+morning aren't enough
-        #
+        # free rounds can be covered
+        # by evening or morning rounds
 
-        used_free_capacity = evening + morning
+        covered_free = (
+            max_evening
+            + max_morning
+        )
 
-        extra_free_needed = max(
+        remaining_free = max(
             0,
-            free - used_free_capacity
+            max_free - covered_free
         )
 
         minimum_visits = (
-            evening
-            + morning
-            + extra_free_needed
+            max_evening
+            + max_morning
+            + remaining_free
         )
 
-        total_surveys += minimum_visits
+        total_visits += minimum_visits
 
         cluster_results.append(
             {
-                "period":
-                    f"{cluster['start'].strftime('%d-%m')} → "
-                    f"{cluster['end'].strftime('%d-%m')}",
-                "evening": evening,
-                "morning": morning,
-                "free": free,
-                "minimum_visits": minimum_visits
+                "Period":
+                    f"{cluster['start'].strftime('%m-%d')} → "
+                    f"{cluster['end'].strftime('%m-%d')}",
+
+                "Evening":
+                    max_evening,
+
+                "Morning":
+                    max_morning,
+
+                "Free":
+                    max_free,
+
+                "Minimum Visits":
+                    minimum_visits,
+
+                "Protocols":
+                    len(cluster["protocols"])
             }
         )
 
     return {
-        "minimum_surveys": total_surveys,
+        "minimum_surveys": total_visits,
         "clusters": cluster_results
     }
