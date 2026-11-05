@@ -1,46 +1,69 @@
 import streamlit as st
 
 from utils.protocol_loader import load_protocols
+from database.supabase import get_supabase
 
 PROTOCOLS = load_protocols()
+supabase = get_supabase()
 
-st.title("Projects")
+st.title("📋 Projects")
 
-species = st.multiselect(
-    "Species",
+project_name = st.text_input(
+    "Project Name"
+)
+
+selected_species = st.multiselect(
+    "Select Species",
     sorted(PROTOCOLS.keys())
 )
 
+project_protocols = []
 
-selected_protocols = []
-
-for sp in species:
+for species in selected_species:
 
     functions = st.multiselect(
-        f"Functions - {sp}",
-        list(PROTOCOLS[sp].keys()),
-        key=sp
+        f"Functions - {species}",
+        list(PROTOCOLS[species].keys()),
+        key=species
     )
 
-    for f in functions:
+    for function in functions:
 
-        selected_protocols.append(
+        project_protocols.append(
             {
-                "species": sp,
-                "function": f
+                "species": species,
+                "function": function
             }
         )
 
 st.divider()
 
 st.subheader("Selected Protocols")
+st.json(project_protocols)
 
-st.json(selected_protocols)
-
+# CREATE PROJECT
 if st.button("Create Project"):
 
-    st.success(
-        f"Project '{project_name}' created."
-    )
+    if not project_name:
+        st.error("Please enter a project name.")
 
-    # save to supabase later
+    elif not project_protocols:
+        st.error("Please select at least one protocol.")
+
+    else:
+
+        result = (
+            supabase
+            .table("planning_projects")
+            .insert(
+                {
+                    "name": project_name,
+                    "protocols": project_protocols
+                }
+            )
+            .execute()
+        )
+
+        st.success(
+            f"Project '{project_name}' created successfully."
+        )
