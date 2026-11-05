@@ -48,7 +48,7 @@ project = next(
 # ----------------------------------
 
 result = get_survey_demand(
-    project,      # <-- FIXED
+    project,
     PROTOCOLS
 )
 
@@ -57,9 +57,12 @@ st.metric(
     result["minimum_surveys"]
 )
 
-st.subheader("Optimizer Details")
+st.subheader("Survey Clusters")
 
-st.json(result["details"])
+st.dataframe(
+    result["clusters"],
+    use_container_width=True
+)
 
 # ----------------------------------
 # PROJECT PROTOCOLS
