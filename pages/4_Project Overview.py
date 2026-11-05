@@ -257,3 +257,21 @@ st.info(
     - Generate actual survey dates
     """
 )
+
+st.subheader("Protocol Matrix")
+
+for item in project["protocols"]:
+
+    species = item["species"]
+    function = item["function"]
+
+    protocol = PROTOCOLS[species][function]
+
+    st.write(
+        species,
+        function,
+        protocol["survey_period"]["start"],
+        protocol["survey_period"]["end"],
+        protocol["rounds"]
+    )
+
