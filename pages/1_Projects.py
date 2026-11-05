@@ -1,17 +1,16 @@
 import streamlit as st
 
-from data.protocols import PROTOCOLS
+from utils.protocol_loader import load_protocols
 
-st.title("📋 Projects")
+PROTOCOLS = load_protocols()
 
-project_name = st.text_input(
-    "Project Name"
-)
+st.title("Projects")
 
 species = st.multiselect(
-    "Select Species",
+    "Species",
     sorted(PROTOCOLS.keys())
 )
+
 
 selected_protocols = []
 
