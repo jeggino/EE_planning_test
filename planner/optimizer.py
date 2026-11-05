@@ -1,14 +1,18 @@
 from datetime import datetime
 
 
-def period_to_day(mmdd):
+def mmdd_to_int(mmdd):
     month, day = map(int, mmdd.split("-"))
-    return (month * 100) + day
+    return month * 100 + day
+
+
+def overlap(a_start, a_end, b_start, b_end):
+    return a_start <= b_end and b_start <= a_end
 
 
 def get_survey_demand(project, protocols):
 
-    rows = []
+    protocols_data = []
 
     for item in project["protocols"]:
 
@@ -19,16 +23,16 @@ def get_survey_demand(project, protocols):
 
         rounds = p["rounds"]
 
-        rows.append(
+        protocols_data.append(
             {
                 "species": species,
                 "function": function,
                 "start": p["survey_period"]["start"],
                 "end": p["survey_period"]["end"],
-                "start_num": period_to_day(
+                "start_num": mmdd_to_int(
                     p["survey_period"]["start"]
                 ),
-                "end_num": period_to_day(
+                "end_num": mmdd_to_int(
                     p["survey_period"]["end"]
                 ),
                 "evening": rounds["mandatory_evening"],
@@ -38,107 +42,141 @@ def get_survey_demand(project, protocols):
             }
         )
 
-    # -------------------------
-    # COMMON WINDOW
-    # -------------------------
+    # ------------------------
+    # BUILD CLUSTERS
+    # ------------------------
 
-    common_start = max(
-        r["start_num"]
-        for r in rows
-    )
+    clusters = []
 
-    common_end = min(
-        r["end_num"]
-        for r in rows
-    )
+    for protocol in protocols_data:
 
-    overlap_exists = common_start <= common_end
+        matched = None
 
-    # -------------------------
-    # VISITS REQUIRED
-    # -------------------------
+        for cluster in clusters:
 
-    evening_needed = max(
-        r["evening"]
-        for r in rows
-    )
+            if overlap(
+                protocol["start_num"],
+                protocol["end_num"],
+                cluster["start_num"],
+                cluster["end_num"]
+            ):
+                matched = cluster
+                break
 
-    morning_needed = max(
-        r["morning"]
-        for r in rows
-    )
+        if matched:
 
-    free_needed = max(
-        r["free"]
-        for r in rows
-    )
+            matched["protocols"].append(protocol)
 
-    covered_by_specific = (
-        evening_needed +
-        morning_needed
-    )
+            matched["start_num"] = max(
+                matched["start_num"],
+                protocol["start_num"]
+            )
 
-    extra_free = max(
-        0,
-        free_needed - covered_by_specific
-    )
+            matched["end_num"] = min(
+                matched["end_num"],
+                protocol["end_num"]
+            )
 
-    total_visits = (
-        evening_needed +
-        morning_needed +
-        extra_free
-    )
+        else:
 
-    # -------------------------
-    # MIN DAYS CHECK
-    # -------------------------
+            clusters.append(
+                {
+                    "start_num": protocol["start_num"],
+                    "end_num": protocol["end_num"],
+                    "protocols": [protocol]
+                }
+            )
 
-    max_min_days = max(
-        r["min_days"]
-        for r in rows
-    )
+    # ------------------------
+    # OPTIMIZE EACH CLUSTER
+    # ------------------------
 
-    details = []
+    cluster_results = []
 
-    for r in rows:
+    total_evening = 0
+    total_morning = 0
+    total_visits = 0
 
-        details.append(
+    for cluster in clusters:
+
+        protocols_in_cluster = cluster["protocols"]
+
+        evening_required = max(
+            p["evening"]
+            for p in protocols_in_cluster
+        )
+
+        morning_required = max(
+            p["morning"]
+            for p in protocols_in_cluster
+        )
+
+        free_required = max(
+            p["free"]
+            for p in protocols_in_cluster
+        )
+
+        min_days_required = max(
+            p["min_days"]
+            for p in protocols_in_cluster
+        )
+
+        covered_free = (
+            evening_required
+            + morning_required
+        )
+
+        additional_free = max(
+            0,
+            free_required - covered_free
+        )
+
+        minimum_visits = (
+            evening_required
+            + morning_required
+            + additional_free
+        )
+
+        total_evening += evening_required
+        total_morning += morning_required
+        total_visits += minimum_visits
+
+        start_month = cluster["start_num"] // 100
+        start_day = cluster["start_num"] % 100
+
+        end_month = cluster["end_num"] // 100
+        end_day = cluster["end_num"] % 100
+
+        cluster_results.append(
             {
-                "Species": r["species"],
-                "Function": r["function"],
                 "Period":
-                    f"{r['start']} → {r['end']}",
-                "Evening": r["evening"],
-                "Morning": r["morning"],
-                "Free": r["free"],
-                "Min Days":
-                    r["min_days"]
+                    f"{start_month:02d}-{start_day:02d}"
+                    " → "
+                    f"{end_month:02d}-{end_day:02d}",
+
+                "Protocols":
+                    len(protocols_in_cluster),
+
+                "Evening Visits":
+                    evening_required,
+
+                "Morning Visits":
+                    morning_required,
+
+                "Additional Free Visits":
+                    additional_free,
+
+                "Minimum Visits":
+                    minimum_visits,
+
+                "Min Days Between":
+                    min_days_required
             }
         )
 
     return {
-        "overlap": overlap_exists,
-        "common_period": (
-            f"{common_start // 100:02d}-{common_start % 100:02d}"
-            " → "
-            f"{common_end // 100:02d}-{common_end % 100:02d}"
-        ) if overlap_exists else "No shared period",
-
-        "evening_visits":
-            evening_needed,
-
-        "morning_visits":
-            morning_needed,
-
-        "free_visits":
-            extra_free,
-
-        "minimum_visits":
-            total_visits,
-
-        "min_days_between":
-            max_min_days,
-
-        "details":
-            details
+        "minimum_visits": total_visits,
+        "evening_visits": total_evening,
+        "morning_visits": total_morning,
+        "clusters": cluster_results
     }
