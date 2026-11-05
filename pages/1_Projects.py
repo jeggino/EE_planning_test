@@ -52,18 +52,22 @@ if st.button("Create Project"):
 
     else:
 
-        result = (
-            supabase
-            .table("planning_projects")
-            .insert(
-                {
-                    "name": project_name,
-                    "protocols": project_protocols
-                }
+        try:
+        
+            result = (
+                supabase
+                .table("planning_projects")
+                .insert(
+                    {
+                        "name": project_name,
+                        "protocols": project_protocols
+                    }
+                )
+                .execute()
             )
-            .execute()
-        )
-
-        st.success(
-            f"Project '{project_name}' created successfully."
-        )
+        
+            st.success(f"Project '{project_name}' created.")
+        
+        except Exception as e:
+            st.error(str(e))
+            st.write(e)
