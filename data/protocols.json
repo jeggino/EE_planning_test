@@ -292,7 +292,7 @@
     "kleine dwergvleermuis": {
         "kraam": {
             "survey_period": {
-                "start": "2015-05-01 00:00:00",
+                "start": "05-15",
                 "end": "07-15"
             },
             "rounds": {
@@ -609,7 +609,7 @@
         "paar_of_zwerm": {
             "survey_period": {
                 "start": "08-15",
-                "end": "2026-01-10 00:00:00"
+                "end": "10-01"
             },
             "rounds": {
                 "mandatory_evening": 0,
@@ -741,7 +741,7 @@
         "paar_of_zwerm": {
             "survey_period": {
                 "start": "10-01",
-                "end": "2026-01-12 00:00:00"
+                "end": "10-01"
             },
             "rounds": {
                 "mandatory_evening": 2,
@@ -820,8 +820,8 @@
     "laatvlieger": {
         "kraam": {
             "survey_period": {
-                "start": "2015-05-01 00:00:00",
-                "end": "2015-07-01 00:00:00"
+                "start": "05-15",
+                "end": "07-15"
             },
             "rounds": {
                 "mandatory_evening": 2,
@@ -846,8 +846,8 @@
         },
         "zomer": {
             "survey_period": {
-                "start": "2015-05-01 00:00:00",
-                "end": "2015-09-01 00:00:00"
+                "start": "05-15",
+                "end": "09-15"
             },
             "rounds": {
                 "mandatory_evening": 2,
@@ -872,8 +872,8 @@
         },
         "paar_of_zwerm": {
             "survey_period": {
-                "start": "2026-01-08 00:00:00",
-                "end": "2015-10-01 00:00:00"
+                "start": "08-01",
+                "end": "10-15"
             },
             "rounds": {
                 "mandatory_evening": 2,
@@ -898,8 +898,8 @@
         },
         "vliegroute": {
             "survey_period": {
-                "start": NaN,
-                "end": NaN
+                "start": "04-15",
+                "end": "10-01"
             },
             "rounds": {
                 "mandatory_evening": 0,
@@ -1876,8 +1876,8 @@
     "meervleermuis": {
         "kraam": {
             "survey_period": {
-                "start": "2015-05-01 00:00:00",
-                "end": "2025-06-01 00:00:00"
+                "start": "05-15",
+                "end": "06-25"
             },
             "rounds": {
                 "mandatory_evening": 0,
@@ -1902,8 +1902,8 @@
         },
         "satelliet": {
             "survey_period": {
-                "start": "2026-01-07 00:00:00",
-                "end": "2031-07-01 00:00:00"
+                "start": "07-01",
+                "end": "09-01"
             },
             "rounds": {
                 "mandatory_evening": 0,
