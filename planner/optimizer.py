@@ -155,8 +155,7 @@ def get_survey_demand(project, protocols):
                     " → "
                     f"{end_month:02d}-{end_day:02d}",
         
-                "Protocols":
-                    len(protocols_in_cluster),
+
         
                 "Protocol Details":
                     [
@@ -178,7 +177,7 @@ def get_survey_demand(project, protocols):
                     minimum_visits,
         
                 "Min Days Between":
-                    min_days_required
+                    min_days_required,
 
                 "Overlap Window":
                     f"{start_month:02d}-{start_day:02d}"
