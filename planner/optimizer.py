@@ -153,22 +153,29 @@ def get_survey_demand(project, protocols):
                     f"{start_month:02d}-{start_day:02d}"
                     " → "
                     f"{end_month:02d}-{end_day:02d}",
-
+        
                 "Protocols":
                     len(protocols_in_cluster),
-
+        
+                "Protocol Details":
+                    [
+                        f"{p['species']} | "
+                        f"{p['start']} -> {p['end']}"
+                        for p in protocols_in_cluster
+                    ],
+        
                 "Evening Visits":
                     evening_required,
-
+        
                 "Morning Visits":
                     morning_required,
-
+        
                 "Additional Free Visits":
                     additional_free,
-
+        
                 "Minimum Visits":
                     minimum_visits,
-
+        
                 "Min Days Between":
                     min_days_required
             }
