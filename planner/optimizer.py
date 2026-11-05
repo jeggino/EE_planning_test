@@ -179,6 +179,21 @@ def get_survey_demand(project, protocols):
         
                 "Min Days Between":
                     min_days_required
+
+                "Overlap Window":
+                    f"{start_month:02d}-{start_day:02d}"
+                    " → "
+                    f"{end_month:02d}-{end_day:02d}",
+                
+                "Protocols":
+                    len(protocols_in_cluster),
+                
+                "Window Coverage":
+                    f"{min(p['start_num'] for p in protocols_in_cluster)//100:02d}-"
+                    f"{min(p['start_num'] for p in protocols_in_cluster)%100:02d}"
+                    " → "
+                    f"{max(p['end_num'] for p in protocols_in_cluster)//100:02d}-"
+                    f"{max(p['end_num'] for p in protocols_in_cluster)%100:02d}",
             }
         )
 
