@@ -105,219 +105,43 @@ for item in project["protocols"]:
 
 df = pd.DataFrame(overview)
 
-# --------------------------------------------------
-# DISPLAY PROTOCOLS
-# --------------------------------------------------
+from planner.optimizer import get_survey_demand
 
-st.subheader("Selected Protocols")
-
-st.dataframe(
-    df,
-    use_container_width=True
+result = get_survey_demand(
+    project,
+    PROTOCOLS
 )
 
-# --------------------------------------------------
-# OPTIMIZER
-# --------------------------------------------------
+st.subheader("🧠 Optimizer")
 
-st.subheader("🧠 Optimization")
-
-# Free rounds can be covered by
-# evening or morning surveys
-
-evening_required = max(df["Evening"])
-morning_required = max(df["Morning"])
-free_required = max(df["Free"])
-
-covered_free = (
-    evening_required +
-    morning_required
-)
-
-remaining_free = max(
-    0,
-    free_required - covered_free
-)
-
-minimum_visits = (
-    evening_required +
-    morning_required +
-    remaining_free
-)
-
-maximum_min_days = max(
-    min_days
-)
-
-# --------------------------------------------------
-# METRICS
-# --------------------------------------------------
-
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3 = st.columns(3)
 
 with col1:
     st.metric(
         "Minimum Visits",
-        minimum_visits
+        result["minimum_visits"]
     )
 
 with col2:
     st.metric(
         "Evening Visits",
-        evening_required
+        result["evening_visits"]
     )
 
 with col3:
     st.metric(
         "Morning Visits",
-        morning_required
+        result["morning_visits"]
     )
 
-with col4:
-    st.metric(
-        "Min Days Between",
-        maximum_min_days
-    )
+st.subheader("Survey Windows")
 
-# --------------------------------------------------
-# EXPLANATION TABLE
-# --------------------------------------------------
-
-optimizer_table = pd.DataFrame(
-    [
-        {
-            "Visit Type": "Evening",
-            "Visits Needed": evening_required
-        },
-        {
-            "Visit Type": "Morning",
-            "Visits Needed": morning_required
-        },
-        {
-            "Visit Type": "Free",
-            "Visits Needed": remaining_free
-        }
-    ]
+clusters_df = pd.DataFrame(
+    result["clusters"]
 )
-
-st.subheader("How the optimizer calculated the visits")
 
 st.dataframe(
-    optimizer_table,
+    clusters_df,
     use_container_width=True
 )
-
-# --------------------------------------------------
-# IMPORTANT NOTE
-# --------------------------------------------------
-
-st.info(
-    """
-    Current optimizer version:
-
-    ✅ Considers:
-    - Survey period
-    - Mandatory evening rounds
-    - Mandatory morning rounds
-    - Free rounds
-    - Minimum days between visits
-
-    ❌ Not yet implemented:
-    - Actual date generation
-    - June requirements
-    - Kraamperiode requirements
-    - Multiple overlapping period clusters
-    - Automatic calendar creation
-    """
-)
-
-st.subheader("📅 Proposed Schedule")
-
-year = datetime.now().year
-
-# Use overlap window from all protocols
-starts = []
-ends = []
-
-for item in project["protocols"]:
-
-    species = item["species"]
-    function = item["function"]
-
-    protocol = PROTOCOLS[species][function]
-
-    starts.append(
-        datetime.strptime(
-            f"{year}-{protocol['survey_period']['start']}",
-            "%Y-%m-%d"
-        ).date()
-    )
-
-    ends.append(
-        datetime.strptime(
-            f"{year}-{protocol['survey_period']['end']}",
-            "%Y-%m-%d"
-        ).date()
-    )
-
-common_start = max(starts)
-common_end = min(ends)
-
-if common_start <= common_end:
-
-    visits = []
-
-    current_date = common_start
-
-    for i in range(evening_required):
-
-        visits.append(
-            {
-                "Date": current_date,
-                "Type": "Evening"
-            }
-        )
-
-        current_date += timedelta(
-            days=maximum_min_days
-        )
-
-    for i in range(morning_required):
-
-        visits.append(
-            {
-                "Date": current_date,
-                "Type": "Morning"
-            }
-        )
-
-        current_date += timedelta(
-            days=maximum_min_days
-        )
-
-    for i in range(remaining_free):
-
-        visits.append(
-            {
-                "Date": current_date,
-                "Type": "Free"
-            }
-        )
-
-        current_date += timedelta(
-            days=maximum_min_days
-        )
-
-    schedule_df = pd.DataFrame(visits)
-
-    st.dataframe(
-        schedule_df,
-        use_container_width=True
-    )
-
-else:
-
-    st.error(
-        "No common survey period found."
-    )
 
