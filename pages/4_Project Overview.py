@@ -157,3 +157,103 @@ st.dataframe(
 with st.expander("Project JSON"):
 
     st.json(project)
+
+# ----------------------------------
+# OPTIMIZER INPUT
+# ----------------------------------
+
+st.subheader("🧠 Optimizer Input")
+
+optimizer_rows = []
+
+for item in project["protocols"]:
+
+    species = item["species"]
+    function = item["function"]
+
+    protocol = PROTOCOLS[species][function]
+
+    rounds = protocol["rounds"]
+
+    optimizer_rows.append(
+        {
+            "Species": species,
+            "Function": function,
+            "Start": protocol["survey_period"]["start"],
+            "End": protocol["survey_period"]["end"],
+            "Evening": rounds["mandatory_evening"],
+            "Morning": rounds["mandatory_morning"],
+            "Free": rounds["free_rounds"],
+            "Min Days": protocol["min_days_between"]
+        }
+    )
+
+optimizer_df = pd.DataFrame(optimizer_rows)
+
+st.dataframe(
+    optimizer_df,
+    use_container_width=True
+)
+
+# ----------------------------------
+# SIMPLE FIRST OPTIMIZATION
+# ----------------------------------
+
+st.subheader("📈 Preliminary Optimization")
+
+max_evening = optimizer_df["Evening"].max()
+max_morning = optimizer_df["Morning"].max()
+max_free = optimizer_df["Free"].max()
+
+covered_free = max_evening + max_morning
+
+remaining_free = max(
+    0,
+    max_free - covered_free
+)
+
+minimum_visits = (
+    max_evening
+    + max_morning
+    + remaining_free
+)
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.metric(
+        "Evening Visits",
+        max_evening
+    )
+
+with col2:
+    st.metric(
+        "Morning Visits",
+        max_morning
+    )
+
+with col3:
+    st.metric(
+        "Free Visits",
+        max_free
+    )
+
+with col4:
+    st.metric(
+        "Minimum Visits",
+        minimum_visits
+    )
+
+st.info(
+    """
+    This is only a preliminary calculation.
+
+    Next version:
+    - Detect overlapping survey periods
+    - Build survey clusters
+    - Respect min_days_between
+    - Respect June requirements
+    - Respect kraamperiode requirements
+    - Generate actual survey dates
+    """
+)
