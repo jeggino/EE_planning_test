@@ -3,6 +3,7 @@ import pandas as pd
 
 from database.supabase import get_supabase
 from utils.protocol_loader import load_protocols
+from datetime import date, timedelta, datetime
 
 st.set_page_config(
     page_title="Project Overview",
@@ -230,10 +231,93 @@ st.info(
     """
 )
 
-# --------------------------------------------------
-# DEBUG
-# --------------------------------------------------
+st.subheader("📅 Proposed Schedule")
 
-with st.expander("Project JSON"):
-    st.json(project)
+year = datetime.now().year
+
+# Use overlap window from all protocols
+starts = []
+ends = []
+
+for item in project["protocols"]:
+
+    species = item["species"]
+    function = item["function"]
+
+    protocol = PROTOCOLS[species][function]
+
+    starts.append(
+        datetime.strptime(
+            f"{year}-{protocol['survey_period']['start']}",
+            "%Y-%m-%d"
+        ).date()
+    )
+
+    ends.append(
+        datetime.strptime(
+            f"{year}-{protocol['survey_period']['end']}",
+            "%Y-%m-%d"
+        ).date()
+    )
+
+common_start = max(starts)
+common_end = min(ends)
+
+if common_start <= common_end:
+
+    visits = []
+
+    current_date = common_start
+
+    for i in range(evening_required):
+
+        visits.append(
+            {
+                "Date": current_date,
+                "Type": "Evening"
+            }
+        )
+
+        current_date += timedelta(
+            days=maximum_min_days
+        )
+
+    for i in range(morning_required):
+
+        visits.append(
+            {
+                "Date": current_date,
+                "Type": "Morning"
+            }
+        )
+
+        current_date += timedelta(
+            days=maximum_min_days
+        )
+
+    for i in range(remaining_free):
+
+        visits.append(
+            {
+                "Date": current_date,
+                "Type": "Free"
+            }
+        )
+
+        current_date += timedelta(
+            days=maximum_min_days
+        )
+
+    schedule_df = pd.DataFrame(visits)
+
+    st.dataframe(
+        schedule_df,
+        use_container_width=True
+    )
+
+else:
+
+    st.error(
+        "No common survey period found."
+    )
 
