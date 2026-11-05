@@ -1,161 +1,144 @@
 from datetime import datetime
 
 
-def parse_period(period):
-    """
-    Converts:
-    {
-        "start": "08-15",
-        "end": "10-01"
-    }
-
-    into datetime objects.
-    """
-
-    start = datetime.strptime(
-        period["start"],
-        "%m-%d"
-    )
-
-    end = datetime.strptime(
-        period["end"],
-        "%m-%d"
-    )
-
-    return start, end
-
-
-def periods_overlap(start1, end1, start2, end2):
-
-    return (
-        start1 <= end2
-        and
-        start2 <= end1
-    )
+def period_to_day(mmdd):
+    month, day = map(int, mmdd.split("-"))
+    return (month * 100) + day
 
 
 def get_survey_demand(project, protocols):
 
-    protocols_data = []
-
-    # -----------------------------
-    # LOAD PROTOCOLS
-    # -----------------------------
+    rows = []
 
     for item in project["protocols"]:
 
         species = item["species"]
         function = item["function"]
 
-        protocol = protocols[species][function]
+        p = protocols[species][function]
 
-        start, end = parse_period(
-            protocol["survey_period"]
-        )
+        rounds = p["rounds"]
 
-        rounds = protocol["rounds"]
-
-        protocols_data.append(
+        rows.append(
             {
                 "species": species,
                 "function": function,
-                "start": start,
-                "end": end,
+                "start": p["survey_period"]["start"],
+                "end": p["survey_period"]["end"],
+                "start_num": period_to_day(
+                    p["survey_period"]["start"]
+                ),
+                "end_num": period_to_day(
+                    p["survey_period"]["end"]
+                ),
                 "evening": rounds["mandatory_evening"],
                 "morning": rounds["mandatory_morning"],
-                "free": rounds["free_rounds"]
+                "free": rounds["free_rounds"],
+                "min_days": p["min_days_between"]
             }
         )
 
-    # -----------------------------
-    # FIND TRUE INTERSECTION
-    # -----------------------------
+    # -------------------------
+    # COMMON WINDOW
+    # -------------------------
 
-    latest_start = max(
-        p["start"]
-        for p in protocols_data
+    common_start = max(
+        r["start_num"]
+        for r in rows
     )
 
-    earliest_end = min(
-        p["end"]
-        for p in protocols_data
+    common_end = min(
+        r["end_num"]
+        for r in rows
     )
 
-    overlap_exists = latest_start <= earliest_end
+    overlap_exists = common_start <= common_end
 
-    # -----------------------------
-    # NO OVERLAP
-    # -----------------------------
+    # -------------------------
+    # VISITS REQUIRED
+    # -------------------------
 
-    if not overlap_exists:
-
-        return {
-            "minimum_surveys": "No shared period",
-            "clusters": [],
-            "overlap": "None"
-        }
-
-    # -----------------------------
-    # ROUND REQUIREMENTS
-    # -----------------------------
-
-    max_evening = max(
-        p["evening"]
-        for p in protocols_data
+    evening_needed = max(
+        r["evening"]
+        for r in rows
     )
 
-    max_morning = max(
-        p["morning"]
-        for p in protocols_data
+    morning_needed = max(
+        r["morning"]
+        for r in rows
     )
 
-    max_free = max(
-        p["free"]
-        for p in protocols_data
+    free_needed = max(
+        r["free"]
+        for r in rows
     )
 
-    # ---------------------------------
-    # FREE ROUNDS CAN BE EVENING OR MORNING
-    # ---------------------------------
-
-    capacity = (
-        max_evening +
-        max_morning
+    covered_by_specific = (
+        evening_needed +
+        morning_needed
     )
 
     extra_free = max(
         0,
-        max_free - capacity
+        free_needed - covered_by_specific
     )
 
-    minimum_visits = (
-        max_evening +
-        max_morning +
+    total_visits = (
+        evening_needed +
+        morning_needed +
         extra_free
     )
 
-    cluster = {
-        "Overlap":
-            f"{latest_start.strftime('%m-%d')} → "
-            f"{earliest_end.strftime('%m-%d')}",
+    # -------------------------
+    # MIN DAYS CHECK
+    # -------------------------
 
-        "Evening":
-            max_evening,
+    max_min_days = max(
+        r["min_days"]
+        for r in rows
+    )
 
-        "Morning":
-            max_morning,
+    details = []
 
-        "Free":
-            max_free,
+    for r in rows:
 
-        "Minimum Visits":
-            minimum_visits
-    }
+        details.append(
+            {
+                "Species": r["species"],
+                "Function": r["function"],
+                "Period":
+                    f"{r['start']} → {r['end']}",
+                "Evening": r["evening"],
+                "Morning": r["morning"],
+                "Free": r["free"],
+                "Min Days":
+                    r["min_days"]
+            }
+        )
 
     return {
-        "minimum_surveys": minimum_visits,
-        "overlap":
-            f"{latest_start.strftime('%m-%d')} → "
-            f"{earliest_end.strftime('%m-%d')}",
-        "clusters": [cluster]
+        "overlap": overlap_exists,
+        "common_period": (
+            f"{common_start // 100:02d}-{common_start % 100:02d}"
+            " → "
+            f"{common_end // 100:02d}-{common_end % 100:02d}"
+        ) if overlap_exists else "No shared period",
+
+        "evening_visits":
+            evening_needed,
+
+        "morning_visits":
+            morning_needed,
+
+        "free_visits":
+            extra_free,
+
+        "minimum_visits":
+            total_visits,
+
+        "min_days_between":
+            max_min_days,
+
+        "details":
+            details
     }
