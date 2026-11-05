@@ -1,0 +1,2272 @@
+{
+    "gewone dwergvleermuis": {
+        "massa_winterzwermen": {
+            "survey_period": {
+                "start": "08-01",
+                "end": "09-10"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 10.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "0:00 - 2:00",
+                "end_rule": NaN
+            },
+            "weather": {
+                "temperature": ">13 graden",
+                "wind": "<4 Bft",
+                "precipitation": "geen regen"
+            }
+        },
+        "kraam": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "07-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 1,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "0"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft (6 Bft)",
+                "precipitation": "motregen"
+            }
+        },
+        "zomer": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "10-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "0"
+            },
+            "weather": {
+                "temperature": "7°C",
+                "wind": "5 (tot 6) Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "paar_of_zwerm": {
+            "survey_period": {
+                "start": "08-15",
+                "end": "10-01"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "60",
+                "end_rule": "0"
+            },
+            "weather": {
+                "temperature": "6°C",
+                "wind": "5 (tot 6) Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "vliegroute": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "10-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "0"
+            },
+            "weather": {
+                "temperature": "10",
+                "wind": "4 Bft (6 Bft)",
+                "precipitation": "motregen"
+            }
+        },
+        "foerageergebied": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "10-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "0"
+            },
+            "weather": {
+                "temperature": "10",
+                "wind": "4 Bft (6 Bft)",
+                "precipitation": "motregen"
+            }
+        }
+    },
+    "ruige dwergvleermuis": {
+        "kraam": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "07-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 1,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "0"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft (6 Bft)",
+                "precipitation": "motregen"
+            }
+        },
+        "zomer": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "08-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "0"
+            },
+            "weather": {
+                "temperature": "8°C",
+                "wind": "5 (tot > 6) Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "paar_of_zwerm": {
+            "survey_period": {
+                "start": "08-15",
+                "end": "10-01"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "vanaf 60 min na en minimaal 1 ronde rond middernacht",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "8°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "vliegroute": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "10-01"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "0"
+            },
+            "weather": {
+                "temperature": "10",
+                "wind": "5 Bft (6 Bft)",
+                "precipitation": "motregen"
+            }
+        },
+        "foerageergebied": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "10-01"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 0.0
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "0"
+            },
+            "weather": {
+                "temperature": "10",
+                "wind": "5 Bft (6 Bft)",
+                "precipitation": "motregen"
+            }
+        }
+    },
+    "kleine dwergvleermuis": {
+        "kraam": {
+            "survey_period": {
+                "start": "2015-05-01 00:00:00",
+                "end": "07-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 1,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "0"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft (6 Bft)",
+                "precipitation": "motregen"
+            }
+        },
+        "zomer": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "10-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "0"
+            },
+            "weather": {
+                "temperature": "7°C",
+                "wind": "5 (tot 6) Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "paar_of_zwerm": {
+            "survey_period": {
+                "start": "08-15",
+                "end": "10-01"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "60",
+                "end_rule": "0"
+            },
+            "weather": {
+                "temperature": "6°C",
+                "wind": "5 (tot 6) Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "vliegroute": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "10-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "0"
+            },
+            "weather": {
+                "temperature": "10",
+                "wind": "4 Bft (6 Bft)",
+                "precipitation": "motregen"
+            }
+        },
+        "foerageergebied": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "10-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "0"
+            },
+            "weather": {
+                "temperature": "10",
+                "wind": "4 Bft (6 Bft)",
+                "precipitation": "motregen"
+            }
+        }
+    },
+    "gewone grootoorvleermuis": {
+        "kraam": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "07-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 1,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "30",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "5°C",
+                "wind": "3 Bft",
+                "precipitation": "geen regen"
+            }
+        },
+        "zomer": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "08-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "30",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "5°C",
+                "wind": "3 Bft [jaagt ook binnen]",
+                "precipitation": "geen regen"
+            }
+        },
+        "paar_of_zwerm": {
+            "survey_period": {
+                "start": "08-15",
+                "end": "10-01"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "0"
+            },
+            "weather": {
+                "temperature": "5°C",
+                "wind": "3 Bft",
+                "precipitation": "geen regen"
+            }
+        },
+        "vliegroute": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "10-01"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "30",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "5°C",
+                "wind": "3 Bft",
+                "precipitation": "geen regen"
+            }
+        },
+        "foerageergebied": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "10-01"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "30",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "5°C",
+                "wind": "3 Bft",
+                "precipitation": "geen regen"
+            }
+        }
+    },
+    "grijze grootoorvleermuis": {
+        "kraam": {
+            "survey_period": {
+                "start": "06-01",
+                "end": "07-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 1,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "30",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "5°C",
+                "wind": "3 Bft",
+                "precipitation": "geen regen"
+            }
+        },
+        "zomer": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "08-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "30",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "5°C",
+                "wind": "3 Bft [jaagt ook binnen]",
+                "precipitation": "geen regen"
+            }
+        },
+        "paar_of_zwerm": {
+            "survey_period": {
+                "start": "08-15",
+                "end": "2026-01-10 00:00:00"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "0"
+            },
+            "weather": {
+                "temperature": "5°C",
+                "wind": "3 Bft",
+                "precipitation": "geen regen"
+            }
+        },
+        "vliegroute": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "10-01"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "30",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "5°C",
+                "wind": "3 Bft",
+                "precipitation": "geen regen"
+            }
+        },
+        "foerageergebied": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "10-01"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "30",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "5°C",
+                "wind": "3 Bft",
+                "precipitation": "geen regen"
+            }
+        }
+    },
+    "tweekleurige vleermuis": {
+        "kraam": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "07-15"
+            },
+            "rounds": {
+                "mandatory_evening": 2,
+                "mandatory_morning": 0,
+                "free_rounds": 0
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 1,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "zomer": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "08-01"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "0°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "paar_of_zwerm": {
+            "survey_period": {
+                "start": "10-01",
+                "end": "2026-01-12 00:00:00"
+            },
+            "rounds": {
+                "mandatory_evening": 2,
+                "mandatory_morning": 0,
+                "free_rounds": 0
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "30",
+                "end_rule": "0"
+            },
+            "weather": {
+                "temperature": "0°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "vliegroute": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "11-01"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "foerageergebied": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "11-01"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        }
+    },
+    "laatvlieger": {
+        "kraam": {
+            "survey_period": {
+                "start": "2015-05-01 00:00:00",
+                "end": "2015-07-01 00:00:00"
+            },
+            "rounds": {
+                "mandatory_evening": 2,
+                "mandatory_morning": 0,
+                "free_rounds": 0
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 1,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": NaN
+            },
+            "weather": {
+                "temperature": "12°C",
+                "wind": "5 Bft (7 Bft)",
+                "precipitation": "motregen"
+            }
+        },
+        "zomer": {
+            "survey_period": {
+                "start": "2015-05-01 00:00:00",
+                "end": "2015-09-01 00:00:00"
+            },
+            "rounds": {
+                "mandatory_evening": 2,
+                "mandatory_morning": 0,
+                "free_rounds": 0
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": NaN
+            },
+            "weather": {
+                "temperature": "12°C",
+                "wind": "5 Bft (7 Bft)",
+                "precipitation": "motregen"
+            }
+        },
+        "paar_of_zwerm": {
+            "survey_period": {
+                "start": "2026-01-08 00:00:00",
+                "end": "2015-10-01 00:00:00"
+            },
+            "rounds": {
+                "mandatory_evening": 2,
+                "mandatory_morning": 0,
+                "free_rounds": 0
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "30",
+                "end_rule": NaN
+            },
+            "weather": {
+                "temperature": "12",
+                "wind": "5 Bft (7 Bft),",
+                "precipitation": "motregen"
+            }
+        },
+        "vliegroute": {
+            "survey_period": {
+                "start": NaN,
+                "end": NaN
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": NaN
+            },
+            "weather": {
+                "temperature": "12",
+                "wind": "5 Bft (7 Bft)",
+                "precipitation": "motregen"
+            }
+        },
+        "foerageergebied": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "10-01"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": NaN
+            },
+            "weather": {
+                "temperature": "12",
+                "wind": "5 Bft (7 Bft)",
+                "precipitation": "motregen"
+            }
+        }
+    },
+    "rosse vleermuis": {
+        "kraam": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "07-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 1,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "30"
+            },
+            "weather": {
+                "temperature": "12°C",
+                "wind": "5 Bft (7 Bft)",
+                "precipitation": "motregen"
+            }
+        },
+        "zomer": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "08-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "30"
+            },
+            "weather": {
+                "temperature": "12°C",
+                "wind": "5 Bft (7 Bft)",
+                "precipitation": "motregen"
+            }
+        },
+        "paar_of_zwerm": {
+            "survey_period": {
+                "start": "08-01",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 2,
+                "mandatory_morning": 0,
+                "free_rounds": 0
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "60",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "12",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "vliegroute": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "10-01"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "30"
+            },
+            "weather": {
+                "temperature": "12",
+                "wind": "5 Bft (7 Bft)",
+                "precipitation": "motregen"
+            }
+        },
+        "foerageergebied": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "10-01"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "30"
+            },
+            "weather": {
+                "temperature": "12",
+                "wind": "5 Bft (7 Bft)",
+                "precipitation": "motregen"
+            }
+        }
+    },
+    "bosvleermuis": {
+        "kraam": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "07-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 1,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "30"
+            },
+            "weather": {
+                "temperature": "12°C",
+                "wind": NaN,
+                "precipitation": NaN
+            }
+        },
+        "zomer": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "08-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "30"
+            },
+            "weather": {
+                "temperature": "12°C",
+                "wind": NaN,
+                "precipitation": NaN
+            }
+        },
+        "paar_of_zwerm": {
+            "survey_period": {
+                "start": "07-15",
+                "end": "09-01"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "60",
+                "end_rule": NaN
+            },
+            "weather": {
+                "temperature": NaN,
+                "wind": NaN,
+                "precipitation": NaN
+            }
+        },
+        "vliegroute": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "08-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "30"
+            },
+            "weather": {
+                "temperature": NaN,
+                "wind": NaN,
+                "precipitation": NaN
+            }
+        },
+        "foerageergebied": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "08-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "30"
+            },
+            "weather": {
+                "temperature": NaN,
+                "wind": NaN,
+                "precipitation": NaN
+            }
+        }
+    },
+    "baardvleermuis": {
+        "kraam": {
+            "survey_period": {
+                "start": "06-01",
+                "end": "07-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 1,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "zomer": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "08-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "paar_of_zwerm": {
+            "survey_period": {
+                "start": "08-01",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "vanaf 22:00 - 01:00",
+                "end_rule": NaN
+            },
+            "weather": {
+                "temperature": "5°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "vliegroute": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "foerageergebied": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        }
+    },
+    "bechstein's vleermuis": {
+        "kraam": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "07-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 1,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "zomer": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "08-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "paar_of_zwerm": {
+            "survey_period": {
+                "start": "09-01",
+                "end": "10-01"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "vanaf 22:00 - 01:00",
+                "end_rule": NaN
+            },
+            "weather": {
+                "temperature": "5°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "vliegroute": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "foerageergebied": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        }
+    },
+    "brandt's vleermuis": {
+        "kraam": {
+            "survey_period": {
+                "start": "06-01",
+                "end": "07-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 1,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "zomer": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "08-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "paar_of_zwerm": {
+            "survey_period": {
+                "start": "08-01",
+                "end": "08-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 10.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "vanaf 22:00 - 01:00",
+                "end_rule": NaN
+            },
+            "weather": {
+                "temperature": "5°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "vliegroute": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "foerageergebied": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        }
+    },
+    "franjestaart": {
+        "kraam": {
+            "survey_period": {
+                "start": "06-01",
+                "end": "07-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 1,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "zomer": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "08-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "paar_of_zwerm": {
+            "survey_period": {
+                "start": "09-15",
+                "end": "10-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "vanaf 22:00 - 01:00",
+                "end_rule": NaN
+            },
+            "weather": {
+                "temperature": "5°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "vliegroute": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "foerageergebied": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        }
+    },
+    "ingekorven vleermuis": {
+        "kraam": {
+            "survey_period": {
+                "start": "06-01",
+                "end": "07-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 1,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "zomer": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "08-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "paar_of_zwerm": {
+            "survey_period": {
+                "start": "08-15",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "vanaf 22:00 - 01:00",
+                "end_rule": NaN
+            },
+            "weather": {
+                "temperature": "5°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "vliegroute": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "foerageergebied": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        }
+    },
+    "meervleermuis": {
+        "kraam": {
+            "survey_period": {
+                "start": "2015-05-01 00:00:00",
+                "end": "2025-06-01 00:00:00"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 2,
+                "free_rounds": 0
+            },
+            "duration_hours": 2,
+            "min_days_between": 15.0,
+            "special_requirements": {
+                "min_rounds_juni": 1,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "nvt",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "8°C",
+                "wind": "4 Bft",
+                "precipitation": "geen neerslag (motregen), geen mist boven watergangen"
+            }
+        },
+        "satelliet": {
+            "survey_period": {
+                "start": "2026-01-07 00:00:00",
+                "end": "2031-07-01 00:00:00"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 0
+            },
+            "duration_hours": 2,
+            "min_days_between": NaN,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "nvt",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "8°C",
+                "wind": "4 Bft",
+                "precipitation": "geen neerslag (motregen), geen mist boven watergangen"
+            }
+        },
+        "paar_of_zwerm": {
+            "survey_period": {
+                "start": "08-15",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 3,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "0",
+                "end_rule": "verplicht tot zonsopgang bij ochtendonderzoek"
+            },
+            "weather": {
+                "temperature": "5°C",
+                "wind": "5 Bft",
+                "precipitation": "geen neerslag (motregen), geen mist boven watergangen"
+            }
+        },
+        "vliegroute": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "08-15"
+            },
+            "rounds": {
+                "mandatory_evening": 2,
+                "mandatory_morning": 0,
+                "free_rounds": 0
+            },
+            "duration_hours": 2,
+            "min_days_between": 42.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "nvt"
+            },
+            "weather": {
+                "temperature": "8°C",
+                "wind": "4 Bft",
+                "precipitation": "geen neerslag (motregen), geen mist boven watergangen"
+            }
+        },
+        "foerageergebied": {
+            "survey_period": {
+                "start": "04-01",
+                "end": "08-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 42.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "8°C",
+                "wind": "4 Bft",
+                "precipitation": "geen neerslag (motregen), geen mist boven watergangen"
+            }
+        }
+    },
+    "watervleermuis": {
+        "kraam": {
+            "survey_period": {
+                "start": "06-01",
+                "end": "07-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 1,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "zomer": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "paar_of_zwerm": {
+            "survey_period": {
+                "start": "08-15",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "vanaf 22:00 - 01:00",
+                "end_rule": NaN
+            },
+            "weather": {
+                "temperature": "5°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "vliegroute": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "foerageergebied": {
+            "survey_period": {
+                "start": "04-15",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        }
+    },
+    "vale vleermuis": {
+        "kraam": {
+            "survey_period": {
+                "start": "06-01",
+                "end": "07-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 1,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "zomer": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "08-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 1,
+                "free_rounds": 1
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "paar_of_zwerm": {
+            "survey_period": {
+                "start": "08-15",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 20.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": NaN
+            },
+            "timing": {
+                "start_rule": "vanaf 22:00 - 01:00",
+                "end_rule": NaN
+            },
+            "weather": {
+                "temperature": "5°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "vliegroute": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        },
+        "foerageergebied": {
+            "survey_period": {
+                "start": "05-15",
+                "end": "09-15"
+            },
+            "rounds": {
+                "mandatory_evening": 0,
+                "mandatory_morning": 0,
+                "free_rounds": 2
+            },
+            "duration_hours": 2,
+            "min_days_between": 56.0,
+            "special_requirements": {
+                "min_rounds_juni": 0,
+                "min_rounds_kraamperiode": 1.0
+            },
+            "timing": {
+                "start_rule": "15",
+                "end_rule": "60"
+            },
+            "weather": {
+                "temperature": "10°C",
+                "wind": "5 Bft",
+                "precipitation": "motregen"
+            }
+        }
+    }
+}
