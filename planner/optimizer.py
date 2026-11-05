@@ -67,15 +67,6 @@ def get_survey_demand(project, protocols):
 
             matched["protocols"].append(protocol)
 
-            matched["start_num"] = max(
-                matched["start_num"],
-                protocol["start_num"]
-            )
-
-            matched["end_num"] = min(
-                matched["end_num"],
-                protocol["end_num"]
-            )
 
         else:
 
@@ -100,6 +91,16 @@ def get_survey_demand(project, protocols):
     for cluster in clusters:
 
         protocols_in_cluster = cluster["protocols"]
+
+        cluster_start = max(
+            p["start_num"]
+            for p in protocols_in_cluster
+        )
+        
+        cluster_end = min(
+            p["end_num"]
+            for p in protocols_in_cluster
+        )
 
         evening_required = max(
             p["evening"]
@@ -141,11 +142,11 @@ def get_survey_demand(project, protocols):
         total_morning += morning_required
         total_visits += minimum_visits
 
-        start_month = cluster["start_num"] // 100
-        start_day = cluster["start_num"] % 100
-
-        end_month = cluster["end_num"] // 100
-        end_day = cluster["end_num"] % 100
+        start_month = cluster_start // 100
+        start_day = cluster_start % 100
+        
+        end_month = cluster_end // 100
+        end_day = cluster_end % 100
 
         cluster_results.append(
             {
