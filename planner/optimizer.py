@@ -2,6 +2,15 @@ from datetime import datetime
 
 
 def parse_period(period):
+    """
+    Converts:
+    {
+        "start": "08-15",
+        "end": "10-01"
+    }
+
+    into datetime objects.
+    """
 
     start = datetime.strptime(
         period["start"],
@@ -29,9 +38,9 @@ def get_survey_demand(project, protocols):
 
     protocols_data = []
 
-    # ------------------------------------
+    # -----------------------------
     # LOAD PROTOCOLS
-    # ------------------------------------
+    # -----------------------------
 
     for item in project["protocols"]:
 
@@ -58,123 +67,95 @@ def get_survey_demand(project, protocols):
             }
         )
 
-    # ------------------------------------
-    # PERIOD CLUSTERS
-    # ------------------------------------
+    # -----------------------------
+    # FIND TRUE INTERSECTION
+    # -----------------------------
 
-    clusters = []
+    latest_start = max(
+        p["start"]
+        for p in protocols_data
+    )
 
-    for protocol in protocols_data:
+    earliest_end = min(
+        p["end"]
+        for p in protocols_data
+    )
 
-        matched_cluster = None
+    overlap_exists = latest_start <= earliest_end
 
-        for cluster in clusters:
+    # -----------------------------
+    # NO OVERLAP
+    # -----------------------------
 
-            if periods_overlap(
-                protocol["start"],
-                protocol["end"],
-                cluster["start"],
-                cluster["end"]
-            ):
+    if not overlap_exists:
 
-                matched_cluster = cluster
-                break
+        return {
+            "minimum_surveys": "No shared period",
+            "clusters": [],
+            "overlap": "None"
+        }
 
-        if matched_cluster:
+    # -----------------------------
+    # ROUND REQUIREMENTS
+    # -----------------------------
 
-            matched_cluster["protocols"].append(
-                protocol
-            )
+    max_evening = max(
+        p["evening"]
+        for p in protocols_data
+    )
 
-            matched_cluster["start"] = max(
-                matched_cluster["start"],
-                protocol["start"]
-            )
+    max_morning = max(
+        p["morning"]
+        for p in protocols_data
+    )
 
-            matched_cluster["end"] = min(
-                matched_cluster["end"],
-                protocol["end"]
-            )
+    max_free = max(
+        p["free"]
+        for p in protocols_data
+    )
 
-        else:
+    # ---------------------------------
+    # FREE ROUNDS CAN BE EVENING OR MORNING
+    # ---------------------------------
 
-            clusters.append(
-                {
-                    "start": protocol["start"],
-                    "end": protocol["end"],
-                    "protocols": [protocol]
-                }
-            )
+    capacity = (
+        max_evening +
+        max_morning
+    )
 
-    # ------------------------------------
-    # OPTIMIZATION
-    # ------------------------------------
+    extra_free = max(
+        0,
+        max_free - capacity
+    )
 
-    cluster_results = []
-    total_visits = 0
+    minimum_visits = (
+        max_evening +
+        max_morning +
+        extra_free
+    )
 
-    for cluster in clusters:
+    cluster = {
+        "Overlap":
+            f"{latest_start.strftime('%m-%d')} → "
+            f"{earliest_end.strftime('%m-%d')}",
 
-        max_evening = max(
-            p["evening"]
-            for p in cluster["protocols"]
-        )
+        "Evening":
+            max_evening,
 
-        max_morning = max(
-            p["morning"]
-            for p in cluster["protocols"]
-        )
+        "Morning":
+            max_morning,
 
-        max_free = max(
-            p["free"]
-            for p in cluster["protocols"]
-        )
+        "Free":
+            max_free,
 
-        # free rounds can be covered
-        # by evening or morning rounds
-
-        covered_free = (
-            max_evening
-            + max_morning
-        )
-
-        remaining_free = max(
-            0,
-            max_free - covered_free
-        )
-
-        minimum_visits = (
-            max_evening
-            + max_morning
-            + remaining_free
-        )
-
-        total_visits += minimum_visits
-
-        cluster_results.append(
-            {
-                "Period":
-                    f"{cluster['start'].strftime('%m-%d')} → "
-                    f"{cluster['end'].strftime('%m-%d')}",
-
-                "Evening":
-                    max_evening,
-
-                "Morning":
-                    max_morning,
-
-                "Free":
-                    max_free,
-
-                "Minimum Visits":
-                    minimum_visits,
-
-                "Protocols":
-                    len(cluster["protocols"])
-            }
-        )
+        "Minimum Visits":
+            minimum_visits
+    }
 
     return {
-        "minimum_surveys": total_visits,
-        "clusters": cluster_results
+        "minimum_surveys": minimum_visits,
+        "overlap":
+            f"{latest_start.strftime('%m-%d')} → "
+            f"{earliest_end.strftime('%m-%d')}",
+        "clusters": [cluster]
     }
