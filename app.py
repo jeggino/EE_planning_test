@@ -2,8 +2,8 @@ import streamlit as st
 
 st.markdown("""
 <style>
-a[href*="github.com"] {
-    display: none !important;
+[data-testid="stHeader"] * {
+    outline: 1px solid red;
 }
 </style>
 """, unsafe_allow_html=True)
