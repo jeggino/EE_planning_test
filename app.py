@@ -1,12 +1,6 @@
 import streamlit as st
 
-st.markdown("""
-<style>
-[data-testid="stHeader"] * {
-    outline: 1px solid red;
-}
-</style>
-""", unsafe_allow_html=True)
+
 
 st.set_page_config(
     page_title="Bat Survey Planner",
