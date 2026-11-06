@@ -183,41 +183,50 @@ for i, cluster in enumerate(result["clusters"], start=1):
         with st.expander(
             f"Protocols Covered ({cluster['Protocols']})"
         ):
-
+        
             for protocol in cluster["Protocol Details"]:
-
+        
                 with st.container(border=True):
-
+        
                     st.markdown(
                         f"#### {protocol['species']}"
                     )
-
-                    col1, col2 = st.columns([2, 1])
-
-                    with col1:
+        
+                    st.write(
+                        f"**Function:** {protocol['function']}"
+                    )
+        
+                    st.write(
+                        f"**Survey Period:** "
+                        f"{protocol['start']} → {protocol['end']}"
+                    )
+        
+                    if protocol["timing"]:
                         st.write(
-                            f"**Function:** {protocol['function']}"
+                            f"**Timing:** {protocol['timing']}"
                         )
-
-                        st.write(
-                            f"**Survey Period:** "
-                            f"{protocol['start']} → {protocol['end']}"
-                        )
-
-                    with col2:
+        
+                    c1, c2, c3 = st.columns(3)
+        
+                    with c1:
                         st.metric(
-                            "Evening",
+                            "🌙 Evening",
                             protocol["evening"]
                         )
-
+        
+                    with c2:
                         st.metric(
-                            "Morning",
+                            "☀️ Morning",
                             protocol["morning"]
                         )
-
-                    st.info(
-                        f"🔄 Free Rounds: {protocol['free']}  |  "
-                        f"⏱️ Min Days Between Visits: "
-                        f"{protocol['min_days']}"
+        
+                    with c3:
+                        st.metric(
+                            "🔄 Free",
+                            protocol["free"]
+                        )
+        
+                    st.caption(
+                        f"Min Days Between Visits: "
+                        f"{int(protocol['min_days'])}"
                     )
-
