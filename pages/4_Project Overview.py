@@ -177,6 +177,21 @@ for i, cluster in enumerate(result["clusters"], start=1):
             )
 
         with st.expander("Protocols Covered"):
+        
             for protocol in cluster["Protocol Details"]:
-                st.write(f"• {protocol}")
+        
+                st.markdown(
+                    f"""
+                    **{protocol['species']}**
+                    
+                    • Function: {protocol['function']}  
+                    • Survey Period: {protocol['start']} → {protocol['end']}  
+                    • Evening Rounds: {protocol['evening']}  
+                    • Morning Rounds: {protocol['morning']}  
+                    • Free Rounds: {protocol['free']}
+                    """
+                )
+        
+                st.divider()
+
 
