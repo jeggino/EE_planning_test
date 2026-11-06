@@ -24,7 +24,7 @@ def pretty_date(mmdd):
     except:
         return mmdd
 
-st.title("📊 Project Overview")
+st.title("🧠 Project Overview")
 
 # --------------------------------------------------
 # LOAD DATA
@@ -125,8 +125,6 @@ result = get_survey_demand(
     PROTOCOLS
 )
 
-st.subheader("🧠 Optimizer")
-
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -147,7 +145,6 @@ with col3:
         result["morning_visits"]
     )
 
-st.subheader("🗓️ Survey Windows")
 
 for i, cluster in enumerate(result["clusters"], start=1):
 
@@ -182,10 +179,6 @@ for i, cluster in enumerate(result["clusters"], start=1):
                 "Morning Visits",
                 cluster["Morning Visits"]
             )
-
-        st.caption(
-            f"Overlap Window: {cluster['Overlap Window']}"
-        )
 
         if cluster["Additional Free Visits"] > 0:
             st.info(
