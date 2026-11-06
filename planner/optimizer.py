@@ -157,12 +157,17 @@ def get_survey_demand(project, protocols):
         
 
         
-                "Protocol Details":
-                    [
-                        f"{p['species']} | "
-                        f"{p['start']} -> {p['end']}"
-                        for p in protocols_in_cluster
-                    ],
+            "Protocol Details": [
+                {
+                    "function": p["function"],
+                    "start": p["start"],
+                    "end": p["end"],
+                    "evening": p["evening"],
+                    "morning": p["morning"],
+                    "free": p["free"],
+                }
+                for p in protocols_in_cluster
+            ]
         
                 "Evening Visits":
                     evening_required,
