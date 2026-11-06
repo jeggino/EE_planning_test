@@ -200,10 +200,7 @@ for i, cluster in enumerate(result["clusters"], start=1):
             f"{pretty_date(cluster['Window Coverage'].split(' → ')[1])}"
         )
         
-        overlap_days = (
-            cluster["Overlap End"]
-            - cluster["Overlap Start"]
-        ).days
+        overlap_days = cluster["Overlap Days"]
         
         st.write(
             f"🎯 **Overlap Window:** "
@@ -384,8 +381,3 @@ for i, cluster in enumerate(result["clusters"], start=1):
 
 
 
-        if cluster["Additional Free Visits"] > 0:
-            st.warning(
-                f"Additional Free Visits Required: "
-                f"{cluster['Additional Free Visits']}"
-            )
