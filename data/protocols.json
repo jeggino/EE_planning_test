@@ -741,7 +741,7 @@
         "paar_of_zwerm": {
             "survey_period": {
                 "start": "10-01",
-                "end": "10-01"
+                "end": "12-01"
             },
             "rounds": {
                 "mandatory_evening": 2,
