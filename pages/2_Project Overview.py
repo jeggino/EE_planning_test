@@ -382,13 +382,13 @@ if not edited_plan.empty:
     
     survey_fig.update_traces(
         marker=dict(
-            size=18,
+            size=15,
             line=dict(width=1)
         )
     )
     
     survey_fig.update_layout(
-        height=200,
+        height=100,
         xaxis_title="Survey Date",
         yaxis_title="Survey Type"
     )
