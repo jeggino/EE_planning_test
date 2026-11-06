@@ -122,31 +122,62 @@ def get_survey_demand(
                 - proposed_overlap_start
             ).days
 
+            candidate_protocols = (
+                cluster["protocols"]
+                + [protocol]
+            )
+            
             cluster_has_satellite = (
                 has_satellite(
-                    cluster["protocols"]
+                    candidate_protocols
                 )
             )
-
-            new_protocol_satellite = (
-                protocol["species"].lower()
-                == "meervleermuis"
-                and
-                protocol["function"].lower()
-                == "satelliet"
-            )
-
-            # Any window containing
-            # Meervleermuis Satelliet
-            # must maintain 20 days overlap
-
+            
+            # ------------------------------------------------
+            # SATELLIET RULE
+            # ------------------------------------------------
+            
             if (
                 cluster_has_satellite
-                or new_protocol_satellite
+                and overlap_days < 20
             ):
-
-                if overlap_days < 20:
+                continue
+            
+            # ------------------------------------------------
+            # MIN DAYS FEASIBILITY RULE
+            # ------------------------------------------------
+            
+            required_span = 0
+            
+            for p in candidate_protocols:
+            
+                min_days = p.get("min_days")
+            
+                if min_days in [None, ""]:
                     continue
+            
+                visits = (
+                    p["evening"]
+                    + p["morning"]
+                    + p["free"]
+                )
+            
+                protocol_span = (
+                    max(0, visits - 1)
+                    * min_days
+                )
+            
+                required_span = max(
+                    required_span,
+                    protocol_span
+                )
+            
+            # If there is not enough overlap to
+            # schedule the protocol correctly,
+            # don't merge it into this window.
+            
+            if overlap_days < required_span:
+                continue
 
             cluster["protocols"].append(
                 protocol
@@ -341,7 +372,11 @@ def get_survey_demand(
                             ),
 
                         "timing":
-                            p["timing"],
+                        (
+                            p.get("timing")
+                            if p.get("timing")
+                            else "Any"
+                        )
 
                         "evening":
                             p["evening"],
