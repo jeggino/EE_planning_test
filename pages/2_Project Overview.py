@@ -395,7 +395,7 @@ if not edited_plan.empty:
 
 
     survey_fig.update_layout(
-        height=500
+        height=200
     )
 
     st.plotly_chart(
