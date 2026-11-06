@@ -4,6 +4,8 @@ import pandas as pd
 from database.supabase import get_supabase
 from utils.protocol_loader import load_protocols
 from datetime import date, timedelta, datetime
+import pandas as pd
+import plotly.express as px
 
 st.set_page_config(
     page_title="Project Overview",
@@ -180,6 +182,66 @@ for i, cluster in enumerate(result["clusters"], start=1):
                 f"{cluster['Additional Free Visits']}"
             )
 
+        timeline_rows = []
+        
+        for p in cluster["Protocol Details"]:
+        
+            timeline_rows.append(
+                {
+                    "Protocol":
+                        f"{p['species']} | {p['function']}",
+        
+                    "Start":
+                        datetime.strptime(
+                            p["start"],
+                            "%m-%d"
+                        ).replace(year=2025),
+        
+                    "End":
+                        datetime.strptime(
+                            p["end"],
+                            "%m-%d"
+                        ).replace(year=2025)
+                }
+            )
+        
+        timeline_df = pd.DataFrame(
+            timeline_rows
+        )
+        
+        fig = px.timeline(
+            timeline_df,
+            x_start="Start",
+            x_end="End",
+            y="Protocol",
+            color="Protocol"
+        )
+        
+        fig.update_yaxes(
+            autorange="reversed"
+        )
+        
+        fig.update_layout(
+            showlegend=False,
+            height=max(
+                250,
+                len(timeline_df) * 60
+            ),
+            margin=dict(
+                l=20,
+                r=20,
+                t=20,
+                b=20
+            )
+        )
+        
+        st.plotly_chart(
+            fig,
+            use_container_width=True
+        )
+
+        
+
         with st.expander(
             f"Protocols Covered ({cluster['Protocols']})"
         ):
@@ -187,46 +249,56 @@ for i, cluster in enumerate(result["clusters"], start=1):
             for protocol in cluster["Protocol Details"]:
         
                 with st.container(border=True):
-        
+                
                     st.markdown(
-                        f"#### {protocol['species']}"
+                        f"#### 🐾 {protocol['species']}"
                     )
-        
+                
                     st.write(
                         f"**Function:** {protocol['function']}"
                     )
-        
+                
                     st.write(
                         f"**Survey Period:** "
-                        f"{protocol['start']} → {protocol['end']}"
+                        f"{pretty_date(protocol['start'])} → "
+                        f"{pretty_date(protocol['end'])}"
                     )
-        
-                    if protocol["timing"]:
+                
+                    details1, details2 = st.columns(2)
+                
+                    with details1:
                         st.write(
-                            f"**Timing:** {protocol['timing']}"
+                            f"**Timing:** "
+                            f"{protocol.get('timing', 'Any')}"
                         )
-        
+                
+                    with details2:
+                
+                        min_days = protocol.get("min_days")
+                
+                        st.write(
+                            f"**Min Days Between Visits:** "
+                            f"{int(min_days)}"
+                            if min_days is not None
+                            else "N/A"
+                        )
+                
                     c1, c2, c3 = st.columns(3)
-        
+                
                     with c1:
                         st.metric(
                             "🌙 Evening",
                             protocol["evening"]
                         )
-        
+                
                     with c2:
                         st.metric(
                             "☀️ Morning",
                             protocol["morning"]
                         )
-        
+                
                     with c3:
                         st.metric(
                             "🔄 Free",
                             protocol["free"]
                         )
-        
-                    st.caption(
-                        f"Min Days Between Visits: "
-                        f"{int(protocol['min_days'])}"
-                    )
