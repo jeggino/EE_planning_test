@@ -55,32 +55,43 @@ def get_survey_demand(
             {
                 "species": species,
                 "function": function,
-
+        
                 "start": start_date,
                 "end": end_date,
-
+        
                 "evening":
                     rounds["mandatory_evening"],
-
+        
                 "morning":
                     rounds["mandatory_morning"],
-
+        
                 "free":
                     rounds["free_rounds"],
-
+        
                 "min_days":
                     p.get(
                         "min_days_between"
                     ),
-
+        
                 "timing":
                     p.get(
                         "timing",
-                        "Any"
+                        {}
+                    ),
+        
+                "weather":
+                    p.get(
+                        "weather",
+                        {}
+                    ),
+        
+                "special_requirements":
+                    p.get(
+                        "special_requirements",
+                        {}
                     )
             }
         )
-
     # Sort by start date
 
     protocols_data.sort(
