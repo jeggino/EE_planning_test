@@ -147,11 +147,11 @@ with col3:
         result["morning_visits"]
     )
 
-# with col4:
-#     st.metric(
-#         "Morning Visits",
-#         result["Free Visits"]
-#     )
+with col4:
+    st.metric(
+        "Free Visits",
+        result["free_visits"]
+    )
     
 for i, cluster in enumerate(result["clusters"], start=1):
 
