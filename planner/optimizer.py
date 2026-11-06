@@ -244,6 +244,7 @@ def get_survey_demand(
 
     total_evening = 0
     total_morning = 0
+    total_free = 0
     total_visits = 0
 
     for cluster in clusters:
@@ -298,6 +299,8 @@ def get_survey_demand(
         total_evening += evening_required
         total_morning += morning_required
         total_visits += minimum_visits
+        total_free += additional_free
+
 
         cluster_results.append(
             {
@@ -414,13 +417,16 @@ def get_survey_demand(
     return {
         "minimum_visits":
             total_visits,
-
+    
         "evening_visits":
             total_evening,
-
+    
         "morning_visits":
             total_morning,
-
+    
+        "free_visits":
+            total_free,
+    
         "clusters":
             cluster_results
     }
