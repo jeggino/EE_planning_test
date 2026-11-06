@@ -125,8 +125,6 @@ result = get_survey_demand(
     PROTOCOLS
 )
 
-result
-
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
