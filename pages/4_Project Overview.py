@@ -141,30 +141,34 @@ for i, cluster in enumerate(result["clusters"], start=1):
     with st.container(border=True):
 
         st.markdown(
-            f"### Window {i}  |  {cluster['Window Coverage']}"
+            f"### 🪟 Window {i} | {cluster['Window Coverage']}"
         )
 
         col1, col2, col3, col4 = st.columns(4)
 
-        col1.metric(
-            "Protocols",
-            cluster["Protocols"]
-        )
+        with col1:
+            st.metric(
+                "Protocols",
+                cluster["Protocols"]
+            )
 
-        col2.metric(
-            "Minimum Visits",
-            cluster["Minimum Visits"]
-        )
+        with col2:
+            st.metric(
+                "Minimum Visits",
+                cluster["Minimum Visits"]
+            )
 
-        col3.metric(
-            "Evening",
-            cluster["Evening Visits"]
-        )
+        with col3:
+            st.metric(
+                "Evening Visits",
+                cluster["Evening Visits"]
+            )
 
-        col4.metric(
-            "Morning",
-            cluster["Morning Visits"]
-        )
+        with col4:
+            st.metric(
+                "Morning Visits",
+                cluster["Morning Visits"]
+            )
 
         st.caption(
             f"Overlap Window: {cluster['Overlap Window']}"
@@ -176,22 +180,44 @@ for i, cluster in enumerate(result["clusters"], start=1):
                 f"{cluster['Additional Free Visits']}"
             )
 
-        with st.expander("Protocols Covered"):
-        
-            for protocol in cluster["Protocol Details"]:
-        
-                st.markdown(
-                    f"""
-                    **{protocol['species']}**
-                    
-                    • Function: {protocol['function']}  
-                    • Survey Period: {protocol['start']} → {protocol['end']}  
-                    • Evening Rounds: {protocol['evening']}  
-                    • Morning Rounds: {protocol['morning']}  
-                    • Free Rounds: {protocol['free']}
-                    """
-                )
-        
-                st.divider()
+        with st.expander(
+            f"Protocols Covered ({cluster['Protocols']})"
+        ):
 
+            for protocol in cluster["Protocol Details"]:
+
+                with st.container(border=True):
+
+                    st.markdown(
+                        f"#### {protocol['species']}"
+                    )
+
+                    col1, col2 = st.columns([2, 1])
+
+                    with col1:
+                        st.write(
+                            f"**Function:** {protocol['function']}"
+                        )
+
+                        st.write(
+                            f"**Survey Period:** "
+                            f"{protocol['start']} → {protocol['end']}"
+                        )
+
+                    with col2:
+                        st.metric(
+                            "Evening",
+                            protocol["evening"]
+                        )
+
+                        st.metric(
+                            "Morning",
+                            protocol["morning"]
+                        )
+
+                    st.info(
+                        f"🔄 Free Rounds: {protocol['free']}  |  "
+                        f"⏱️ Min Days Between Visits: "
+                        f"{protocol['min_days']}"
+                    )
 
