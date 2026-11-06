@@ -317,13 +317,19 @@ for survey in result["survey_plan"]:
 
             "Protocols":
                 ", ".join(
-                    survey["protocols"]
+                    sorted(
+                        survey["protocols"]
+                    )
                 )
         }
     )
 
 survey_df = pd.DataFrame(
     survey_rows
+)
+
+survey_df = survey_df.sort_values(
+    "Date"
 )
 
 edited_plan = st.data_editor(
@@ -354,11 +360,26 @@ if not edited_plan.empty:
         x="Date",
         y="Type",
         color="Type",
+        size="Protocols Covered",
         hover_data=[
             "Protocols Covered",
             "Protocols"
         ]
     )
+    
+    survey_fig.update_traces(
+        marker=dict(
+            size=18,
+            line=dict(width=1)
+        )
+    )
+    
+    survey_fig.update_layout(
+        height=600,
+        xaxis_title="Survey Date",
+        yaxis_title="Survey Type"
+    )
+
 
     survey_fig.update_layout(
         height=500
@@ -375,6 +396,32 @@ if not edited_plan.empty:
 
 st.subheader(
     "📊 Plan Summary"
+)
+
+st.dataframe(
+    pd.DataFrame(
+        [
+            {
+                "Protocol":
+                    f"{p['species']} | {p['function']}",
+
+                "Evening":
+                    p["evening"],
+
+                "Morning":
+                    p["morning"],
+
+                "Free":
+                    p["free"],
+
+                "Min Days":
+                    p["min_days"]
+            }
+            for p in result["protocols"]
+        ]
+    ),
+    use_container_width=True,
+    hide_index=True
 )
 
 summary_col1, summary_col2, summary_col3 = (
