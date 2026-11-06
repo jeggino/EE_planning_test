@@ -167,6 +167,7 @@ def get_survey_demand(project, protocols):
                         "morning": p["morning"],
                         "free": p["free"],
                         "min_days": p["min_days"],
+                        "timing": protocols[p["species"]][p["function"]].get("timing", "")
                     }
                     for p in protocols_in_cluster
                 ],
