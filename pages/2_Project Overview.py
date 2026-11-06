@@ -409,23 +409,23 @@ for i, cluster in enumerate(result["clusters"], start=1):
                 line_color="red"
             )
 
-            fig.add_annotation(
-                x=overlap_start,
-                y=1.05,
-                yref="paper",
-                text=f"Overlap Start<br>{overlap_start.strftime('%b %d')}",
-                showarrow=False,
-                font=dict(color="green")
-            )
+            # fig.add_annotation(
+            #     x=overlap_start,
+            #     y=1.05,
+            #     yref="paper",
+            #     text=f"Overlap Start<br>{overlap_start.strftime('%b %d')}",
+            #     showarrow=False,
+            #     font=dict(color="green")
+            # )
             
-            fig.add_annotation(
-                x=overlap_end,
-                y=1.05,
-                yref="paper",
-                text=f"Overlap End<br>{overlap_end.strftime('%b %d')}",
-                showarrow=False,
-                font=dict(color="green")
-            )
+            # fig.add_annotation(
+            #     x=overlap_end,
+            #     y=1.05,
+            #     yref="paper",
+            #     text=f"Overlap End<br>{overlap_end.strftime('%b %d')}",
+            #     showarrow=False,
+            #     font=dict(color="green")
+            # )
 
             fig.update_yaxes(
                 autorange="reversed",
@@ -444,21 +444,23 @@ for i, cluster in enumerate(result["clusters"], start=1):
                     overlap_end
                 ],
                 ticktext=[
-                    f"🟢 {overlap_start.strftime('%d %b')}",
-                    f"🟢 {overlap_end.strftime('%d %b')}"
+                    f"{overlap_start.strftime('%d %b')}",
+                    f"{overlap_end.strftime('%d %b')}"
                 ]
             )
 
             fig.add_vline(
                 x=overlap_start,
-                line_width=3,
-                line_color="green"
+                line_width=1.5,
+                line_dash="dash"
+                line_color="red"
             )
             
             fig.add_vline(
                 x=overlap_end,
-                line_width=3,
-                line_color="green"
+                line_dash="dash"
+                line_width=1.5,
+                line_color="red"
             )
 
             fig.update_layout(
