@@ -352,8 +352,11 @@ def get_survey_demand(
                         "free":
                             p["free"],
 
-                        "min_days":
+                        "min_days": (
                             p["min_days"]
+                            if p["min_days"] not in [None, ""]
+                            else None
+                        ),
                     }
                     for p in protocols_in_cluster
                 ]
