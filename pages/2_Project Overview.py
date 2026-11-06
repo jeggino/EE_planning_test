@@ -125,7 +125,9 @@ result = get_survey_demand(
     PROTOCOLS
 )
 
-col1, col2, col3 = st.columns(3)
+result
+
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     st.metric(
@@ -145,7 +147,12 @@ with col3:
         result["morning_visits"]
     )
 
-
+# with col4:
+#     st.metric(
+#         "Morning Visits",
+#         result["Free Visits"]
+#     )
+    
 for i, cluster in enumerate(result["clusters"], start=1):
 
     with st.container(border=True):
