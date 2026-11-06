@@ -228,12 +228,11 @@ for i, cluster in enumerate(result["clusters"], start=1):
                         p["free"],
 
                     "MinDays":
-                        (
-                            int(p["min_days"])
-                            if p.get("min_days")
-                            is not None
-                            else "N/A"
-                        ),
+                    (
+                        int(p["min_days"])
+                        if p.get("min_days") not in [None, ""]
+                        else "N/A"
+                    ),
 
                     "SurveyPeriod":
                         f"{pretty_date(p['start'])}"
