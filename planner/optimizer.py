@@ -1,18 +1,38 @@
 from datetime import datetime
 
-
-def mmdd_to_int(mmdd):
-    month, day = map(int, mmdd.split("-"))
-    return month * 100 + day
+YEAR = 2025
 
 
-def overlap(a_start, a_end, b_start, b_end):
-    return a_start <= b_end and b_start <= a_end
+def mmdd_to_date(mmdd):
+    return datetime.strptime(
+        f"{YEAR}-{mmdd}",
+        "%Y-%m-%d"
+    ).date()
 
 
-def get_survey_demand(project, protocols):
+def date_to_mmdd(date_obj):
+    return date_obj.strftime("%m-%d")
+
+
+def has_satellite(protocols):
+
+    return any(
+        p["species"].lower() == "meervleermuis"
+        and p["function"].lower() == "satelliet"
+        for p in protocols
+    )
+
+
+def get_survey_demand(
+    project,
+    protocols
+):
 
     protocols_data = []
+
+    # --------------------------------------
+    # LOAD PROTOCOLS
+    # --------------------------------------
 
     for item in project["protocols"]:
 
@@ -23,76 +43,92 @@ def get_survey_demand(project, protocols):
 
         rounds = p["rounds"]
 
+        start_date = mmdd_to_date(
+            p["survey_period"]["start"]
+        )
+
+        end_date = mmdd_to_date(
+            p["survey_period"]["end"]
+        )
+
         protocols_data.append(
             {
                 "species": species,
                 "function": function,
 
-                "start": p["survey_period"]["start"],
-                "end": p["survey_period"]["end"],
+                "start": start_date,
+                "end": end_date,
 
-                "start_num": mmdd_to_int(
-                    p["survey_period"]["start"]
-                ),
+                "evening":
+                    rounds["mandatory_evening"],
 
-                "end_num": mmdd_to_int(
-                    p["survey_period"]["end"]
-                ),
+                "morning":
+                    rounds["mandatory_morning"],
 
-                "evening": rounds["mandatory_evening"],
-                "morning": rounds["mandatory_morning"],
-                "free": rounds["free_rounds"],
+                "free":
+                    rounds["free_rounds"],
 
-                "min_days": p.get(
-                    "min_days_between"
-                ),
+                "min_days":
+                    p.get(
+                        "min_days_between"
+                    ),
 
-                "timing": p.get(
-                    "timing",
-                    "Any"
-                )
+                "timing":
+                    p.get(
+                        "timing",
+                        "Any"
+                    )
             }
         )
 
-    # --------------------------------------------------
+    # Sort by start date
+
+    protocols_data.sort(
+        key=lambda x: x["start"]
+    )
+
+    # --------------------------------------
     # BUILD CLUSTERS
-    # --------------------------------------------------
+    # --------------------------------------
 
     clusters = []
 
     for protocol in protocols_data:
 
-        matched = None
+        merged = False
 
         for cluster in clusters:
 
-            if not overlap(
-                protocol["start_num"],
-                protocol["end_num"],
-                cluster["start_num"],
-                cluster["end_num"]
+            proposed_overlap_start = max(
+                cluster["overlap_start"],
+                protocol["start"]
+            )
+
+            proposed_overlap_end = min(
+                cluster["overlap_end"],
+                protocol["end"]
+            )
+
+            # No true overlap
+
+            if (
+                proposed_overlap_end
+                < proposed_overlap_start
             ):
                 continue
 
-            overlap_start = max(
-                protocol["start_num"],
-                cluster["start_num"]
+            overlap_days = (
+                proposed_overlap_end
+                - proposed_overlap_start
+            ).days
+
+            cluster_has_satellite = (
+                has_satellite(
+                    cluster["protocols"]
+                )
             )
 
-            overlap_end = min(
-                protocol["end_num"],
-                cluster["end_num"]
-            )
-
-            overlap_days = overlap_end - overlap_start
-
-            # --------------------------------------------------
-            # IMPORTANT
-            # Keep Meervleermuis Satelliet separate when
-            # overlap is too small.
-            # --------------------------------------------------
-
-            is_satellite = (
+            new_protocol_satellite = (
                 protocol["species"].lower()
                 == "meervleermuis"
                 and
@@ -100,42 +136,67 @@ def get_survey_demand(project, protocols):
                 == "satelliet"
             )
 
-            if (
-                is_satellite
-                and overlap_days < 20
-            ):
-                continue
+            # Any window containing
+            # Meervleermuis Satelliet
+            # must maintain 20 days overlap
 
-            matched = cluster
+            if (
+                cluster_has_satellite
+                or new_protocol_satellite
+            ):
+
+                if overlap_days < 20:
+                    continue
+
+            cluster["protocols"].append(
+                protocol
+            )
+
+            cluster["coverage_start"] = min(
+                cluster["coverage_start"],
+                protocol["start"]
+            )
+
+            cluster["coverage_end"] = max(
+                cluster["coverage_end"],
+                protocol["end"]
+            )
+
+            cluster["overlap_start"] = (
+                proposed_overlap_start
+            )
+
+            cluster["overlap_end"] = (
+                proposed_overlap_end
+            )
+
+            merged = True
+
             break
 
-        if matched:
-
-            matched["protocols"].append(protocol)
-
-            matched["start_num"] = min(
-                matched["start_num"],
-                protocol["start_num"]
-            )
-
-            matched["end_num"] = max(
-                matched["end_num"],
-                protocol["end_num"]
-            )
-
-        else:
+        if not merged:
 
             clusters.append(
                 {
-                    "start_num": protocol["start_num"],
-                    "end_num": protocol["end_num"],
-                    "protocols": [protocol]
+                    "protocols": [protocol],
+
+                    "coverage_start":
+                        protocol["start"],
+
+                    "coverage_end":
+                        protocol["end"],
+
+                    "overlap_start":
+                        protocol["start"],
+
+                    "overlap_end":
+                        protocol["end"]
                 }
             )
 
-    # --------------------------------------------------
-    # OPTIMIZE CLUSTERS
-    # --------------------------------------------------
+    # --------------------------------------
+    # CALCULATE DEMAND
+    # --------------------------------------
 
     cluster_results = []
 
@@ -145,16 +206,8 @@ def get_survey_demand(project, protocols):
 
     for cluster in clusters:
 
-        protocols_in_cluster = cluster["protocols"]
-
-        cluster_start = max(
-            p["start_num"]
-            for p in protocols_in_cluster
-        )
-
-        cluster_end = min(
-            p["end_num"]
-            for p in protocols_in_cluster
+        protocols_in_cluster = (
+            cluster["protocols"]
         )
 
         evening_required = max(
@@ -204,47 +257,15 @@ def get_survey_demand(project, protocols):
         total_morning += morning_required
         total_visits += minimum_visits
 
-        start_month = cluster_start // 100
-        start_day = cluster_start % 100
-
-        end_month = cluster_end // 100
-        end_day = cluster_end % 100
-
-        coverage_start = min(
-            p["start_num"]
-            for p in protocols_in_cluster
-        )
-
-        coverage_end = max(
-            p["end_num"]
-            for p in protocols_in_cluster
-        )
-
         cluster_results.append(
             {
-                "Period":
-                    f"{start_month:02d}-{start_day:02d}"
-                    " → "
-                    f"{end_month:02d}-{end_day:02d}",
+                "Protocols":
+                    len(
+                        protocols_in_cluster
+                    ),
 
-                "Protocol Details": [
-                    {
-                        "species": p["species"],
-                        "function": p["function"],
-
-                        "start": p["start"],
-                        "end": p["end"],
-
-                        "evening": p["evening"],
-                        "morning": p["morning"],
-                        "free": p["free"],
-
-                        "min_days": p["min_days"],
-
-                        "timing": p["timing"]
-                    }
-                    for p in protocols_in_cluster
-                ],
+                "Minimum Visits":
+                    minimum_visits,
 
                 "Evening Visits":
                     evening_required,
@@ -255,38 +276,100 @@ def get_survey_demand(project, protocols):
                 "Additional Free Visits":
                     additional_free,
 
-                "Minimum Visits":
-                    minimum_visits,
-
                 "Min Days Between":
                     min_days_required,
 
+                "Window Coverage":
+                    date_to_mmdd(
+                        cluster[
+                            "coverage_start"
+                        ]
+                    )
+                    + " → " +
+                    date_to_mmdd(
+                        cluster[
+                            "coverage_end"
+                        ]
+                    ),
+
                 "Overlap Window":
-                    f"{start_month:02d}-{start_day:02d}"
-                    " → "
-                    f"{end_month:02d}-{end_day:02d}",
+                    date_to_mmdd(
+                        cluster[
+                            "overlap_start"
+                        ]
+                    )
+                    + " → " +
+                    date_to_mmdd(
+                        cluster[
+                            "overlap_end"
+                        ]
+                    ),
+
+                "Overlap Days":
+                    (
+                        cluster["overlap_end"]
+                        -
+                        cluster["overlap_start"]
+                    ).days,
 
                 "Overlap Start":
-                    cluster_start,
+                    cluster[
+                        "overlap_start"
+                    ],
 
                 "Overlap End":
-                    cluster_end,
+                    cluster[
+                        "overlap_end"
+                    ],
 
-                "Protocols":
-                    len(protocols_in_cluster),
+                "Protocol Details": [
+                    {
+                        "species":
+                            p["species"],
 
-                "Window Coverage":
-                    f"{coverage_start//100:02d}-"
-                    f"{coverage_start%100:02d}"
-                    " → "
-                    f"{coverage_end//100:02d}-"
-                    f"{coverage_end%100:02d}",
+                        "function":
+                            p["function"],
+
+                        "start":
+                            date_to_mmdd(
+                                p["start"]
+                            ),
+
+                        "end":
+                            date_to_mmdd(
+                                p["end"]
+                            ),
+
+                        "timing":
+                            p["timing"],
+
+                        "evening":
+                            p["evening"],
+
+                        "morning":
+                            p["morning"],
+
+                        "free":
+                            p["free"],
+
+                        "min_days":
+                            p["min_days"]
+                    }
+                    for p in protocols_in_cluster
+                ]
             }
         )
 
     return {
-        "minimum_visits": total_visits,
-        "evening_visits": total_evening,
-        "morning_visits": total_morning,
-        "clusters": cluster_results
+        "minimum_visits":
+            total_visits,
+
+        "evening_visits":
+            total_evening,
+
+        "morning_visits":
+            total_morning,
+
+        "clusters":
+            cluster_results
     }
