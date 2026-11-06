@@ -192,6 +192,21 @@ for i, cluster in enumerate(result["clusters"], start=1):
                 f"Additional Free Visits Required: "
                 f"{cluster['Additional Free Visits']}"
             )
+        
+        st.write(
+            f"📅 **Window Coverage:** "
+            f"{pretty_date(cluster['Window Coverage'].split(' → ')[0])}"
+            f" → "
+            f"{pretty_date(cluster['Window Coverage'].split(' → ')[1])}"
+        )
+        
+        st.write(
+            f"🎯 **Overlap Window:** "
+            f"{pretty_date(cluster['Overlap Window'].split(' → ')[0])}"
+            f" → "
+            f"{pretty_date(cluster['Overlap Window'].split(' → ')[1])}"
+        )
+            
 
         # ------------------------------------------
         # TIMELINE DATA
@@ -220,9 +235,10 @@ for i, cluster in enumerate(result["clusters"], start=1):
                         p["function"],
 
                     "Timing":
-                        p.get(
-                            "timing",
-                            "Any"
+                        (
+                            p.get("timing")
+                            if p.get("timing")
+                            else "Any"
                         ),
 
                     "Evening":
@@ -236,15 +252,7 @@ for i, cluster in enumerate(result["clusters"], start=1):
 
                     "MinDays": min_days,
 
-                    # "MinDays":
-                    # (
-                    #     int(p["min_days"])
-                    #     if p.get("min_days") not in [None, ""]
-                    #     else "N/A"
-                    # ),
-
-
-    
+   
                     "SurveyPeriod":
                         f"{pretty_date(p['start'])}"
                         " → "
@@ -317,23 +325,25 @@ for i, cluster in enumerate(result["clusters"], start=1):
             fig.update_traces(
                 width=0.28,
                 hovertemplate=
-                "<b>%{customdata[0]}</b><br>"
+                "<b>%{customdata[0]}</b><br><br>"
                 "Function: %{customdata[1]}<br>"
                 "Survey Period: %{customdata[2]}<br>"
-                "Timing: %{customdata[3]}<br>"
-                "Evening Rounds: %{customdata[4]}<br>"
-                "Morning Rounds: %{customdata[5]}<br>"
-                "Free Rounds: %{customdata[6]}<br>"
-                "Min Days Between Visits: %{customdata[7]}"
+                "Timing: %{customdata[3]}<br><br>"
+                "🌙 Evening: %{customdata[4]}<br>"
+                "☀️ Morning: %{customdata[5]}<br>"
+                "🔄 Free: %{customdata[6]}<br>"
+                "⏱ Min Days: %{customdata[7]}"
                 "<extra></extra>"
+
             )
 
             fig.add_vrect(
                 x0=overlap_start,
                 x1=overlap_end,
-                fillcolor="green",
-                opacity=0.15,
-                line_width=0,
+                fillcolor="#22c55e",
+                opacity=0.25,
+                line_width=2,
+                line_color="#16a34a",
                 layer="below"
             )
 
@@ -366,15 +376,7 @@ for i, cluster in enumerate(result["clusters"], start=1):
                 use_container_width=True
             )
 
-        st.write(
-            f"📅 **Window Coverage:** "
-            f"{cluster['Window Coverage']}"
-        )
 
-        st.write(
-            f"🎯 **Overlap Window:** "
-            f"{cluster['Overlap Window']}"
-        )
 
         if cluster["Additional Free Visits"] > 0:
             st.warning(
