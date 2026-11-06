@@ -1,16 +1,6 @@
 import streamlit as st
 
-st.markdown(
-    """
-    <style>
-        /* Hide GitHub icon */
-        .stAppDeployButton {
-            display: none;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+
 
 st.set_page_config(
     page_title="Bat Survey Planner",
