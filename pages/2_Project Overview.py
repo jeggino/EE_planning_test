@@ -388,14 +388,14 @@ if not edited_plan.empty:
     )
     
     survey_fig.update_layout(
-        height=600,
+        height=300,
         xaxis_title="Survey Date",
         yaxis_title="Survey Type"
     )
 
 
     survey_fig.update_layout(
-        height=200
+        height=400
     )
 
     st.plotly_chart(
