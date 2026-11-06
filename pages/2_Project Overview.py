@@ -154,7 +154,7 @@ for i, cluster in enumerate(result["clusters"], start=1):
     with st.container(border=True):
 
         st.markdown(
-            f"### 🪟 Window {i} | {cluster['Window Coverage']}"
+            f"### 🪟 Window {i}}"
         )
 
         col1, col2, col3, col4 = st.columns(4)
@@ -200,11 +200,17 @@ for i, cluster in enumerate(result["clusters"], start=1):
             f"{pretty_date(cluster['Window Coverage'].split(' → ')[1])}"
         )
         
+        overlap_days = (
+            cluster["Overlap End"]
+            - cluster["Overlap Start"]
+        ).days
+        
         st.write(
             f"🎯 **Overlap Window:** "
             f"{pretty_date(cluster['Overlap Window'].split(' → ')[0])}"
             f" → "
             f"{pretty_date(cluster['Overlap Window'].split(' → ')[1])}"
+            f" ({overlap_days} days)"
         )
             
 
