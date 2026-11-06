@@ -236,12 +236,53 @@ for i, cluster in enumerate(result["clusters"], start=1):
                     "Function":
                         p["function"],
 
-                    "Timing":
-                        (
-                            p.get("timing")
-                            if p.get("timing")
-                            else "Any"
-                        ),
+            timing = p.get(
+                "timing",
+                {}
+            )
+            
+            if timing:
+                timing_text = (
+                    f"Start Rule: "
+                    f"{timing.get('start_rule', '-')}"
+                    f" | End Rule: "
+                    f"{timing.get('end_rule', '-')}"
+                )
+            else:
+                timing_text = "None"
+            
+            
+            weather = p.get(
+                "weather",
+                {}
+            )
+            
+            weather_text = (
+                f"Temp: "
+                f"{weather.get('temperature', '-')}"
+                f" | Wind: "
+                f"{weather.get('wind', '-')}"
+                f" | Rain: "
+                f"{weather.get('precipitation', '-')}"
+            )
+            
+            
+            special = p.get(
+                "special_requirements",
+                {}
+            )
+            
+            special_text = ", ".join(
+                [
+                    f"{k}: {v}"
+                    for k, v
+                    in special.items()
+                ]
+            )
+            
+            if not special_text:
+                special_text = "None"
+
 
                     "Evening":
                         p["evening"],
