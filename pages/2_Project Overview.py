@@ -180,7 +180,7 @@ for i, cluster in enumerate(result["clusters"], start=1):
                 cluster["Morning Visits"]
             )
             
-        with col6:
+        with col5:
             st.metric(
                 "Free Visits",
                 cluster["Morning Visits"]
