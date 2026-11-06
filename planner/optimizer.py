@@ -383,12 +383,14 @@ def get_survey_demand(
                             ),
 
                         "timing":
-                        (
-                            p.get("timing")
-                            if p.get("timing")
-                            else "Any"
-                        ),
-
+                            p["timing"],
+                        
+                        "weather":
+                            p["weather"],
+                        
+                        "special_requirements":
+                            p["special_requirements"],
+                        
                         "evening":
                             p["evening"],
 
