@@ -294,9 +294,9 @@ st.plotly_chart(
 # OPTIMIZED SURVEY PLAN
 # --------------------------------------------------
 
-st.subheader(
-    "🎯 Optimized Survey Plan"
-)
+# st.subheader(
+#     "🎯 Optimized Survey Plan"
+# )
 
 survey_rows = []
 
