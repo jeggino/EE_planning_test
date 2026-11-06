@@ -64,8 +64,6 @@ selected_project = next(
 
 st.subheader("Selected Protocols")
 
-st.json(selected_project["protocols"])
-
 # --------------------------------
 # SELECT DATE
 # --------------------------------
