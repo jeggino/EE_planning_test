@@ -183,14 +183,14 @@ for i, cluster in enumerate(result["clusters"], start=1):
         with col5:
             st.metric(
                 "Free Visits",
-                cluster["Morning Visits"]
+                cluster['Additional Free Visits']
             )
 
-        if cluster["Additional Free Visits"] > 0:
-            st.info(
-                f"Additional Free Visits Required: "
-                f"{cluster['Additional Free Visits']}"
-            )
+        # if cluster["Additional Free Visits"] > 0:
+        #     st.info(
+        #         f"Additional Free Visits Required: "
+        #         f"{cluster['Additional Free Visits']}"
+        #     )
         
         st.write(
             f"📅 **Window Coverage:** "
