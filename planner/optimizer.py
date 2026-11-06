@@ -376,7 +376,7 @@ def get_survey_demand(
                             p.get("timing")
                             if p.get("timing")
                             else "Any"
-                        )
+                        ),
 
                         "evening":
                             p["evening"],
