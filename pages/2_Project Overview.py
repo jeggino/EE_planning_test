@@ -154,7 +154,7 @@ for i, cluster in enumerate(result["clusters"], start=1):
     with st.container(border=True):
 
         st.markdown(
-            f"### 🪟 Window {i}}"
+            f"### 🪟 Window {i}"
         )
 
         col1, col2, col3, col4 = st.columns(4)
