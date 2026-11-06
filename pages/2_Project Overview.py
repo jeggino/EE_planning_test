@@ -208,17 +208,13 @@ for p in result["protocols"]:
                 f"{p['end'].strftime('%d %b')}",
 
 
-            "Start":
-                datetime.combine(
-                    p["start"],
-                    datetime.min.time()
-                ),
-
-            "End":
-                datetime.combine(
-                    p["end"],
-                    datetime.min.time()
-                ),
+            "Start": pd.to_datetime(
+                p["start"]
+            ),
+            
+            "End": pd.to_datetime(
+                p["end"]
+            ),
 
             "Evening":
                 p["evening"],
