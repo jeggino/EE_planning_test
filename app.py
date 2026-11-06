@@ -24,13 +24,3 @@ st.markdown(
     """
 )
 
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.info("📋 Create Projects")
-
-with col2:
-    st.info("📅 Generate Planning")
-
-with col3:
-    st.info("✅ Validate Protocols")
