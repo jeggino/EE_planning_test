@@ -357,12 +357,23 @@ if not edited_plan.empty:
         "📍 Planned Survey Schedule"
     )
 
-    survey_fig = px.scatter(
+    # survey_fig = px.scatter(
+    #     chart_df,
+    #     x="Date",
+    #     y="Type",
+    #     color="Type",
+    #     size="Protocols Covered",
+    #     hover_data=[
+    #         "Protocols Covered",
+    #         "Protocols"
+    #     ]
+    # )
+
+    survey_fig = px.strip(
         chart_df,
         x="Date",
         y="Type",
         color="Type",
-        size="Protocols Covered",
         hover_data=[
             "Protocols Covered",
             "Protocols"
