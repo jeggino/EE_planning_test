@@ -3,7 +3,7 @@ import pandas as pd
 
 from database.supabase import get_supabase
 from utils.protocol_loader import load_protocols
-from planner.optimizer import get_survey_demand pretty_date
+from planner.optimizer import get_survey_demand 
 
 from datetime import date, timedelta, datetime
 import pandas as pd
@@ -13,6 +13,16 @@ st.set_page_config(
     page_title="Project Overview",
     layout="wide"
 )
+
+
+def pretty_date(mmdd):
+    try:
+        return datetime.strptime(
+            mmdd,
+            "%m-%d"
+        ).strftime("%b %d")
+    except:
+        return mmdd
 
 st.title("📊 Project Overview")
 
