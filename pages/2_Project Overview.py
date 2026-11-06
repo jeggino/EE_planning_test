@@ -332,12 +332,12 @@ survey_df = survey_df.sort_values(
     "Date"
 )
 
-edited_plan = st.data_editor(
-    survey_df,
-    use_container_width=True,
-    num_rows="dynamic",
-    hide_index=True
-)
+# edited_plan = st.data_editor(
+#     survey_df,
+#     use_container_width=True,
+#     num_rows="dynamic",
+#     hide_index=True
+# )
 
 # --------------------------------------------------
 # SURVEY TIMELINE
@@ -390,75 +390,75 @@ if not edited_plan.empty:
         use_container_width=True
     )
 
-# --------------------------------------------------
-# PLAN SUMMARY
-# --------------------------------------------------
+# # --------------------------------------------------
+# # PLAN SUMMARY
+# # --------------------------------------------------
 
-st.subheader(
-    "📊 Plan Summary"
-)
+# st.subheader(
+#     "📊 Plan Summary"
+# )
 
-st.dataframe(
-    pd.DataFrame(
-        [
-            {
-                "Protocol":
-                    f"{p['species']} | {p['function']}",
+# st.dataframe(
+#     pd.DataFrame(
+#         [
+#             {
+#                 "Protocol":
+#                     f"{p['species']} | {p['function']}",
 
-                "Evening":
-                    p["evening"],
+#                 "Evening":
+#                     p["evening"],
 
-                "Morning":
-                    p["morning"],
+#                 "Morning":
+#                     p["morning"],
 
-                "Free":
-                    p["free"],
+#                 "Free":
+#                     p["free"],
 
-                "Min Days":
-                    p["min_days"]
-            }
-            for p in result["protocols"]
-        ]
-    ),
-    use_container_width=True,
-    hide_index=True
-)
+#                 "Min Days":
+#                     p["min_days"]
+#             }
+#             for p in result["protocols"]
+#         ]
+#     ),
+#     use_container_width=True,
+#     hide_index=True
+# )
 
-summary_col1, summary_col2, summary_col3 = (
-    st.columns(3)
-)
+# summary_col1, summary_col2, summary_col3 = (
+#     st.columns(3)
+# )
 
-with summary_col1:
-    st.metric(
-        "Survey Visits",
-        len(
-            result["survey_plan"]
-        )
-    )
+# with summary_col1:
+#     st.metric(
+#         "Survey Visits",
+#         len(
+#             result["survey_plan"]
+#         )
+#     )
 
-with summary_col2:
-    st.metric(
-        "Evening Surveys",
-        len(
-            [
-                s
-                for s in result["survey_plan"]
-                if s["type"] == "evening"
-            ]
-        )
-    )
+# with summary_col2:
+#     st.metric(
+#         "Evening Surveys",
+#         len(
+#             [
+#                 s
+#                 for s in result["survey_plan"]
+#                 if s["type"] == "evening"
+#             ]
+#         )
+#     )
 
-with summary_col3:
-    st.metric(
-        "Morning Surveys",
-        len(
-            [
-                s
-                for s in result["survey_plan"]
-                if s["type"] == "morning"
-            ]
-        )
-    )
+# with summary_col3:
+#     st.metric(
+#         "Morning Surveys",
+#         len(
+#             [
+#                 s
+#                 for s in result["survey_plan"]
+#                 if s["type"] == "morning"
+#             ]
+#         )
+#     )
 
 
 
