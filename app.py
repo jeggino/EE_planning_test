@@ -6,6 +6,17 @@ st.set_page_config(
     layout="wide"
 )
 
+st.markdown(
+    """
+    <style>
+        [data-testid="stAppDeployButton"] {
+            display: none;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 st.title("🦇 Bat Survey Planner")
 
 st.markdown(
