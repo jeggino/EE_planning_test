@@ -193,123 +193,181 @@ for i, cluster in enumerate(result["clusters"], start=1):
                 f"{cluster['Additional Free Visits']}"
             )
 
+        # ------------------------------------------
+        # TIMELINE DATA
+        # ------------------------------------------
+
         timeline_rows = []
-        
+
         for p in cluster["Protocol Details"]:
-        
+
             timeline_rows.append(
                 {
                     "Protocol":
                         f"{p['species']} | {p['function']}",
-        
+
+                    "Species":
+                        p["species"],
+
+                    "Function":
+                        p["function"],
+
+                    "Timing":
+                        p.get(
+                            "timing",
+                            "Any"
+                        ),
+
+                    "Evening":
+                        p["evening"],
+
+                    "Morning":
+                        p["morning"],
+
+                    "Free":
+                        p["free"],
+
+                    "MinDays":
+                        (
+                            int(p["min_days"])
+                            if p.get("min_days")
+                            is not None
+                            else "N/A"
+                        ),
+
+                    "SurveyPeriod":
+                        f"{pretty_date(p['start'])}"
+                        " → "
+                        f"{pretty_date(p['end'])}",
+
                     "Start":
                         datetime.strptime(
                             p["start"],
                             "%m-%d"
-                        ).replace(year=2025),
-        
+                        ).replace(
+                            year=2025
+                        ),
+
                     "End":
                         datetime.strptime(
                             p["end"],
                             "%m-%d"
-                        ).replace(year=2025)
+                        ).replace(
+                            year=2025
+                        ),
                 }
             )
-        
+
         timeline_df = pd.DataFrame(
             timeline_rows
         )
-        
-        fig = px.timeline(
-            timeline_df,
-            x_start="Start",
-            x_end="End",
-            y="Protocol",
-            color="Protocol"
+
+        overlap_start_str = (
+            cluster["Overlap Window"]
+            .split(" → ")[0]
         )
-        
-        fig.update_yaxes(
-            autorange="reversed"
+
+        overlap_end_str = (
+            cluster["Overlap Window"]
+            .split(" → ")[1]
         )
-        
-        fig.update_layout(
-            showlegend=False,
-            height=max(
-                250,
-                len(timeline_df) * 60
-            ),
-            margin=dict(
-                l=20,
-                r=20,
-                t=20,
-                b=20
+
+        overlap_start = datetime.strptime(
+            overlap_start_str,
+            "%m-%d"
+        ).replace(year=2025)
+
+        overlap_end = datetime.strptime(
+            overlap_end_str,
+            "%m-%d"
+        ).replace(year=2025)
+
+        with st.container(border=True):
+
+            fig = px.timeline(
+                timeline_df,
+                x_start="Start",
+                x_end="End",
+                y="Protocol",
+                color="Species",
+                color_discrete_sequence=
+                    px.colors.qualitative.Set2,
+                custom_data=[
+                    "Species",
+                    "Function",
+                    "SurveyPeriod",
+                    "Timing",
+                    "Evening",
+                    "Morning",
+                    "Free",
+                    "MinDays"
+                ]
             )
-        )
-        
-        st.plotly_chart(
-            fig,
-            use_container_width=True
+
+            fig.update_traces(
+                width=0.28,
+                hovertemplate=
+                "<b>%{customdata[0]}</b><br>"
+                "Function: %{customdata[1]}<br>"
+                "Survey Period: %{customdata[2]}<br>"
+                "Timing: %{customdata[3]}<br>"
+                "Evening Rounds: %{customdata[4]}<br>"
+                "Morning Rounds: %{customdata[5]}<br>"
+                "Free Rounds: %{customdata[6]}<br>"
+                "Min Days Between Visits: %{customdata[7]}"
+                "<extra></extra>"
+            )
+
+            fig.add_vrect(
+                x0=overlap_start,
+                x1=overlap_end,
+                fillcolor="green",
+                opacity=0.15,
+                line_width=0,
+                layer="below"
+            )
+
+            fig.update_yaxes(
+                autorange="reversed",
+                title=None
+            )
+
+            fig.update_xaxes(
+                tickformat="%b"
+            )
+
+            fig.update_layout(
+                showlegend=True,
+                legend_title="Species",
+                height=max(
+                    180,
+                    len(timeline_df) * 42
+                ),
+                margin=dict(
+                    l=10,
+                    r=10,
+                    t=10,
+                    b=10
+                )
+            )
+
+            st.plotly_chart(
+                fig,
+                use_container_width=True
+            )
+
+        st.write(
+            f"📅 **Window Coverage:** "
+            f"{cluster['Window Coverage']}"
         )
 
-        
+        st.write(
+            f"🎯 **Overlap Window:** "
+            f"{cluster['Overlap Window']}"
+        )
 
-        with st.expander(
-            f"Protocols Covered ({cluster['Protocols']})"
-        ):
-        
-            for protocol in cluster["Protocol Details"]:
-        
-                with st.container(border=True):
-                
-                    st.markdown(
-                        f"#### 🐾 {protocol['species']}"
-                    )
-                
-                    st.write(
-                        f"**Function:** {protocol['function']}"
-                    )
-                
-                    st.write(
-                        f"**Survey Period:** "
-                        f"{pretty_date(protocol['start'])} → "
-                        f"{pretty_date(protocol['end'])}"
-                    )
-                
-                    details1, details2 = st.columns(2)
-                
-                    with details1:
-                        st.write(
-                            f"**Timing:** "
-                            f"{protocol.get('timing', 'Any')}"
-                        )
-                
-                    with details2:
-                
-                        min_days = protocol.get("min_days")
-                
-                        st.write(
-                            f"**Min Days Between Visits:** "
-                            f"{int(min_days)}"
-                            if min_days is not None
-                            else "N/A"
-                        )
-                
-                    c1, c2, c3 = st.columns(3)
-                
-                    with c1:
-                        st.metric(
-                            "🌙 Evening",
-                            protocol["evening"]
-                        )
-                
-                    with c2:
-                        st.metric(
-                            "☀️ Morning",
-                            protocol["morning"]
-                        )
-                
-                    with c3:
-                        st.metric(
-                            "🔄 Free",
-                            protocol["free"]
-                        )
+        if cluster["Additional Free Visits"] > 0:
+            st.warning(
+                f"Additional Free Visits Required: "
+                f"{cluster['Additional Free Visits']}"
+            )
