@@ -395,14 +395,36 @@ for i, cluster in enumerate(result["clusters"], start=1):
 
             )
 
-            fig.add_vrect(
-                x0=overlap_start,
-                x1=overlap_end,
-                fillcolor="#22c55e",
-                opacity=0.25,
+            fig.add_vline(
+                x=overlap_start,
                 line_width=2,
-                line_color="#16a34a",
-                layer="below"
+                line_dash="dash",
+                line_color="red"
+            )
+            
+            fig.add_vline(
+                x=overlap_end,
+                line_width=2,
+                line_dash="dash",
+                line_color="red"
+            )
+
+            fig.add_annotation(
+                x=overlap_start,
+                y=1.05,
+                yref="paper",
+                text=f"Overlap Start<br>{overlap_start.strftime('%b %d')}",
+                showarrow=False,
+                font=dict(color="green")
+            )
+            
+            fig.add_annotation(
+                x=overlap_end,
+                y=1.05,
+                yref="paper",
+                text=f"Overlap End<br>{overlap_end.strftime('%b %d')}",
+                showarrow=False,
+                font=dict(color="green")
             )
 
             fig.update_yaxes(
@@ -411,7 +433,7 @@ for i, cluster in enumerate(result["clusters"], start=1):
             )
 
             fig.update_xaxes(
-                tickformat="%b"
+                tickformat="%d %b"
             )
 
             fig.update_layout(
