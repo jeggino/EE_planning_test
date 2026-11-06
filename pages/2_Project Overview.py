@@ -339,6 +339,8 @@ survey_df = survey_df.sort_values(
 #     hide_index=True
 # )
 
+edited_plan = survey_df
+
 # --------------------------------------------------
 # SURVEY TIMELINE
 # --------------------------------------------------
