@@ -201,6 +201,13 @@ for i, cluster in enumerate(result["clusters"], start=1):
 
         for p in cluster["Protocol Details"]:
 
+            min_days = p.get("min_days")
+            
+            try:
+                min_days = int(min_days)
+            except (TypeError, ValueError):
+                min_days = "N/A"            
+
             timeline_rows.append(
                 {
                     "Protocol":
@@ -227,13 +234,17 @@ for i, cluster in enumerate(result["clusters"], start=1):
                     "Free":
                         p["free"],
 
-                    "MinDays":
-                    (
-                        int(p["min_days"])
-                        if p.get("min_days") not in [None, ""]
-                        else "N/A"
-                    ),
+                    "MinDays": min_days,
 
+                    # "MinDays":
+                    # (
+                    #     int(p["min_days"])
+                    #     if p.get("min_days") not in [None, ""]
+                    #     else "N/A"
+                    # ),
+
+
+    
                     "SurveyPeriod":
                         f"{pretty_date(p['start'])}"
                         " → "
