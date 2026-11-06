@@ -152,251 +152,269 @@ with col4:
     )
     
 # --------------------------------------------------
-# SURVEY TIMELINE
+# PROTOCOL TIMELINE
 # --------------------------------------------------
 
 st.divider()
 
 timeline_rows = []
 
-for cluster_idx, cluster in enumerate(
-    result["clusters"],
-    start=1
-):
+for p in result["protocols"]:
 
-    for p in cluster["Protocol Details"]:
+    min_days = p.get("min_days")
 
-        min_days = p.get("min_days")
+    try:
+        min_days = int(min_days)
+    except:
+        min_days = "N/A"
 
-        try:
-            min_days = int(min_days)
-        except (TypeError, ValueError):
-            min_days = "N/A"
+    timing = p.get(
+        "timing",
+        {}
+    )
 
-        timing = p.get(
-            "timing",
-            {}
+    if timing:
+        timing_text = (
+            f"Start Rule: "
+            f"{timing.get('start_rule', '-')}"
+            f" | End Rule: "
+            f"{timing.get('end_rule', '-')}"
         )
+    else:
+        timing_text = "None"
 
-        if timing:
-            timing_text = (
-                f"Start Rule: "
-                f"{timing.get('start_rule', '-')}"
-                f" | End Rule: "
-                f"{timing.get('end_rule', '-')}"
-            )
-        else:
-            timing_text = "None"
+    weather = p.get(
+        "weather",
+        {}
+    )
 
-        weather = p.get(
-            "weather",
-            {}
-        )
+    weather_text = (
+        f"Temp: {weather.get('temperature', '-')}"
+        f" | Wind: {weather.get('wind', '-')}"
+        f" | Rain: {weather.get('precipitation', '-')}"
+    )
 
-        weather_text = (
-            f"Temp: {weather.get('temperature', '-')}"
-            f" | Wind: {weather.get('wind', '-')}"
-            f" | Rain: {weather.get('precipitation', '-')}"
-        )
+    timeline_rows.append(
+        {
+            "Protocol":
+                f"{p['species']} | {p['function']}",
 
-        special = p.get(
-            "special_requirements",
-            {}
-        )
+            "Species":
+                p["species"],
 
-        special_text = ", ".join(
-            f"{k}: {v}"
-            for k, v in special.items()
-        )
+            "SurveyPeriod":
+                f"{date_to_mmdd(p['start'])}"
+                f" → "
+                f"{date_to_mmdd(p['end'])}",
 
-        if not special_text:
-            special_text = "None"
+            "Start":
+                datetime.combine(
+                    p["start"],
+                    datetime.min.time()
+                ),
 
-        timeline_rows.append(
-            {
-                "Protocol":
-                    f"{p['species']} | {p['function']}",
+            "End":
+                datetime.combine(
+                    p["end"],
+                    datetime.min.time()
+                ),
 
-                "Species":
-                    p["species"],
+            "Evening":
+                p["evening"],
 
-                "Window":
-                    f"Window {cluster_idx}",
+            "Morning":
+                p["morning"],
 
-                "Function":
-                    p["function"],
+            "Free":
+                p["free"],
 
-                "Timing":
-                    timing_text,
+            "MinDays":
+                min_days,
 
-                "Requirements":
-                    special_text,
+            "Timing":
+                timing_text,
 
-                "Weather":
-                    weather_text,
-
-                "Evening":
-                    p["evening"],
-
-                "Morning":
-                    p["morning"],
-
-                "Free":
-                    p["free"],
-
-                "MinDays":
-                    min_days,
-
-                "SurveyPeriod":
-                    f"{pretty_date(p['start'])}"
-                    f" → "
-                    f"{pretty_date(p['end'])}",
-
-                "Start":
-                    datetime.strptime(
-                        p["start"],
-                        "%m-%d"
-                    ).replace(year=2025),
-
-                "End":
-                    datetime.strptime(
-                        p["end"],
-                        "%m-%d"
-                    ).replace(year=2025)
-            }
-        )
+            "Weather":
+                weather_text
+        }
+    )
 
 timeline_df = pd.DataFrame(
     timeline_rows
 )
 
-if not timeline_df.empty:
+st.subheader(
+    "📅 Protocol Survey Periods"
+)
 
-    st.subheader(
-        "📅 Survey Timeline"
+fig = px.timeline(
+    timeline_df,
+    x_start="Start",
+    x_end="End",
+    y="Protocol",
+    color="Species",
+    custom_data=[
+        "SurveyPeriod",
+        "Evening",
+        "Morning",
+        "Free",
+        "MinDays",
+        "Timing",
+        "Weather"
+    ]
+)
+
+fig.update_traces(
+    hovertemplate=
+        "<b>%{y}</b><br><br>"
+
+        "Survey Period: %{customdata[0]}<br><br>"
+
+        "🌙 Evening: %{customdata[1]}<br>"
+        "☀️ Morning: %{customdata[2]}<br>"
+        "🔄 Free: %{customdata[3]}<br>"
+        "⏱ Min Days: %{customdata[4]}<br><br>"
+
+        "<b>Timing</b><br>"
+        "%{customdata[5]}<br><br>"
+
+        "<b>Weather</b><br>"
+        "%{customdata[6]}"
+
+        "<extra></extra>"
+)
+
+fig.update_yaxes(
+    autorange="reversed"
+)
+
+st.plotly_chart(
+    fig,
+    use_container_width=True
+)
+
+# --------------------------------------------------
+# OPTIMIZED SURVEY PLAN
+# --------------------------------------------------
+
+st.subheader(
+    "🎯 Optimized Survey Plan"
+)
+
+survey_rows = []
+
+for survey in result["survey_plan"]:
+
+    survey_rows.append(
+        {
+            "Date":
+                survey["date"],
+
+            "Type":
+                survey["type"].capitalize(),
+
+            "Protocols Covered":
+                len(
+                    survey["protocols"]
+                ),
+
+            "Protocols":
+                ", ".join(
+                    survey["protocols"]
+                )
+        }
     )
 
-    fig = px.timeline(
-        timeline_df,
-        x_start="Start",
-        x_end="End",
-        y="Protocol",
-        color="Species",
-        color_discrete_sequence=
-            px.colors.qualitative.Set2,
-        custom_data=[
-            "Species",
-            "Function",
-            "SurveyPeriod",
-            "Timing",
-            "Evening",
-            "Morning",
-            "Free",
-            "MinDays",
-            "Requirements",
-            "Weather",
-            "Window"
+survey_df = pd.DataFrame(
+    survey_rows
+)
+
+edited_plan = st.data_editor(
+    survey_df,
+    use_container_width=True,
+    num_rows="dynamic",
+    hide_index=True
+)
+
+# --------------------------------------------------
+# SURVEY TIMELINE
+# --------------------------------------------------
+
+if not edited_plan.empty:
+
+    chart_df = edited_plan.copy()
+
+    chart_df["Date"] = pd.to_datetime(
+        chart_df["Date"]
+    )
+
+    st.subheader(
+        "📍 Planned Survey Schedule"
+    )
+
+    survey_fig = px.scatter(
+        chart_df,
+        x="Date",
+        y="Type",
+        color="Type",
+        hover_data=[
+            "Protocols Covered",
+            "Protocols"
         ]
     )
 
-    fig.update_traces(
-        width=0.30,
-        hovertemplate=
-            "<b>%{customdata[0]}</b><br><br>"
-
-            "Function: %{customdata[1]}<br>"
-            "Survey Period: %{customdata[2]}<br>"
-            "Window: %{customdata[10]}<br><br>"
-
-            "<b>Timing</b><br>"
-            "%{customdata[3]}<br><br>"
-
-            "🌙 Evening: %{customdata[4]}<br>"
-            "☀️ Morning: %{customdata[5]}<br>"
-            "🔄 Free: %{customdata[6]}<br>"
-            "⏱ Min Days: %{customdata[7]}<br><br>"
-
-            "<b>Requirements</b><br>"
-            "%{customdata[8]}<br><br>"
-
-            "<b>Weather</b><br>"
-            "%{customdata[9]}"
-
-            "<extra></extra>"
-    )
-
-    fig.update_yaxes(
-        autorange="reversed",
-        title=None
-    )
-
-    fig.update_layout(
-        showlegend=True,
-        legend_title="Species",
-        height=max(
-            450,
-            len(timeline_df) * 42
-        ),
-        margin=dict(
-            l=10,
-            r=10,
-            t=10,
-            b=10
-        )
+    survey_fig.update_layout(
+        height=500
     )
 
     st.plotly_chart(
-        fig,
+        survey_fig,
         use_container_width=True
     )
 
 # --------------------------------------------------
-# WINDOW SUMMARY
+# PLAN SUMMARY
 # --------------------------------------------------
 
 st.subheader(
-    "🪟 Survey Windows"
+    "📊 Plan Summary"
 )
 
-summary_df = pd.DataFrame(
-    [
-        {
-            "Window":
-                f"Window {i}",
+summary_col1, summary_col2, summary_col3 = (
+    st.columns(3)
+)
 
-            "Protocols":
-                cluster["Protocols"],
-
-            "Minimum Visits":
-                cluster["Minimum Visits"],
-
-            "Evening":
-                cluster["Evening Visits"],
-
-            "Morning":
-                cluster["Morning Visits"],
-
-            "Free":
-                cluster["Additional Free Visits"],
-
-            "Overlap":
-                cluster["Overlap Window"],
-
-            "Coverage":
-                cluster["Window Coverage"]
-        }
-        for i, cluster in enumerate(
-            result["clusters"],
-            start=1
+with summary_col1:
+    st.metric(
+        "Survey Visits",
+        len(
+            result["survey_plan"]
         )
-    ]
-)
+    )
 
-st.dataframe(
-    summary_df,
-    use_container_width=True,
-    hide_index=True
-)
+with summary_col2:
+    st.metric(
+        "Evening Surveys",
+        len(
+            [
+                s
+                for s in result["survey_plan"]
+                if s["type"] == "evening"
+            ]
+        )
+    )
+
+with summary_col3:
+    st.metric(
+        "Morning Surveys",
+        len(
+            [
+                s
+                for s in result["survey_plan"]
+                if s["type"] == "morning"
+            ]
+        )
+    )
 
 
 
