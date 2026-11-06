@@ -38,8 +38,6 @@ for species in selected_species:
 
 st.divider()
 
-st.subheader("Selected Protocols")
-st.json(project_protocols)
 
 # CREATE PROJECT
 if st.button("Create Project"):
