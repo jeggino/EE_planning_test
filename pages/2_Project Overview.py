@@ -203,9 +203,10 @@ for p in result["protocols"]:
                 p["species"],
 
             "SurveyPeriod":
-                f"{date_to_mmdd(p['start'])}"
+                f"{p['start'].strftime('%d %b')}"
                 f" → "
-                f"{date_to_mmdd(p['end'])}",
+                f"{p['end'].strftime('%d %b')}",
+
 
             "Start":
                 datetime.combine(
