@@ -154,7 +154,7 @@ for i, cluster in enumerate(result["clusters"], start=1):
             f"### 🪟 Window {i}"
         )
 
-        col1, col2, col3, col4 = st.columns(4)
+        col1, col2, col3, col4, col5 = st.columns(5)
 
         with col1:
             st.metric(
@@ -177,6 +177,12 @@ for i, cluster in enumerate(result["clusters"], start=1):
         with col4:
             st.metric(
                 "Morning Visits",
+                cluster["Morning Visits"]
+            )
+            
+        with col6:
+            st.metric(
+                "Free Visits",
                 cluster["Morning Visits"]
             )
 
