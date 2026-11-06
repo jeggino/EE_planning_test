@@ -432,8 +432,33 @@ for i, cluster in enumerate(result["clusters"], start=1):
                 title=None
             )
 
+            # fig.update_xaxes(
+            #     tickformat="%b"
+            # )
+
             fig.update_xaxes(
-                tickformat="%d %b"
+                tickformat="%d %b",
+                tickmode="array",
+                tickvals=[
+                    overlap_start,
+                    overlap_end
+                ],
+                ticktext=[
+                    f"🟢 {overlap_start.strftime('%d %b')}",
+                    f"🟢 {overlap_end.strftime('%d %b')}"
+                ]
+            )
+
+            fig.add_vline(
+                x=overlap_start,
+                line_width=3,
+                line_color="green"
+            )
+            
+            fig.add_vline(
+                x=overlap_end,
+                line_width=3,
+                line_color="green"
             )
 
             fig.update_layout(
