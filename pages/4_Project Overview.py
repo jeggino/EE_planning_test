@@ -134,14 +134,49 @@ with col3:
         result["morning_visits"]
     )
 
-st.subheader("Survey Windows")
+st.subheader("🗓️ Survey Windows")
 
-clusters_df = pd.DataFrame(
-    result["clusters"]
-)
+for i, cluster in enumerate(result["clusters"], start=1):
 
-st.dataframe(
-    clusters_df,
-    use_container_width=True
-)
+    with st.container(border=True):
+
+        st.markdown(
+            f"### Window {i}  |  {cluster['Window Coverage']}"
+        )
+
+        col1, col2, col3, col4 = st.columns(4)
+
+        col1.metric(
+            "Protocols",
+            cluster["Protocols"]
+        )
+
+        col2.metric(
+            "Minimum Visits",
+            cluster["Minimum Visits"]
+        )
+
+        col3.metric(
+            "Evening",
+            cluster["Evening Visits"]
+        )
+
+        col4.metric(
+            "Morning",
+            cluster["Morning Visits"]
+        )
+
+        st.caption(
+            f"Overlap Window: {cluster['Overlap Window']}"
+        )
+
+        if cluster["Additional Free Visits"] > 0:
+            st.info(
+                f"Additional Free Visits Required: "
+                f"{cluster['Additional Free Visits']}"
+            )
+
+        with st.expander("Protocols Covered"):
+            for protocol in cluster["Protocol Details"]:
+                st.write(f"• {protocol}")
 
