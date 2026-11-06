@@ -75,6 +75,29 @@ def build_windows(protocols_data):
     return windows
 
 
+import math
+
+
+def safe_min_days(value):
+
+    if value is None:
+        return 0
+
+    try:
+
+        if math.isnan(value):
+            return 0
+
+    except:
+        pass
+
+    try:
+        return int(value)
+
+    except:
+        return 0
+
+
 def calculate_requirements(
     window_protocols
 ):
@@ -95,7 +118,8 @@ def calculate_requirements(
     )
 
     covered_free = (
-        evening + morning
+        evening
+        + morning
     )
 
     additional_free = max(
@@ -103,18 +127,28 @@ def calculate_requirements(
         free - covered_free
     )
 
-    min_days = max(
-        int(
-            p["min_days"] or 0
+    valid_days = [
+        safe_min_days(
+            p["min_days"]
         )
         for p in window_protocols
-    )
+    ]
+
+    min_days = max(valid_days)
 
     return {
-        "evening": evening,
-        "morning": morning,
-        "free": additional_free,
-        "min_days": min_days
+
+        "evening":
+            evening,
+
+        "morning":
+            morning,
+
+        "free":
+            additional_free,
+
+        "min_days":
+            min_days
     }
 
 
