@@ -223,19 +223,9 @@ for i, cluster in enumerate(result["clusters"], start=1):
             try:
                 min_days = int(min_days)
             except (TypeError, ValueError):
-                min_days = "N/A"            
-
-            timeline_rows.append(
-                {
-                    "Protocol":
-                        f"{p['species']} | {p['function']}",
-
-                    "Species":
-                        p["species"],
-
-                    "Function":
-                        p["function"],
-
+                min_days = "N/A"
+            
+            
             timing = p.get(
                 "timing",
                 {}
@@ -258,12 +248,9 @@ for i, cluster in enumerate(result["clusters"], start=1):
             )
             
             weather_text = (
-                f"Temp: "
-                f"{weather.get('temperature', '-')}"
-                f" | Wind: "
-                f"{weather.get('wind', '-')}"
-                f" | Rain: "
-                f"{weather.get('precipitation', '-')}"
+                f"Temp: {weather.get('temperature', '-')}"
+                f" | Wind: {weather.get('wind', '-')}"
+                f" | Rain: {weather.get('precipitation', '-')}"
             )
             
             
@@ -275,47 +262,62 @@ for i, cluster in enumerate(result["clusters"], start=1):
             special_text = ", ".join(
                 [
                     f"{k}: {v}"
-                    for k, v
-                    in special.items()
+                    for k, v in special.items()
                 ]
             )
             
             if not special_text:
                 special_text = "None"
-
-
+            
+            
+            timeline_rows.append(
+                {
+                    "Protocol":
+                        f"{p['species']} | {p['function']}",
+            
+                    "Species":
+                        p["species"],
+            
+                    "Function":
+                        p["function"],
+            
+                    "Timing":
+                        timing_text,
+            
+                    "Requirements":
+                        special_text,
+            
+                    "Weather":
+                        weather_text,
+            
                     "Evening":
                         p["evening"],
-
+            
                     "Morning":
                         p["morning"],
-
+            
                     "Free":
                         p["free"],
-
-                    "MinDays": min_days,
-
-   
+            
+                    "MinDays":
+                        min_days,
+            
                     "SurveyPeriod":
                         f"{pretty_date(p['start'])}"
                         " → "
                         f"{pretty_date(p['end'])}",
-
+            
                     "Start":
                         datetime.strptime(
                             p["start"],
                             "%m-%d"
-                        ).replace(
-                            year=2025
-                        ),
-
+                        ).replace(year=2025),
+            
                     "End":
                         datetime.strptime(
                             p["end"],
                             "%m-%d"
-                        ).replace(
-                            year=2025
-                        ),
+                        ).replace(year=2025),
                 }
             )
 
@@ -361,7 +363,9 @@ for i, cluster in enumerate(result["clusters"], start=1):
                     "Evening",
                     "Morning",
                     "Free",
-                    "MinDays"
+                    "MinDays",
+                    "Requirements",
+                    "Weather"
                 ]
             )
 
@@ -369,13 +373,24 @@ for i, cluster in enumerate(result["clusters"], start=1):
                 width=0.28,
                 hovertemplate=
                 "<b>%{customdata[0]}</b><br><br>"
+                
                 "Function: %{customdata[1]}<br>"
-                "Survey Period: %{customdata[2]}<br>"
-                "Timing: %{customdata[3]}<br><br>"
+                "Survey Period: %{customdata[2]}<br><br>"
+                
+                "<b>Timing</b><br>"
+                "%{customdata[3]}<br><br>"
+                
                 "🌙 Evening: %{customdata[4]}<br>"
                 "☀️ Morning: %{customdata[5]}<br>"
                 "🔄 Free: %{customdata[6]}<br>"
-                "⏱ Min Days: %{customdata[7]}"
+                "⏱ Min Days: %{customdata[7]}<br><br>"
+                
+                "<b>Special Requirements</b><br>"
+                "%{customdata[8]}<br><br>"
+                
+                "<b>Weather</b><br>"
+                "%{customdata[9]}"
+                
                 "<extra></extra>"
 
             )
