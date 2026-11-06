@@ -27,24 +27,36 @@ def get_survey_demand(project, protocols):
             {
                 "species": species,
                 "function": function,
+
                 "start": p["survey_period"]["start"],
                 "end": p["survey_period"]["end"],
+
                 "start_num": mmdd_to_int(
                     p["survey_period"]["start"]
                 ),
+
                 "end_num": mmdd_to_int(
                     p["survey_period"]["end"]
                 ),
+
                 "evening": rounds["mandatory_evening"],
                 "morning": rounds["mandatory_morning"],
                 "free": rounds["free_rounds"],
-                "min_days": p["min_days_between"]
+
+                "min_days": p.get(
+                    "min_days_between"
+                ),
+
+                "timing": p.get(
+                    "timing",
+                    "Any"
+                )
             }
         )
 
-    # ------------------------
+    # --------------------------------------------------
     # BUILD CLUSTERS
-    # ------------------------
+    # --------------------------------------------------
 
     clusters = []
 
@@ -54,19 +66,62 @@ def get_survey_demand(project, protocols):
 
         for cluster in clusters:
 
-            if overlap(
+            if not overlap(
                 protocol["start_num"],
                 protocol["end_num"],
                 cluster["start_num"],
                 cluster["end_num"]
             ):
-                matched = cluster
-                break
+                continue
+
+            overlap_start = max(
+                protocol["start_num"],
+                cluster["start_num"]
+            )
+
+            overlap_end = min(
+                protocol["end_num"],
+                cluster["end_num"]
+            )
+
+            overlap_days = overlap_end - overlap_start
+
+            # --------------------------------------------------
+            # IMPORTANT
+            # Keep Meervleermuis Satelliet separate when
+            # overlap is too small.
+            # --------------------------------------------------
+
+            is_satellite = (
+                protocol["species"].lower()
+                == "meervleermuis"
+                and
+                protocol["function"].lower()
+                == "satelliet"
+            )
+
+            if (
+                is_satellite
+                and overlap_days < 20
+            ):
+                continue
+
+            matched = cluster
+            break
 
         if matched:
 
             matched["protocols"].append(protocol)
 
+            matched["start_num"] = min(
+                matched["start_num"],
+                protocol["start_num"]
+            )
+
+            matched["end_num"] = max(
+                matched["end_num"],
+                protocol["end_num"]
+            )
 
         else:
 
@@ -78,9 +133,9 @@ def get_survey_demand(project, protocols):
                 }
             )
 
-    # ------------------------
-    # OPTIMIZE EACH CLUSTER
-    # ------------------------
+    # --------------------------------------------------
+    # OPTIMIZE CLUSTERS
+    # --------------------------------------------------
 
     cluster_results = []
 
@@ -96,7 +151,7 @@ def get_survey_demand(project, protocols):
             p["start_num"]
             for p in protocols_in_cluster
         )
-        
+
         cluster_end = min(
             p["end_num"]
             for p in protocols_in_cluster
@@ -117,9 +172,16 @@ def get_survey_demand(project, protocols):
             for p in protocols_in_cluster
         )
 
-        min_days_required = max(
+        valid_min_days = [
             p["min_days"]
             for p in protocols_in_cluster
+            if p["min_days"] is not None
+        ]
+
+        min_days_required = (
+            max(valid_min_days)
+            if valid_min_days
+            else None
         )
 
         covered_free = (
@@ -144,9 +206,19 @@ def get_survey_demand(project, protocols):
 
         start_month = cluster_start // 100
         start_day = cluster_start % 100
-        
+
         end_month = cluster_end // 100
         end_day = cluster_end % 100
+
+        coverage_start = min(
+            p["start_num"]
+            for p in protocols_in_cluster
+        )
+
+        coverage_end = max(
+            p["end_num"]
+            for p in protocols_in_cluster
+        )
 
         cluster_results.append(
             {
@@ -154,36 +226,38 @@ def get_survey_demand(project, protocols):
                     f"{start_month:02d}-{start_day:02d}"
                     " → "
                     f"{end_month:02d}-{end_day:02d}",
-        
 
-        
                 "Protocol Details": [
                     {
                         "species": p["species"],
                         "function": p["function"],
+
                         "start": p["start"],
                         "end": p["end"],
+
                         "evening": p["evening"],
                         "morning": p["morning"],
                         "free": p["free"],
+
                         "min_days": p["min_days"],
-                        "timing": protocols[p["species"]][p["function"]].get("timing", "")
+
+                        "timing": p["timing"]
                     }
                     for p in protocols_in_cluster
                 ],
-        
+
                 "Evening Visits":
                     evening_required,
-        
+
                 "Morning Visits":
                     morning_required,
-        
+
                 "Additional Free Visits":
                     additional_free,
-        
+
                 "Minimum Visits":
                     minimum_visits,
-        
+
                 "Min Days Between":
                     min_days_required,
 
@@ -191,16 +265,22 @@ def get_survey_demand(project, protocols):
                     f"{start_month:02d}-{start_day:02d}"
                     " → "
                     f"{end_month:02d}-{end_day:02d}",
-                
+
+                "Overlap Start":
+                    cluster_start,
+
+                "Overlap End":
+                    cluster_end,
+
                 "Protocols":
                     len(protocols_in_cluster),
-                
+
                 "Window Coverage":
-                    f"{min(p['start_num'] for p in protocols_in_cluster)//100:02d}-"
-                    f"{min(p['start_num'] for p in protocols_in_cluster)%100:02d}"
+                    f"{coverage_start//100:02d}-"
+                    f"{coverage_start%100:02d}"
                     " → "
-                    f"{max(p['end_num'] for p in protocols_in_cluster)//100:02d}-"
-                    f"{max(p['end_num'] for p in protocols_in_cluster)%100:02d}",
+                    f"{coverage_end//100:02d}-"
+                    f"{coverage_end%100:02d}",
             }
         )
 
