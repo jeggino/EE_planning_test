@@ -1,21 +1,24 @@
 import streamlit as st
 
-st.set_page_config(
-    page_title="Bat Survey Planner",
-    page_icon="🦇",
-    layout="wide"
-)
-
 st.markdown(
     """
     <style>
-        [data-testid="stAppDeployButton"] {
+        /* Hide GitHub icon */
+        .stAppDeployButton {
             display: none;
         }
     </style>
     """,
     unsafe_allow_html=True,
 )
+
+st.set_page_config(
+    page_title="Bat Survey Planner",
+    page_icon="🦇",
+    layout="wide"
+)
+
+
 
 st.title("🦇 Bat Survey Planner")
 
