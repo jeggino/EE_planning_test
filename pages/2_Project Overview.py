@@ -152,341 +152,575 @@ with col4:
     )
     
 for i, cluster in enumerate(result["clusters"], start=1):
-
-    with st.container(border=True):
-
-        st.markdown(
-            f"### 🪟 Window {i}"
-        )
-
-        col1, col2, col3, col4, col5 = st.columns(5)
-
-        with col1:
-            st.metric(
-                "Protocols",
-                cluster["Protocols"]
-            )
-
-        with col2:
-            st.metric(
-                "Minimum Visits",
-                cluster["Minimum Visits"]
-            )
-
-        with col3:
-            st.metric(
-                "Evening Visits",
-                cluster["Evening Visits"]
-            )
-
-        with col4:
-            st.metric(
-                "Morning Visits",
-                cluster["Morning Visits"]
-            )
-            
-        with col5:
-            st.metric(
-                "Free Visits",
-                cluster['Additional Free Visits']
-            )
-
-        # if cluster["Additional Free Visits"] > 0:
-        #     st.info(
-        #         f"Additional Free Visits Required: "
-        #         f"{cluster['Additional Free Visits']}"
-        #     )
-        
-        st.write(
-            f"📅 **Window Coverage:** "
-            f"{pretty_date(cluster['Window Coverage'].split(' → ')[0])}"
-            f" → "
-            f"{pretty_date(cluster['Window Coverage'].split(' → ')[1])}"
-        )
-        
-        overlap_days = cluster["Overlap Days"]
-        
-        st.write(
-            f"🎯 **Overlap Window:** "
-            f"{pretty_date(cluster['Overlap Window'].split(' → ')[0])}"
-            f" → "
-            f"{pretty_date(cluster['Overlap Window'].split(' → ')[1])}"
-            f" ({overlap_days} days)"
-        )
-            
-
-        # ------------------------------------------
-        # TIMELINE DATA
-        # ------------------------------------------
-
-        timeline_rows = []
-
+    st.divider()
+    
+    timeline_rows = []
+    
+    for cluster_idx, cluster in enumerate(
+        result["clusters"],
+        start=1
+    ):
+    
         for p in cluster["Protocol Details"]:
-
+    
             min_days = p.get("min_days")
-            
+    
             try:
                 min_days = int(min_days)
-            except (TypeError, ValueError):
+            except:
                 min_days = "N/A"
-            
-            
+    
             timing = p.get(
                 "timing",
                 {}
             )
-            
-            if timing:
-                timing_text = (
-                    f"Start Rule: "
-                    f"{timing.get('start_rule', '-')}"
-                    f" | End Rule: "
-                    f"{timing.get('end_rule', '-')}"
-                )
-            else:
-                timing_text = "None"
-            
-            
+    
+            timing_text = (
+                "None"
+                if not timing else
+                f"Start Rule: {timing.get('start_rule', '-')}"
+                f" | End Rule: {timing.get('end_rule', '-')}"
+            )
+    
             weather = p.get(
                 "weather",
                 {}
             )
-            
+    
             weather_text = (
                 f"Temp: {weather.get('temperature', '-')}"
                 f" | Wind: {weather.get('wind', '-')}"
                 f" | Rain: {weather.get('precipitation', '-')}"
             )
-            
-            
+    
             special = p.get(
                 "special_requirements",
                 {}
             )
-            
+    
             special_text = ", ".join(
-                [
-                    f"{k}: {v}"
-                    for k, v in special.items()
-                ]
+                f"{k}: {v}"
+                for k, v in special.items()
             )
-            
+    
             if not special_text:
                 special_text = "None"
-            
-            
+    
             timeline_rows.append(
                 {
                     "Protocol":
                         f"{p['species']} | {p['function']}",
-            
+    
                     "Species":
                         p["species"],
-            
+    
+                    "Cluster":
+                        f"Window {cluster_idx}",
+    
                     "Function":
                         p["function"],
-            
+    
                     "Timing":
                         timing_text,
-            
+    
                     "Requirements":
                         special_text,
-            
+    
                     "Weather":
                         weather_text,
-            
+    
                     "Evening":
                         p["evening"],
-            
+    
                     "Morning":
                         p["morning"],
-            
+    
                     "Free":
                         p["free"],
-            
+    
                     "MinDays":
                         min_days,
-            
+    
                     "SurveyPeriod":
                         f"{pretty_date(p['start'])}"
-                        " → "
+                        f" → "
                         f"{pretty_date(p['end'])}",
-            
+    
                     "Start":
                         datetime.strptime(
                             p["start"],
                             "%m-%d"
                         ).replace(year=2025),
-            
+    
                     "End":
                         datetime.strptime(
                             p["end"],
                             "%m-%d"
-                        ).replace(year=2025),
+                        ).replace(year=2025)
                 }
             )
-
-        timeline_df = pd.DataFrame(
-            timeline_rows
+    
+    timeline_df = pd.DataFrame(
+        timeline_rows
+    )
+    
+    st.subheader(
+        "📅 Survey Timeline"
+    )
+    
+    fig = px.timeline(
+        timeline_df,
+        x_start="Start",
+        x_end="End",
+        y="Protocol",
+        color="Species",
+        color_discrete_sequence=
+            px.colors.qualitative.Set2,
+        custom_data=[
+            "Species",
+            "Function",
+            "SurveyPeriod",
+            "Timing",
+            "Evening",
+            "Morning",
+            "Free",
+            "MinDays",
+            "Requirements",
+            "Weather",
+            "Cluster"
+        ]
+    )
+    
+    fig.update_traces(
+        width=0.30,
+        hovertemplate=
+        "<b>%{customdata[0]}</b><br><br>"
+    
+        "Function: %{customdata[1]}<br>"
+        "Survey Period: %{customdata[2]}<br>"
+        "Window: %{customdata[10]}<br><br>"
+    
+        "<b>Timing</b><br>"
+        "%{customdata[3]}<br><br>"
+    
+        "🌙 Evening: %{customdata[4]}<br>"
+        "☀️ Morning: %{customdata[5]}<br>"
+        "🔄 Free: %{customdata[6]}<br>"
+        "⏱ Min Days: %{customdata[7]}<br><br>"
+    
+        "<b>Requirements</b><br>"
+        "%{customdata[8]}<br><br>"
+    
+        "<b>Weather</b><br>"
+        "%{customdata[9]}"
+    
+        "<extra></extra>"
+    )
+    
+    for i, cluster in enumerate(
+        result["clusters"],
+        start=1
+    ):
+    
+        fig.add_vrect(
+            x0=cluster["Overlap Start"],
+            x1=cluster["Overlap End"],
+            fillcolor="green",
+            opacity=0.12,
+            line_width=0,
+            annotation_text=f"W{i}",
+            annotation_position="top left"
         )
-
-        overlap_start_str = (
-            cluster["Overlap Window"]
-            .split(" → ")[0]
+    
+    fig.update_yaxes(
+        autorange="reversed",
+        title=None
+    )
+    
+    fig.update_layout(
+        showlegend=True,
+        legend_title="Species",
+        height=max(
+            450,
+            len(timeline_df) * 42
         )
-
-        overlap_end_str = (
-            cluster["Overlap Window"]
-            .split(" → ")[1]
-        )
-
-        overlap_start = datetime.strptime(
-            overlap_start_str,
-            "%m-%d"
-        ).replace(year=2025)
-
-        overlap_end = datetime.strptime(
-            overlap_end_str,
-            "%m-%d"
-        ).replace(year=2025)
-
-        with st.container(border=True):
-
-            fig = px.timeline(
-                timeline_df,
-                x_start="Start",
-                x_end="End",
-                y="Protocol",
-                color="Species",
-                color_discrete_sequence=
-                    px.colors.qualitative.Set2,
-                custom_data=[
-                    "Species",
-                    "Function",
-                    "SurveyPeriod",
-                    "Timing",
-                    "Evening",
-                    "Morning",
-                    "Free",
-                    "MinDays",
-                    "Requirements",
-                    "Weather"
-                ]
+    )
+    
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
+    
+    st.subheader(
+        "🪟 Survey Windows"
+    )
+    
+    summary_df = pd.DataFrame(
+        [
+            {
+                "Window": f"Window {i}",
+                "Protocols":
+                    cluster["Protocols"],
+                "Minimum Visits":
+                    cluster["Minimum Visits"],
+                "Evening":
+                    cluster["Evening Visits"],
+                "Morning":
+                    cluster["Morning Visits"],
+                "Free":
+                    cluster["Additional Free Visits"],
+                "Overlap":
+                    cluster["Overlap Window"],
+                "Coverage":
+                    cluster["Window Coverage"]
+            }
+            for i, cluster in enumerate(
+                result["clusters"],
+                start=1
             )
+        ]
+    )
+    
+    st.dataframe(
+        summary_df,
+        use_container_width=True,
+        hide_index=True
+    )
 
-            fig.update_traces(
-                width=0.28,
-                hovertemplate=
-                "<b>%{customdata[0]}</b><br><br>"
-                
-                "Function: %{customdata[1]}<br>"
-                "Survey Period: %{customdata[2]}<br><br>"
-                
-                "<b>Timing</b><br>"
-                "%{customdata[3]}<br><br>"
-                
-                "🌙 Evening: %{customdata[4]}<br>"
-                "☀️ Morning: %{customdata[5]}<br>"
-                "🔄 Free: %{customdata[6]}<br>"
-                "⏱ Min Days: %{customdata[7]}<br><br>"
-                
-                "<b>Special Requirements</b><br>"
-                "%{customdata[8]}<br><br>"
-                
-                "<b>Weather</b><br>"
-                "%{customdata[9]}"
-                
-                "<extra></extra>"
+#     with st.container(border=True):
 
-            )
+#         st.markdown(
+#             f"### 🪟 Window {i}"
+#         )
 
-            fig.add_vline(
-                x=overlap_start,
-                line_width=2,
-                line_dash="dash",
-                line_color="red"
-            )
+#         col1, col2, col3, col4, col5 = st.columns(5)
+
+#         with col1:
+#             st.metric(
+#                 "Protocols",
+#                 cluster["Protocols"]
+#             )
+
+#         with col2:
+#             st.metric(
+#                 "Minimum Visits",
+#                 cluster["Minimum Visits"]
+#             )
+
+#         with col3:
+#             st.metric(
+#                 "Evening Visits",
+#                 cluster["Evening Visits"]
+#             )
+
+#         with col4:
+#             st.metric(
+#                 "Morning Visits",
+#                 cluster["Morning Visits"]
+#             )
             
-            fig.add_vline(
-                x=overlap_end,
-                line_width=2,
-                line_dash="dash",
-                line_color="red"
-            )
+#         with col5:
+#             st.metric(
+#                 "Free Visits",
+#                 cluster['Additional Free Visits']
+#             )
 
-            # fig.add_annotation(
-            #     x=overlap_start,
-            #     y=1.05,
-            #     yref="paper",
-            #     text=f"Overlap Start<br>{overlap_start.strftime('%b %d')}",
-            #     showarrow=False,
-            #     font=dict(color="green")
-            # )
+#         # if cluster["Additional Free Visits"] > 0:
+#         #     st.info(
+#         #         f"Additional Free Visits Required: "
+#         #         f"{cluster['Additional Free Visits']}"
+#         #     )
+        
+#         st.write(
+#             f"📅 **Window Coverage:** "
+#             f"{pretty_date(cluster['Window Coverage'].split(' → ')[0])}"
+#             f" → "
+#             f"{pretty_date(cluster['Window Coverage'].split(' → ')[1])}"
+#         )
+        
+#         overlap_days = cluster["Overlap Days"]
+        
+#         st.write(
+#             f"🎯 **Overlap Window:** "
+#             f"{pretty_date(cluster['Overlap Window'].split(' → ')[0])}"
+#             f" → "
+#             f"{pretty_date(cluster['Overlap Window'].split(' → ')[1])}"
+#             f" ({overlap_days} days)"
+#         )
             
-            # fig.add_annotation(
-            #     x=overlap_end,
-            #     y=1.05,
-            #     yref="paper",
-            #     text=f"Overlap End<br>{overlap_end.strftime('%b %d')}",
-            #     showarrow=False,
-            #     font=dict(color="green")
-            # )
 
-            fig.update_yaxes(
-                autorange="reversed",
-                title=None
-            )
+#         # ------------------------------------------
+#         # TIMELINE DATA
+#         # ------------------------------------------
 
-            # fig.update_xaxes(
-            #     tickformat="%b"
-            # )
+#         timeline_rows = []
 
-            fig.update_xaxes(
-                tickformat="%d %b",
-                tickmode="array",
-                tickvals=[
-                    overlap_start,
-                    overlap_end
-                ],
-                ticktext=[
-                    f"{overlap_start.strftime('%d %b')}",
-                    f"{overlap_end.strftime('%d %b')}"
-                ]
-            )
+#         for p in cluster["Protocol Details"]:
 
-            # fig.add_vline(
-            #     x=overlap_start,
-            #     line_width=1.5,
-            #     line_dash="dash"
-            #     line_color="red"
-            # )
+#             min_days = p.get("min_days")
             
-            # fig.add_vline(
-            #     x=overlap_end,
-            #     line_dash="dash"
-            #     line_width=1.5,
-            #     line_color="red"
-            # )
+#             try:
+#                 min_days = int(min_days)
+#             except (TypeError, ValueError):
+#                 min_days = "N/A"
+            
+            
+#             timing = p.get(
+#                 "timing",
+#                 {}
+#             )
+            
+#             if timing:
+#                 timing_text = (
+#                     f"Start Rule: "
+#                     f"{timing.get('start_rule', '-')}"
+#                     f" | End Rule: "
+#                     f"{timing.get('end_rule', '-')}"
+#                 )
+#             else:
+#                 timing_text = "None"
+            
+            
+#             weather = p.get(
+#                 "weather",
+#                 {}
+#             )
+            
+#             weather_text = (
+#                 f"Temp: {weather.get('temperature', '-')}"
+#                 f" | Wind: {weather.get('wind', '-')}"
+#                 f" | Rain: {weather.get('precipitation', '-')}"
+#             )
+            
+            
+#             special = p.get(
+#                 "special_requirements",
+#                 {}
+#             )
+            
+#             special_text = ", ".join(
+#                 [
+#                     f"{k}: {v}"
+#                     for k, v in special.items()
+#                 ]
+#             )
+            
+#             if not special_text:
+#                 special_text = "None"
+            
+            
+#             timeline_rows.append(
+#                 {
+#                     "Protocol":
+#                         f"{p['species']} | {p['function']}",
+            
+#                     "Species":
+#                         p["species"],
+            
+#                     "Function":
+#                         p["function"],
+            
+#                     "Timing":
+#                         timing_text,
+            
+#                     "Requirements":
+#                         special_text,
+            
+#                     "Weather":
+#                         weather_text,
+            
+#                     "Evening":
+#                         p["evening"],
+            
+#                     "Morning":
+#                         p["morning"],
+            
+#                     "Free":
+#                         p["free"],
+            
+#                     "MinDays":
+#                         min_days,
+            
+#                     "SurveyPeriod":
+#                         f"{pretty_date(p['start'])}"
+#                         " → "
+#                         f"{pretty_date(p['end'])}",
+            
+#                     "Start":
+#                         datetime.strptime(
+#                             p["start"],
+#                             "%m-%d"
+#                         ).replace(year=2025),
+            
+#                     "End":
+#                         datetime.strptime(
+#                             p["end"],
+#                             "%m-%d"
+#                         ).replace(year=2025),
+#                 }
+#             )
 
-            fig.update_layout(
-                showlegend=True,
-                legend_title="Species",
-                height=max(
-                    180,
-                    len(timeline_df) * 42
-                ),
-                margin=dict(
-                    l=10,
-                    r=10,
-                    t=10,
-                    b=10
-                )
-            )
+#         timeline_df = pd.DataFrame(
+#             timeline_rows
+#         )
 
-            st.plotly_chart(
-                fig,
-                use_container_width=True
-            )
+#         overlap_start_str = (
+#             cluster["Overlap Window"]
+#             .split(" → ")[0]
+#         )
+
+#         overlap_end_str = (
+#             cluster["Overlap Window"]
+#             .split(" → ")[1]
+#         )
+
+#         overlap_start = datetime.strptime(
+#             overlap_start_str,
+#             "%m-%d"
+#         ).replace(year=2025)
+
+#         overlap_end = datetime.strptime(
+#             overlap_end_str,
+#             "%m-%d"
+#         ).replace(year=2025)
+
+#         with st.container(border=True):
+
+#             fig = px.timeline(
+#                 timeline_df,
+#                 x_start="Start",
+#                 x_end="End",
+#                 y="Protocol",
+#                 color="Species",
+#                 color_discrete_sequence=
+#                     px.colors.qualitative.Set2,
+#                 custom_data=[
+#                     "Species",
+#                     "Function",
+#                     "SurveyPeriod",
+#                     "Timing",
+#                     "Evening",
+#                     "Morning",
+#                     "Free",
+#                     "MinDays",
+#                     "Requirements",
+#                     "Weather"
+#                 ]
+#             )
+
+#             fig.update_traces(
+#                 width=0.28,
+#                 hovertemplate=
+#                 "<b>%{customdata[0]}</b><br><br>"
+                
+#                 "Function: %{customdata[1]}<br>"
+#                 "Survey Period: %{customdata[2]}<br><br>"
+                
+#                 "<b>Timing</b><br>"
+#                 "%{customdata[3]}<br><br>"
+                
+#                 "🌙 Evening: %{customdata[4]}<br>"
+#                 "☀️ Morning: %{customdata[5]}<br>"
+#                 "🔄 Free: %{customdata[6]}<br>"
+#                 "⏱ Min Days: %{customdata[7]}<br><br>"
+                
+#                 "<b>Special Requirements</b><br>"
+#                 "%{customdata[8]}<br><br>"
+                
+#                 "<b>Weather</b><br>"
+#                 "%{customdata[9]}"
+                
+#                 "<extra></extra>"
+
+#             )
+
+#             fig.add_vline(
+#                 x=overlap_start,
+#                 line_width=2,
+#                 line_dash="dash",
+#                 line_color="red"
+#             )
+            
+#             fig.add_vline(
+#                 x=overlap_end,
+#                 line_width=2,
+#                 line_dash="dash",
+#                 line_color="red"
+#             )
+
+#             # fig.add_annotation(
+#             #     x=overlap_start,
+#             #     y=1.05,
+#             #     yref="paper",
+#             #     text=f"Overlap Start<br>{overlap_start.strftime('%b %d')}",
+#             #     showarrow=False,
+#             #     font=dict(color="green")
+#             # )
+            
+#             # fig.add_annotation(
+#             #     x=overlap_end,
+#             #     y=1.05,
+#             #     yref="paper",
+#             #     text=f"Overlap End<br>{overlap_end.strftime('%b %d')}",
+#             #     showarrow=False,
+#             #     font=dict(color="green")
+#             # )
+
+#             fig.update_yaxes(
+#                 autorange="reversed",
+#                 title=None
+#             )
+
+#             # fig.update_xaxes(
+#             #     tickformat="%b"
+#             # )
+
+#             fig.update_xaxes(
+#                 tickformat="%d %b",
+#                 tickmode="array",
+#                 tickvals=[
+#                     overlap_start,
+#                     overlap_end
+#                 ],
+#                 ticktext=[
+#                     f"{overlap_start.strftime('%d %b')}",
+#                     f"{overlap_end.strftime('%d %b')}"
+#                 ]
+#             )
+
+#             # fig.add_vline(
+#             #     x=overlap_start,
+#             #     line_width=1.5,
+#             #     line_dash="dash"
+#             #     line_color="red"
+#             # )
+            
+#             # fig.add_vline(
+#             #     x=overlap_end,
+#             #     line_dash="dash"
+#             #     line_width=1.5,
+#             #     line_color="red"
+#             # )
+
+#             fig.update_layout(
+#                 showlegend=True,
+#                 legend_title="Species",
+#                 height=max(
+#                     180,
+#                     len(timeline_df) * 42
+#                 ),
+#                 margin=dict(
+#                     l=10,
+#                     r=10,
+#                     t=10,
+#                     b=10
+#                 )
+#             )
+
+#             st.plotly_chart(
+#                 fig,
+#                 use_container_width=True
+#             )
 
 
 
