@@ -923,6 +923,305 @@ def merge_visits(visits):
 
     return merged
 
+from collections import defaultdict
+
+
+def build_requirements(protocols_data):
+
+    requirements = []
+
+    for protocol_id, p in enumerate(
+        protocols_data
+    ):
+
+        visit_number = 1
+
+        # Evening visits
+
+        for _ in range(
+            p["evening"]
+        ):
+
+            requirements.append(
+                {
+                    "protocol_id":
+                        protocol_id,
+
+                    "species":
+                        p["species"],
+
+                    "function":
+                        p["function"],
+
+                    "type":
+                        "evening",
+
+                    "start":
+                        p["start"],
+
+                    "end":
+                        p["end"],
+
+                    "min_days":
+                        p["min_days"]
+                        or 0,
+
+                    "visit_number":
+                        visit_number
+                }
+            )
+
+            visit_number += 1
+
+        # Morning visits
+
+        for _ in range(
+            p["morning"]
+        ):
+
+            requirements.append(
+                {
+                    "protocol_id":
+                        protocol_id,
+
+                    "species":
+                        p["species"],
+
+                    "function":
+                        p["function"],
+
+                    "type":
+                        "morning",
+
+                    "start":
+                        p["start"],
+
+                    "end":
+                        p["end"],
+
+                    "min_days":
+                        p["min_days"]
+                        or 0,
+
+                    "visit_number":
+                        visit_number
+                }
+            )
+
+            visit_number += 1
+
+        # Free visits
+
+        for _ in range(
+            p["free"]
+        ):
+
+            requirements.append(
+                {
+                    "protocol_id":
+                        protocol_id,
+
+                    "species":
+                        p["species"],
+
+                    "function":
+                        p["function"],
+
+                    "type":
+                        "free",
+
+                    "start":
+                        p["start"],
+
+                    "end":
+                        p["end"],
+
+                    "min_days":
+                        p["min_days"]
+                        or 0,
+
+                    "visit_number":
+                        visit_number
+                }
+            )
+
+            visit_number += 1
+
+    return requirements
+
+
+def schedule_requirements(
+    requirements
+):
+
+    survey_plan = []
+
+    protocol_history = defaultdict(
+        list
+    )
+
+    remaining = requirements.copy()
+
+    while remaining:
+
+        best_date = None
+
+        best_type = None
+
+        best_coverage = []
+
+        candidate_dates = set()
+
+        for req in remaining:
+
+            candidate_dates.add(
+                req["start"]
+            )
+
+            candidate_dates.add(
+                req["end"]
+            )
+
+        for candidate_date in sorted(
+            candidate_dates
+        ):
+
+            for survey_type in (
+                "evening",
+                "morning"
+            ):
+
+                covered = []
+
+                for req in remaining:
+
+                    if not (
+                        req["start"]
+                        <= candidate_date
+                        <= req["end"]
+                    ):
+                        continue
+
+                    req_type = req["type"]
+
+                    if (
+                        req_type ==
+                        "evening"
+                    ):
+                        if (
+                            survey_type
+                            != "evening"
+                        ):
+                            continue
+
+                    elif (
+                        req_type ==
+                        "morning"
+                    ):
+                        if (
+                            survey_type
+                            != "morning"
+                        ):
+                            continue
+
+                    # free accepts
+                    # evening or morning
+
+                    history = (
+                        protocol_history[
+                            req[
+                                "protocol_id"
+                            ]
+                        ]
+                    )
+
+                    if history:
+
+                        last_visit = max(
+                            history
+                        )
+
+                        minimum_gap = int(
+                            req[
+                                "min_days"
+                            ]
+                            or 0
+                        )
+
+                        if (
+                            candidate_date
+                            <=
+                            last_visit
+                            +
+                            timedelta(
+                                days=
+                                minimum_gap
+                            )
+                        ):
+                            continue
+
+                    covered.append(
+                        req
+                    )
+
+                if (
+                    len(covered)
+                    >
+                    len(best_coverage)
+                ):
+
+                    best_date = (
+                        candidate_date
+                    )
+
+                    best_type = (
+                        survey_type
+                    )
+
+                    best_coverage = (
+                        covered
+                    )
+
+        if not best_coverage:
+
+            break
+
+        survey_plan.append(
+            {
+                "date":
+                    best_date,
+
+                "type":
+                    best_type,
+
+                "protocols": [
+                    (
+                        f"{r['species']} "
+                        f"| "
+                        f"{r['function']}"
+                    )
+                    for r
+                    in best_coverage
+                ]
+            }
+        )
+
+        for req in best_coverage:
+
+            protocol_history[
+                req["protocol_id"]
+            ].append(
+                best_date
+            )
+
+            remaining.remove(
+                req
+            )
+
+    return sorted(
+        survey_plan,
+        key=lambda x: x["date"]
+    )
 
 def get_survey_demand(
     project,
@@ -1002,18 +1301,22 @@ def get_survey_demand(
     # --------------------------------------
     # BUILD SURVEY PLAN
     # --------------------------------------
-
-    raw_visits = []
-
-    for p in protocols_data:
-
-        raw_visits.extend(
-            schedule_protocol(p)
-        )
-
-    survey_plan = merge_visits(
-        raw_visits
+    # --------------------------------------
+    # BUILD REQUIREMENTS
+    # --------------------------------------
+    
+    requirements = build_requirements(
+    protocols_data
     )
+    
+    # --------------------------------------
+    # OPTIMIZE SURVEY COVERAGE
+    # --------------------------------------
+
+survey_plan = schedule_requirements(
+    requirements
+)
+
 
     evening_count = sum(
         1
