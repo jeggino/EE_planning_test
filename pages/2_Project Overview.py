@@ -357,18 +357,6 @@ if not edited_plan.empty:
         "📍 Planned Survey Schedule"
     )
 
-    # survey_fig = px.scatter(
-    #     chart_df,
-    #     x="Date",
-    #     y="Type",
-    #     color="Type",
-    #     size="Protocols Covered",
-    #     hover_data=[
-    #         "Protocols Covered",
-    #         "Protocols"
-    #     ]
-    # )
-
     survey_fig = px.strip(
         chart_df,
         x="Date",
@@ -387,17 +375,16 @@ if not edited_plan.empty:
         )
     )
     
+    survey_fig.update_xaxes(
+        tickformat="%d %b"
+    )
+    
     survey_fig.update_layout(
-        height=100,
+        height=300,
         xaxis_title="Survey Date",
         yaxis_title="Survey Type"
     )
-
-
-    survey_fig.update_layout(
-        height=300
-    )
-
+    
     st.plotly_chart(
         survey_fig,
         use_container_width=True
