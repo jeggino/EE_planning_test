@@ -359,8 +359,6 @@ periods_df["End"] = pd.to_datetime(
     periods_df["End"]
 )
 
-st.write(periods_df.dtypes)
-
 
 if periods_df.empty:
 
