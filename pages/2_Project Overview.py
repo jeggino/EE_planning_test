@@ -354,6 +354,10 @@ st.subheader(
     "📋 Survey Requirements"
 )
 
+st.json(
+    result["optimized_periods"]
+)
+
 for period in result[
     "optimized_periods"
 ]:
