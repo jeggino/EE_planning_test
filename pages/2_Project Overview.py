@@ -420,6 +420,49 @@ else:
         + " → "
         + periods_df["End"].dt.strftime("%d %b")
     )
+
+    periods_df["Morning"] = periods_df.apply(
+        lambda r: next(
+            p["SurveyInfo"]["morning"]
+            for p in result["optimized_periods"]
+            if p["Period"] == r["Period"]
+        ),
+        axis=1
+    )
+    
+    periods_df["Evening"] = periods_df.apply(
+        lambda r: next(
+            p["SurveyInfo"]["evening"]
+            for p in result["optimized_periods"]
+            if p["Period"] == r["Period"]
+        ),
+        axis=1
+    )
+    
+    periods_df["Flexible"] = periods_df.apply(
+        lambda r: next(
+            p["SurveyInfo"]["extra"]
+            for p in result["optimized_periods"]
+            if p["Period"] == r["Period"]
+        ),
+        axis=1
+    )
+    
+    periods_df["Total"] = periods_df.apply(
+        lambda r: next(
+            p["SurveyInfo"]["total"]
+            for p in result["optimized_periods"]
+            if p["Period"] == r["Period"]
+        ),
+        axis=1
+    )
+
+    periods_df["Label"] = (
+        periods_df["Period"]
+        + " ("
+        + periods_df["Total"].astype(str)
+        + " surveys)"
+    )
     
     periods_df["ProtocolsTooltip"] = (
         periods_df["Protocols"]
@@ -435,17 +478,21 @@ else:
         periods_df,
         x_start="Start",
         x_end="End",
-        y="Period",
+        y="Label",
         color="Period",
         custom_data=[
             "PeriodLabel",
             "Days",
+            "Morning",
+            "Evening",
+            "Flexible",
+            "Total",
             "ProtocolsTooltip"
         ]
     )
     
     period_fig.update_traces(
-        width=0.35,
+        width=0.28,
         hovertemplate=
             "<b>%{y}</b><br><br>"
     
@@ -454,8 +501,16 @@ else:
     
             "<br><br>"
     
+            "<b>Survey Requirements</b><br>"
+            "☀️ Morning: %{customdata[2]}<br>"
+            "🌙 Evening: %{customdata[3]}<br>"
+            "🔄 Flexible: %{customdata[4]}<br>"
+            "🎯 Total: %{customdata[5]}"
+    
+            "<br><br>"
+    
             "<b>Protocols</b><br>"
-            "%{customdata[2]}"
+            "%{customdata[6]}"
     
             "<extra></extra>"
     )
@@ -463,9 +518,11 @@ else:
     period_fig.update_xaxes(
         tickformat="%b",
         dtick="M1",
+        ticks="outside",
+        ticklen=8,
         showgrid=True,
         gridwidth=1,
-        gridcolor="rgba(180,180,180,0.3)"
+        gridcolor="rgba(200,200,200,0.25)"
     )
     
     period_fig.update_yaxes(
