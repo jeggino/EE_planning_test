@@ -350,45 +350,33 @@ st.subheader(
     "🎯 Optimized Survey Periods"
 )
 
-period_fig = px.timeline(
-    periods_df,
-    x_start="Start",
-    x_end="End",
-    y="Period",
-    color="Period",
-    custom_data=[
-        "Days",
-        "Score",
-        "Protocols"
-    ]
-)
+st.write(result["optimized_periods"])
 
-period_fig.update_traces(
-    hovertemplate=
-        "<b>%{y}</b><br><br>"
-        "Start: %{base|%d %b}<br>"
-        "End: %{x|%d %b}<br>"
-        "Days: %{customdata[0]}<br>"
-        "Score: %{customdata[1]}"
-        "<br><br>"
-        "<b>Protocols</b><br>"
-        "%{customdata[2]}"
-        "<extra></extra>"
-)
+if periods_df.empty:
 
-period_fig.update_xaxes(
-    tickformat="%b",
-    dtick="M1"
-)
+    st.warning(
+        "No optimized periods found."
+    )
 
-period_fig.update_yaxes(
-    autorange="reversed"
-)
+else:
 
-st.plotly_chart(
-    period_fig,
-    use_container_width=True
-)
+    period_fig = px.timeline(
+        periods_df,
+        x_start="Start",
+        x_end="End",
+        y="Period",
+        color="Period",
+        custom_data=[
+            "Days",
+            "Score",
+            "Protocols"
+        ]
+    )
+
+    st.plotly_chart(
+        period_fig,
+        use_container_width=True
+    )
 
 # --------------------------------------------------
 # OPTIMIZED SURVEY PLAN
