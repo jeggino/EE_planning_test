@@ -803,9 +803,9 @@ edited_plan = survey_df
 # # SURVEY TIMELINE
 # # --------------------------------------------------
 
-    st.subheader(
-        "📍 Planned Survey Schedule"
-    )
+st.subheader(
+    "📍 Planned Survey Schedule"
+)
 
 survey_options = []
 
