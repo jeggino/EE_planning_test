@@ -350,6 +350,53 @@ st.subheader(
     "🎯 Optimized Survey Periods"
 )
 
+st.subheader(
+    "📋 Survey Requirements"
+)
+
+for period in result[
+    "optimized_periods"
+]:
+
+    info = period[
+        "SurveyInfo"
+    ]
+
+    col1, col2, col3, col4 = (
+        st.columns(4)
+    )
+
+    with col1:
+        st.metric(
+            period["Period"],
+            f"{period['Days']} days"
+        )
+
+    with col2:
+        st.metric(
+            "☀️ Morning",
+            info["morning"]
+        )
+
+    with col3:
+        st.metric(
+            "🌙 Evening",
+            info["evening"]
+        )
+
+    with col4:
+        st.metric(
+            "🔄 Flexible",
+            info["extra"]
+        )
+
+    st.caption(
+        f"Minimum surveys needed: "
+        f"{info['total']}"
+    )
+
+    st.markdown("---")
+
 
 periods_df["Start"] = pd.to_datetime(
     periods_df["Start"]
