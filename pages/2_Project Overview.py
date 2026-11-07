@@ -385,9 +385,7 @@ for period in result["optimized_periods"]:
     
                 "Morning": 1,
                 "Evening": 0,
-                "Flexible": 0,
-                "Total": 1,
-    
+                "Flexible": 0,    
                 "Protocols":
                     "meervleermuis | satelliet"
             }
@@ -485,7 +483,6 @@ if not periods_df.empty:
             "☀️ Morning: %{customdata[2]}<br>"
             "🌙 Evening: %{customdata[3]}<br>"
             "🔄 Flexible: %{customdata[4]}<br>"
-            "🎯 Total Surveys: %{customdata[5]}"
 
             "<br><br>"
 
@@ -522,7 +519,7 @@ if not periods_df.empty:
     period_fig.update_layout(
         height=max(
             400,
-            len(periods_df) * 90
+            len(periods_df) * 110
         ),
         showlegend=False,
         bargap=0.75,
