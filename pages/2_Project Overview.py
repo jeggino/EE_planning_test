@@ -799,12 +799,31 @@ survey_df = survey_df.sort_values(
 
 edited_plan = survey_df
 
-# # --------------------------------------------------
-# # SURVEY TIMELINE
-# # --------------------------------------------------
+# --------------------------------------------------
+# SURVEY TIMELINE
+# --------------------------------------------------
 
 st.subheader(
     "📍 Planned Survey Schedule"
+)
+
+period_options = []
+
+for p in result["optimized_periods"]:
+
+    period_options.append(
+        p["Period"]
+    )
+
+for p in result["special_protocols"]:
+
+    period_options.append(
+        "Meervleermuis | satelliet"
+    )
+
+selected_period = st.selectbox(
+    "Period",
+    period_options
 )
 
 survey_options = []
