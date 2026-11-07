@@ -151,22 +151,20 @@ def calculate_requirements(
             min_days
     }
 
+from datetime import timedelta
+
+
 def build_optimized_periods(
     protocols_data,
     min_duration=30
 ):
-    """
-    Creates non-overlapping periods.
 
-    Score:
-        days × protocols
-
-    Excludes:
-        meervleermuis | satelliet
-    """
-
-    normal = []
     special = []
+    remaining = []
+
+    # ----------------------------------
+    # Separate satellite surveys
+    # ----------------------------------
 
     for p in protocols_data:
 
@@ -178,135 +176,149 @@ def build_optimized_periods(
             special.append(p)
 
         else:
-            normal.append(p)
+            remaining.append(p)
 
-    boundaries = set()
+    selected_periods = []
 
-    for p in normal:
+    period_number = 1
 
-        boundaries.add(
-            p["start"]
-        )
+    while remaining:
 
-        boundaries.add(
-            p["end"]
-            + timedelta(days=1)
-        )
+        best_period = None
 
-    boundaries = sorted(boundaries)
+        # ----------------------------------
+        # Generate all candidate overlaps
+        # ----------------------------------
 
-    segments = []
+        for protocol in remaining:
 
-    for i in range(
-        len(boundaries) - 1
-    ):
+            overlap_start = protocol["start"]
+            overlap_end = protocol["end"]
 
-        start = boundaries[i]
+            covered = [
+                protocol
+            ]
 
-        end = (
-            boundaries[i + 1]
-            - timedelta(days=1)
-        )
+            for other in remaining:
 
-        active = []
+                if other is protocol:
+                    continue
 
-        for p in normal:
-
-            if (
-                p["start"] <= start
-                and
-                p["end"] >= end
-            ):
-
-                active.append(
-                    f"{p['species']} | {p['function']}"
+                start = max(
+                    overlap_start,
+                    other["start"]
                 )
 
-        if active:
+                end = min(
+                    overlap_end,
+                    other["end"]
+                )
 
-            days = (
-                end - start
-            ).days + 1
+                duration = (
+                    end - start
+                ).days + 1
 
-            segments.append(
-                {
-                    "start": start,
-                    "end": end,
-                    "days": days,
-                    "protocols": active,
-                    "score": (
-                        days
-                        * len(active)
+                if duration >= min_duration:
+
+                    overlap_start = start
+                    overlap_end = end
+
+                    covered.append(
+                        other
                     )
-                }
-            )
-
-    periods = []
-
-    i = 0
-
-    while i < len(segments):
-
-        start = segments[i]["start"]
-        end = segments[i]["end"]
-
-        protocols = set(
-            segments[i]["protocols"]
-        )
-
-        j = i
-
-        duration = (
-            end - start
-        ).days + 1
-
-        while (
-            duration < min_duration
-            and
-            j < len(segments) - 1
-        ):
-
-            j += 1
-
-            end = segments[j]["end"]
-
-            protocols.update(
-                segments[j]["protocols"]
-            )
 
             duration = (
-                end - start
+                overlap_end
+                - overlap_start
             ).days + 1
 
-        periods.append(
-            {
+            if duration < min_duration:
+                continue
+
+            protocol_names = sorted(
+                [
+                    f"{p['species']} | {p['function']}"
+                    for p in covered
+                ]
+            )
+
+            candidate = {
                 "Period":
-                    f"Period {len(periods)+1}",
+                    f"Period {period_number}",
 
                 "Start":
-                    start,
+                    overlap_start,
 
                 "End":
-                    end,
+                    overlap_end,
 
                 "Days":
                     duration,
 
                 "Protocols":
-                    sorted(protocols),
+                    protocol_names,
 
                 "ProtocolCount":
-                    len(protocols),
-
-                "Score":
-                    duration
-                    * len(protocols)
+                    len(protocol_names)
             }
+
+            # ----------------------------------
+            # Select best:
+            # 1. Most protocols
+            # 2. Then longest period
+            # ----------------------------------
+
+            if best_period is None:
+
+                best_period = candidate
+
+            elif (
+                candidate["ProtocolCount"]
+                >
+                best_period["ProtocolCount"]
+            ):
+
+                best_period = candidate
+
+            elif (
+                candidate["ProtocolCount"]
+                ==
+                best_period["ProtocolCount"]
+                and
+                candidate["Days"]
+                >
+                best_period["Days"]
+            ):
+
+                best_period = candidate
+
+        if best_period is None:
+            break
+
+        selected_periods.append(
+            best_period
         )
 
-        i = j + 1
+        covered_set = set(
+            best_period["Protocols"]
+        )
 
-    return periods, special
+        remaining = [
+            p
+            for p in remaining
+            if (
+                f"{p['species']} | "
+                f"{p['function']}"
+            )
+            not in covered_set
+        ]
+
+        period_number += 1
+
+    return (
+        selected_periods,
+        special
+    )
     
 def schedule_window(
     window,
