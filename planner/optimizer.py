@@ -151,7 +151,163 @@ def calculate_requirements(
             min_days
     }
 
+def build_optimized_periods(
+    protocols_data,
+    min_duration=30
+):
+    """
+    Creates non-overlapping periods.
 
+    Score:
+        days × protocols
+
+    Excludes:
+        meervleermuis | satelliet
+    """
+
+    normal = []
+    special = []
+
+    for p in protocols_data:
+
+        if (
+            p["species"] == "meervleermuis"
+            and
+            p["function"] == "satelliet"
+        ):
+            special.append(p)
+
+        else:
+            normal.append(p)
+
+    boundaries = set()
+
+    for p in normal:
+
+        boundaries.add(
+            p["start"]
+        )
+
+        boundaries.add(
+            p["end"]
+            + timedelta(days=1)
+        )
+
+    boundaries = sorted(boundaries)
+
+    segments = []
+
+    for i in range(
+        len(boundaries) - 1
+    ):
+
+        start = boundaries[i]
+
+        end = (
+            boundaries[i + 1]
+            - timedelta(days=1)
+        )
+
+        active = []
+
+        for p in normal:
+
+            if (
+                p["start"] <= start
+                and
+                p["end"] >= end
+            ):
+
+                active.append(
+                    f"{p['species']} | {p['function']}"
+                )
+
+        if active:
+
+            days = (
+                end - start
+            ).days + 1
+
+            segments.append(
+                {
+                    "start": start,
+                    "end": end,
+                    "days": days,
+                    "protocols": active,
+                    "score": (
+                        days
+                        * len(active)
+                    )
+                }
+            )
+
+    periods = []
+
+    i = 0
+
+    while i < len(segments):
+
+        start = segments[i]["start"]
+        end = segments[i]["end"]
+
+        protocols = set(
+            segments[i]["protocols"]
+        )
+
+        j = i
+
+        duration = (
+            end - start
+        ).days + 1
+
+        while (
+            duration < min_duration
+            and
+            j < len(segments) - 1
+        ):
+
+            j += 1
+
+            end = segments[j]["end"]
+
+            protocols.update(
+                segments[j]["protocols"]
+            )
+
+            duration = (
+                end - start
+            ).days + 1
+
+        periods.append(
+            {
+                "Period":
+                    f"Period {len(periods)+1}",
+
+                "Start":
+                    start,
+
+                "End":
+                    end,
+
+                "Days":
+                    duration,
+
+                "Protocols":
+                    sorted(protocols),
+
+                "ProtocolCount":
+                    len(protocols),
+
+                "Score":
+                    duration
+                    * len(protocols)
+            }
+        )
+
+        i = j + 1
+
+    return periods, special
+    
 def schedule_window(
     window,
     requirements
@@ -408,159 +564,4 @@ def get_survey_demand(
 from datetime import timedelta
 
 
-def build_optimized_periods(
-    protocols_data,
-    min_duration=30
-):
-    """
-    Creates non-overlapping periods.
 
-    Score:
-        days × protocols
-
-    Excludes:
-        meervleermuis | satelliet
-    """
-
-    normal = []
-    special = []
-
-    for p in protocols_data:
-
-        if (
-            p["species"] == "meervleermuis"
-            and
-            p["function"] == "satelliet"
-        ):
-            special.append(p)
-
-        else:
-            normal.append(p)
-
-    boundaries = set()
-
-    for p in normal:
-
-        boundaries.add(
-            p["start"]
-        )
-
-        boundaries.add(
-            p["end"]
-            + timedelta(days=1)
-        )
-
-    boundaries = sorted(boundaries)
-
-    segments = []
-
-    for i in range(
-        len(boundaries) - 1
-    ):
-
-        start = boundaries[i]
-
-        end = (
-            boundaries[i + 1]
-            - timedelta(days=1)
-        )
-
-        active = []
-
-        for p in normal:
-
-            if (
-                p["start"] <= start
-                and
-                p["end"] >= end
-            ):
-
-                active.append(
-                    f"{p['species']} | {p['function']}"
-                )
-
-        if active:
-
-            days = (
-                end - start
-            ).days + 1
-
-            segments.append(
-                {
-                    "start": start,
-                    "end": end,
-                    "days": days,
-                    "protocols": active,
-                    "score": (
-                        days
-                        * len(active)
-                    )
-                }
-            )
-
-    periods = []
-
-    i = 0
-
-    while i < len(segments):
-
-        start = segments[i]["start"]
-        end = segments[i]["end"]
-
-        protocols = set(
-            segments[i]["protocols"]
-        )
-
-        j = i
-
-        duration = (
-            end - start
-        ).days + 1
-
-        while (
-            duration < min_duration
-            and
-            j < len(segments) - 1
-        ):
-
-            j += 1
-
-            end = segments[j]["end"]
-
-            protocols.update(
-                segments[j]["protocols"]
-            )
-
-            duration = (
-                end - start
-            ).days + 1
-
-        periods.append(
-            {
-                "Period":
-                    f"Period {len(periods)+1}",
-
-                "Start":
-                    start,
-
-                "End":
-                    end,
-
-                "Days":
-                    duration,
-
-                "Protocols":
-                    sorted(protocols),
-
-                "ProtocolCount":
-                    len(protocols),
-
-                "Score":
-                    duration
-                    * len(protocols)
-            }
-        )
-
-        i = j + 1
-
-    return periods, special
