@@ -264,21 +264,20 @@ fig = px.timeline(
 fig.update_traces(
     hovertemplate=
         "<b>%{y}</b><br><br>"
-
         "Survey Period: %{customdata[0]}<br><br>"
-
         "🌙 Evening: %{customdata[1]}<br>"
         "☀️ Morning: %{customdata[2]}<br>"
         "🔄 Free: %{customdata[3]}<br>"
         "⏱ Min Days: %{customdata[4]}<br><br>"
-
         "<b>Timing</b><br>"
         "%{customdata[5]}<br><br>"
-
         "<b>Weather</b><br>"
         "%{customdata[6]}"
-
         "<extra></extra>"
+)
+
+fig.update_xaxes(
+    tickformat="%b"
 )
 
 fig.update_yaxes(
