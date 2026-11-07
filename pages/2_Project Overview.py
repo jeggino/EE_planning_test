@@ -403,6 +403,77 @@ if not edited_plan.empty:
         use_container_width=True
     )
 
+# --------------------------------------------------
+# SURVEY CARDS
+# --------------------------------------------------
+
+st.subheader("📋 Survey Visits")
+
+card_df = survey_df.copy()
+card_df["Date"] = pd.to_datetime(card_df["Date"])
+card_df = card_df.sort_values("Date")
+
+for _, row in card_df.iterrows():
+
+    protocols = row["Protocols"].split(", ")
+
+    protocol_html = "".join(
+        [
+            f"""
+            <span style="
+                display:inline-block;
+                background:#f1f3f5;
+                border-radius:12px;
+                padding:2px 8px;
+                margin:2px;
+                font-size:11px;">
+                {p}
+            </span>
+            """
+            for p in protocols
+        ]
+    )
+
+    icon = "🌙" if row["Type"].lower() == "evening" else "☀️"
+
+    st.markdown(
+        f"""
+        <div style="
+            border:1px solid #E5E7EB;
+            border-radius:10px;
+            padding:10px;
+            margin-bottom:8px;
+            background:white;">
+            
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;">
+                
+                <b>{row['Date'].strftime('%d %b')}</b>
+                
+                <span>
+                    {icon}
+                    {row['Type']}
+                </span>
+            </div>
+
+            <div style="
+                color:#666;
+                font-size:12px;
+                margin-top:4px;">
+                {row['Protocols Covered']} protocols covered
+            </div>
+
+            <div style="margin-top:6px;">
+                {protocol_html}
+            </div>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
 # # --------------------------------------------------
 # # PLAN SUMMARY
 # # --------------------------------------------------
