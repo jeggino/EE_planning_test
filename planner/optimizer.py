@@ -535,6 +535,19 @@ def get_survey_demand(
         )
     )
 
+    for period in optimized_periods:
+    
+        survey_info = (
+            calculate_period_surveys(
+                period["Protocols"],
+                protocols_data
+            )
+        )
+    
+        period["SurveyInfo"] = (
+            survey_info
+        )
+
     return {
         "minimum_visits":
             len(
@@ -567,4 +580,85 @@ def get_survey_demand(
 from datetime import timedelta
 
 
+def calculate_period_surveys(
+    period_protocols,
+    protocols_data
+):
+    """
+    Calculates minimum surveys required
+    for a period.
+    """
 
+    period_rows = []
+
+    for protocol_name in period_protocols:
+
+        species, function = (
+            protocol_name.split(
+                " | ",
+                1
+            )
+        )
+
+        protocol = next(
+            p
+            for p in protocols_data
+            if (
+                p["species"] == species
+                and
+                p["function"] == function
+            )
+        )
+
+        period_rows.append(protocol)
+
+    required_morning = max(
+        (
+            p["morning"]
+            for p in period_rows
+        ),
+        default=0
+    )
+
+    required_evening = max(
+        (
+            p["evening"]
+            for p in period_rows
+        ),
+        default=0
+    )
+
+    required_total = max(
+        (
+            p["morning"]
+            + p["evening"]
+            + p["free"]
+            for p in period_rows
+        ),
+        default=0
+    )
+
+    current_total = (
+        required_morning
+        + required_evening
+    )
+
+    free_to_allocate = max(
+        0,
+        required_total
+        - current_total
+    )
+
+    return {
+        "morning":
+            required_morning,
+
+        "evening":
+            required_evening,
+
+        "extra":
+            free_to_allocate,
+
+        "total":
+            required_total
+    }
