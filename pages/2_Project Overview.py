@@ -346,132 +346,72 @@ periods_df = pd.DataFrame(
     period_rows
 )
 
-st.subheader(
-    "🎯 Optimized Survey Periods"
+# --------------------------------------------------
+# OPTIMIZED SURVEY PERIODS
+# --------------------------------------------------
+
+period_rows = []
+
+for period in result["optimized_periods"]:
+
+    info = period["SurveyInfo"]
+
+    period_rows.append(
+        {
+            "Period": period["Period"],
+
+            "Label":
+                f"{period['Period']} • "
+                f"{len(period['Protocols'])} protocols",
+
+            "Start":
+                pd.to_datetime(
+                    period["Start"]
+                ),
+
+            "End":
+                pd.to_datetime(
+                    period["End"]
+                ),
+
+            "PeriodLabel":
+                f"{period['Start'].strftime('%d %b')} → "
+                f"{period['End'].strftime('%d %b')}",
+
+            "Days":
+                period["Days"],
+
+            "Morning":
+                info["morning"],
+
+            "Evening":
+                info["evening"],
+
+            "Flexible":
+                info["extra"],
+
+            "Total":
+                info["total"],
+
+            "Protocols":
+                "<br>".join(
+                    period["Protocols"]
+                )
+        }
+    )
+
+periods_df = pd.DataFrame(
+    period_rows
 )
 
+if not periods_df.empty:
 
-
-for period in result[
-    "optimized_periods"
-]:
-
-    info = period[
-        "SurveyInfo"
-    ]
-
-    st.markdown(
-        f"### {period['Period']}"
-    )
-    
-    col1, col2, col3 = (
-        st.columns(3)
-    )
-
-
-    with col1:
-        st.metric(
-            "☀️ Morning",
-            info["morning"]
-        )
-
-    with col2:
-        st.metric(
-            "🌙 Evening",
-            info["evening"]
-        )
-
-    with col3:
-        st.metric(
-            "🔄 Flexible",
-            info["extra"]
-        )
-
-    st.caption(
-        f"📅 "
-        f"{period['Start'].strftime('%d %b')} → "
-        f"{period['End'].strftime('%d %b')}"
-        f" • "
-        f"{period['Days']} days"
-    )
-
-    st.markdown("---")
-
-
-periods_df["Start"] = pd.to_datetime(
-    periods_df["Start"]
-)
-
-periods_df["End"] = pd.to_datetime(
-    periods_df["End"]
-)
-
-
-if periods_df.empty:
-
-    st.warning(
-        "No optimized periods found."
-    )
-
-else:
-
-    periods_df["PeriodLabel"] = (
-        periods_df["Start"].dt.strftime("%d %b")
-        + " → "
-        + periods_df["End"].dt.strftime("%d %b")
-    )
-
-    periods_df["Morning"] = periods_df.apply(
-        lambda r: next(
-            p["SurveyInfo"]["morning"]
-            for p in result["optimized_periods"]
-            if p["Period"] == r["Period"]
-        ),
-        axis=1
-    )
-    
-    periods_df["Evening"] = periods_df.apply(
-        lambda r: next(
-            p["SurveyInfo"]["evening"]
-            for p in result["optimized_periods"]
-            if p["Period"] == r["Period"]
-        ),
-        axis=1
-    )
-    
-    periods_df["Flexible"] = periods_df.apply(
-        lambda r: next(
-            p["SurveyInfo"]["extra"]
-            for p in result["optimized_periods"]
-            if p["Period"] == r["Period"]
-        ),
-        axis=1
-    )
-    
-    periods_df["Total"] = periods_df.apply(
-        lambda r: next(
-            p["SurveyInfo"]["total"]
-            for p in result["optimized_periods"]
-            if p["Period"] == r["Period"]
-        ),
-        axis=1
-    )
-
-    periods_df["Label"] = (
-        periods_df["Period"]
-        + " ("
-        + periods_df["Total"].astype(str)
-        + " surveys)"
-    )
-    
-    periods_df["ProtocolsTooltip"] = (
-        periods_df["Protocols"]
-        .str.replace("<br>", "<br>• ")
-    )
-    
     periods_df["ProtocolsTooltip"] = (
         "• "
-        + periods_df["ProtocolsTooltip"]
+        + periods_df["Protocols"].str.replace(
+            "<br>",
+            "<br>• "
+        )
     )
 
     period_fig = px.timeline(
@@ -490,31 +430,32 @@ else:
             "ProtocolsTooltip"
         ]
     )
-    
+
     period_fig.update_traces(
-        width=0.28,
+        width=0.25,
         hovertemplate=
             "<b>%{y}</b><br><br>"
-    
+
             "📅 %{customdata[0]}<br>"
             "⏱ %{customdata[1]} days"
-    
+
             "<br><br>"
-    
+
             "<b>Survey Requirements</b><br>"
+
             "☀️ Morning: %{customdata[2]}<br>"
             "🌙 Evening: %{customdata[3]}<br>"
             "🔄 Flexible: %{customdata[4]}<br>"
-            "🎯 Total: %{customdata[5]}"
-    
+            "🎯 Total Surveys: %{customdata[5]}"
+
             "<br><br>"
-    
+
             "<b>Protocols</b><br>"
             "%{customdata[6]}"
-    
+
             "<extra></extra>"
     )
-    
+
     period_fig.update_xaxes(
         tickformat="%b",
         dtick="M1",
@@ -522,32 +463,246 @@ else:
         ticklen=8,
         showgrid=True,
         gridwidth=1,
-        gridcolor="rgba(200,200,200,0.25)"
+        gridcolor="rgba(180,180,180,0.25)",
+        title=None
     )
-    
+
     period_fig.update_yaxes(
-        autorange="reversed"
+        autorange="reversed",
+        title=None
     )
-    
+
     period_fig.update_layout(
-        height=250,
+        height=max(
+            220,
+            len(periods_df) * 60
+        ),
         showlegend=False,
+        bargap=0.75,
         plot_bgcolor="white",
         paper_bgcolor="white",
-        bargap=0.65,
-        xaxis_title=None,
-        yaxis_title=None,
+        margin=dict(
+            l=10,
+            r=10,
+            t=10,
+            b=10
+        ),
         hoverlabel=dict(
             bgcolor="white",
-            font_size=13,
-            font_family="Arial"
+            font_size=13
         )
     )
-    
+
+    st.subheader(
+        "🎯 Optimized Survey Periods"
+    )
+
     st.plotly_chart(
         period_fig,
         use_container_width=True
     )
+# st.subheader(
+#     "🎯 Optimized Survey Periods"
+# )
+
+
+
+# for period in result[
+#     "optimized_periods"
+# ]:
+
+#     info = period[
+#         "SurveyInfo"
+#     ]
+
+#     st.markdown(
+#         f"### {period['Period']}"
+#     )
+    
+#     col1, col2, col3 = (
+#         st.columns(3)
+#     )
+
+
+#     with col1:
+#         st.metric(
+#             "☀️ Morning",
+#             info["morning"]
+#         )
+
+#     with col2:
+#         st.metric(
+#             "🌙 Evening",
+#             info["evening"]
+#         )
+
+#     with col3:
+#         st.metric(
+#             "🔄 Flexible",
+#             info["extra"]
+#         )
+
+#     st.caption(
+#         f"📅 "
+#         f"{period['Start'].strftime('%d %b')} → "
+#         f"{period['End'].strftime('%d %b')}"
+#         f" • "
+#         f"{period['Days']} days"
+#     )
+
+#     st.markdown("---")
+
+
+# periods_df["Start"] = pd.to_datetime(
+#     periods_df["Start"]
+# )
+
+# periods_df["End"] = pd.to_datetime(
+#     periods_df["End"]
+# )
+
+
+# if periods_df.empty:
+
+#     st.warning(
+#         "No optimized periods found."
+#     )
+
+# else:
+
+#     periods_df["PeriodLabel"] = (
+#         periods_df["Start"].dt.strftime("%d %b")
+#         + " → "
+#         + periods_df["End"].dt.strftime("%d %b")
+#     )
+
+#     periods_df["Morning"] = periods_df.apply(
+#         lambda r: next(
+#             p["SurveyInfo"]["morning"]
+#             for p in result["optimized_periods"]
+#             if p["Period"] == r["Period"]
+#         ),
+#         axis=1
+#     )
+    
+#     periods_df["Evening"] = periods_df.apply(
+#         lambda r: next(
+#             p["SurveyInfo"]["evening"]
+#             for p in result["optimized_periods"]
+#             if p["Period"] == r["Period"]
+#         ),
+#         axis=1
+#     )
+    
+#     periods_df["Flexible"] = periods_df.apply(
+#         lambda r: next(
+#             p["SurveyInfo"]["extra"]
+#             for p in result["optimized_periods"]
+#             if p["Period"] == r["Period"]
+#         ),
+#         axis=1
+#     )
+    
+#     periods_df["Total"] = periods_df.apply(
+#         lambda r: next(
+#             p["SurveyInfo"]["total"]
+#             for p in result["optimized_periods"]
+#             if p["Period"] == r["Period"]
+#         ),
+#         axis=1
+#     )
+
+#     periods_df["Label"] = (
+#         periods_df["Period"]
+#         + " ("
+#         + periods_df["Total"].astype(str)
+#         + " surveys)"
+#     )
+    
+#     periods_df["ProtocolsTooltip"] = (
+#         periods_df["Protocols"]
+#         .str.replace("<br>", "<br>• ")
+#     )
+    
+#     periods_df["ProtocolsTooltip"] = (
+#         "• "
+#         + periods_df["ProtocolsTooltip"]
+#     )
+
+#     period_fig = px.timeline(
+#         periods_df,
+#         x_start="Start",
+#         x_end="End",
+#         y="Label",
+#         color="Period",
+#         custom_data=[
+#             "PeriodLabel",
+#             "Days",
+#             "Morning",
+#             "Evening",
+#             "Flexible",
+#             "Total",
+#             "ProtocolsTooltip"
+#         ]
+#     )
+    
+#     period_fig.update_traces(
+#         width=0.28,
+#         hovertemplate=
+#             "<b>%{y}</b><br><br>"
+    
+#             "📅 %{customdata[0]}<br>"
+#             "⏱ %{customdata[1]} days"
+    
+#             "<br><br>"
+    
+#             "<b>Survey Requirements</b><br>"
+#             "☀️ Morning: %{customdata[2]}<br>"
+#             "🌙 Evening: %{customdata[3]}<br>"
+#             "🔄 Flexible: %{customdata[4]}<br>"
+#             "🎯 Total: %{customdata[5]}"
+    
+#             "<br><br>"
+    
+#             "<b>Protocols</b><br>"
+#             "%{customdata[6]}"
+    
+#             "<extra></extra>"
+#     )
+    
+#     period_fig.update_xaxes(
+#         tickformat="%b",
+#         dtick="M1",
+#         ticks="outside",
+#         ticklen=8,
+#         showgrid=True,
+#         gridwidth=1,
+#         gridcolor="rgba(200,200,200,0.25)"
+#     )
+    
+#     period_fig.update_yaxes(
+#         autorange="reversed"
+#     )
+    
+#     period_fig.update_layout(
+#         height=250,
+#         showlegend=False,
+#         plot_bgcolor="white",
+#         paper_bgcolor="white",
+#         bargap=0.65,
+#         xaxis_title=None,
+#         yaxis_title=None,
+#         hoverlabel=dict(
+#             bgcolor="white",
+#             font_size=13,
+#             font_family="Arial"
+#         )
+#     )
+    
+#     st.plotly_chart(
+#         period_fig,
+#         use_container_width=True
+#     )
 
 # --------------------------------------------------
 # OPTIMIZED SURVEY PLAN
