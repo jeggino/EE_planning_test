@@ -352,6 +352,17 @@ st.subheader(
 
 st.write(result["optimized_periods"])
 
+periods_df["Start"] = pd.to_datetime(
+    periods_df["Start"]
+)
+
+periods_df["End"] = pd.to_datetime(
+    periods_df["End"]
+)
+
+st.write(periods_df.dtypes)
+
+
 if periods_df.empty:
 
     st.warning(
