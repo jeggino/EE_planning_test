@@ -375,7 +375,7 @@ if not edited_plan.empty:
     )
     
     survey_fig.update_xaxes(
-        tickformat="%b"
+        tickformat="%d-%b"
     )
     
     survey_fig.update_layout(
