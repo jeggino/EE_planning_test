@@ -160,10 +160,10 @@ def build_optimized_periods(
 ):
 
     special = []
-    remaining = []
+    normal = []
 
     # ----------------------------------
-    # Separate satellite surveys
+    # Separate meervleermuis satelliet
     # ----------------------------------
 
     for p in protocols_data:
@@ -176,149 +176,106 @@ def build_optimized_periods(
             special.append(p)
 
         else:
-            remaining.append(p)
+            normal.append(p)
 
-    selected_periods = []
+    # ----------------------------------
+    # Build boundaries
+    # ----------------------------------
 
-    period_number = 1
+    boundaries = set()
 
-    while remaining:
+    for p in normal:
 
-        best_period = None
+        boundaries.add(
+            p["start"]
+        )
 
-        # ----------------------------------
-        # Generate all candidate overlaps
-        # ----------------------------------
+        boundaries.add(
+            p["end"]
+            + timedelta(days=1)
+        )
 
-        for protocol in remaining:
+    boundaries = sorted(boundaries)
 
-            overlap_start = protocol["start"]
-            overlap_end = protocol["end"]
+    # ----------------------------------
+    # Create atomic periods
+    # ----------------------------------
 
-            covered = [
-                protocol
-            ]
+    atomic_periods = []
 
-            for other in remaining:
+    for i in range(
+        len(boundaries) - 1
+    ):
 
-                if other is protocol:
-                    continue
+        start = boundaries[i]
 
-                start = max(
-                    overlap_start,
-                    other["start"]
+        end = (
+            boundaries[i + 1]
+            - timedelta(days=1)
+        )
+
+        active = []
+
+        for p in normal:
+
+            if (
+                p["start"] <= start
+                and
+                p["end"] >= end
+            ):
+
+                active.append(
+                    f"{p['species']} | {p['function']}"
                 )
 
-                end = min(
-                    overlap_end,
-                    other["end"]
-                )
+        if active:
 
-                duration = (
-                    end - start
-                ).days + 1
+            atomic_periods.append(
+                {
+                    "start": start,
+                    "end": end,
+                    "protocols": set(active)
+                }
+            )
 
-                if duration >= min_duration:
+    # ----------------------------------
+    # Create candidate merged periods
+    # ----------------------------------
 
-                    overlap_start = start
-                    overlap_end = end
+    candidates = []
 
-                    covered.append(
-                        other
-                    )
+    for i in range(
+        len(atomic_periods)
+    ):
+
+        protocols = set()
+
+        start = atomic_periods[i]["start"]
+
+        end = atomic_periods[i]["end"]
+
+        protocols.update(
+            atomic_periods[i]["protocols"]
+        )
+
+        for j in range(
+            i,
+            len(atomic_periods)
+        ):
+
+            end = atomic_periods[j]["end"]
+
+            protocols.update(
+                atomic_periods[j]["protocols"]
+            )
 
             duration = (
-                overlap_end
-                - overlap_start
+                end - start
             ).days + 1
 
-            if duration < min_duration:
-                continue
+            if duration >= min_duration:
 
-            protocol_names = sorted(
-                [
-                    f"{p['species']} | {p['function']}"
-                    for p in covered
-                ]
-            )
-
-            candidate = {
-                "Period":
-                    f"Period {period_number}",
-
-                "Start":
-                    overlap_start,
-
-                "End":
-                    overlap_end,
-
-                "Days":
-                    duration,
-
-                "Protocols":
-                    protocol_names,
-
-                "ProtocolCount":
-                    len(protocol_names)
-            }
-
-            # ----------------------------------
-            # Select best:
-            # 1. Most protocols
-            # 2. Then longest period
-            # ----------------------------------
-
-            if best_period is None:
-
-                best_period = candidate
-
-            elif (
-                candidate["ProtocolCount"]
-                >
-                best_period["ProtocolCount"]
-            ):
-
-                best_period = candidate
-
-            elif (
-                candidate["ProtocolCount"]
-                ==
-                best_period["ProtocolCount"]
-                and
-                candidate["Days"]
-                >
-                best_period["Days"]
-            ):
-
-                best_period = candidate
-
-        if best_period is None:
-            break
-
-        selected_periods.append(
-            best_period
-        )
-
-        covered_set = set(
-            best_period["Protocols"]
-        )
-
-        remaining = [
-            p
-            for p in remaining
-            if (
-                f"{p['species']} | "
-                f"{p['function']}"
-            )
-            not in covered_set
-        ]
-
-        period_number += 1
-
-    return (
-        selected_periods,
-        special
-    )
+        
     
 def schedule_window(
     window,
