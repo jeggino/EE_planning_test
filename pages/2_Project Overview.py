@@ -350,9 +350,6 @@ st.subheader(
     "🎯 Optimized Survey Periods"
 )
 
-st.subheader(
-    "📋 Survey Requirements"
-)
 
 
 for period in result[
@@ -363,37 +360,35 @@ for period in result[
         "SurveyInfo"
     ]
 
-    col1, col2, col3, col4 = (
-        st.columns(4)
+    col1, col2, col3 = (
+        st.columns(3)
     )
 
-    with col1:
-        st.metric(
-            period["Period"],
-            f"{period['Days']} days"
-        )
 
-    with col2:
+    with col1:
         st.metric(
             "☀️ Morning",
             info["morning"]
         )
 
-    with col3:
+    with col2:
         st.metric(
             "🌙 Evening",
             info["evening"]
         )
 
-    with col4:
+    with col3:
         st.metric(
             "🔄 Flexible",
             info["extra"]
         )
 
     st.caption(
-        f"Minimum surveys needed: "
-        f"{info['total']}"
+        f"📅 "
+        f"{period['Start'].strftime('%d %b')} → "
+        f"{period['End'].strftime('%d %b')}"
+        f" • "
+        f"{period['Days']} days"
     )
 
     st.markdown("---")
