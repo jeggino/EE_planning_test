@@ -154,17 +154,20 @@ def calculate_requirements(
 from datetime import timedelta
 
 
+from itertools import combinations
+
+
 def build_optimized_periods(
     protocols_data,
     min_duration=30
 ):
 
     special = []
-    normal = []
+    protocols = []
 
-    # ----------------------------------
-    # Separate meervleermuis satelliet
-    # ----------------------------------
+    # ------------------------------
+    # Separate satelliet surveys
+    # ------------------------------
 
     for p in protocols_data:
 
@@ -176,205 +179,133 @@ def build_optimized_periods(
             special.append(p)
 
         else:
-            normal.append(p)
 
-    # ----------------------------------
-    # Build boundaries
-    # ----------------------------------
-
-    boundaries = set()
-
-    for p in normal:
-
-        boundaries.add(
-            p["start"]
-        )
-
-        boundaries.add(
-            p["end"]
-            + timedelta(days=1)
-        )
-
-    boundaries = sorted(boundaries)
-
-    # ----------------------------------
-    # Create atomic periods
-    # ----------------------------------
-
-    atomic_periods = []
-
-    for i in range(
-        len(boundaries) - 1
-    ):
-
-        start = boundaries[i]
-
-        end = (
-            boundaries[i + 1]
-            - timedelta(days=1)
-        )
-
-        active = []
-
-        for p in normal:
-
-            if (
-                p["start"] <= start
-                and
-                p["end"] >= end
-            ):
-
-                active.append(
-                    f"{p['species']} | {p['function']}"
-                )
-
-        if active:
-
-            atomic_periods.append(
+            protocols.append(
                 {
-                    "start": start,
-                    "end": end,
-                    "protocols": set(active)
+                    **p,
+                    "name":
+                        f"{p['species']} | "
+                        f"{p['function']}"
                 }
             )
 
-    # ----------------------------------
-    # Create candidate merged periods
-    # ----------------------------------
-
-    candidates = []
-
-    for i in range(
-        len(atomic_periods)
-    ):
-
-        protocols = set()
-
-        start = atomic_periods[i]["start"]
-
-        end = atomic_periods[i]["end"]
-
-        protocols.update(
-            atomic_periods[i]["protocols"]
-        )
-
-        for j in range(
-            i,
-            len(atomic_periods)
-        ):
-
-            end = atomic_periods[j]["end"]
-
-            protocols.update(
-                atomic_periods[j]["protocols"]
-            )
-
-            duration = (
-                end - start
-            ).days + 1
-
-            if duration >= min_duration:
-
-                candidates.append(
-                    {
-                        "Start": start,
-                        "End": end,
-                        "Days": duration,
-                        "Protocols": protocols.copy(),
-                        "ProtocolCount": len(
-                            protocols
-                        )
-                    }
-                )
-
-    # ----------------------------------
-    # Greedy selection
-    # ----------------------------------
-
-    assigned = set()
+    remaining = protocols.copy()
 
     periods = []
 
-    period_number = 1
+    period_counter = 1
 
-    while True:
+    # ------------------------------
+    # Keep finding best campaign
+    # ------------------------------
+
+    while remaining:
 
         best = None
-        best_score = -1
 
-        for candidate in candidates:
+        # Start from biggest groups
+        for size in range(
+            len(remaining),
+            0,
+            -1
+        ):
 
-            new_protocols = (
-                candidate["Protocols"]
-                - assigned
-            )
+            found_for_size = False
 
-            score = len(
-                new_protocols
-            )
-
-            if score == 0:
-                continue
-
-            if best is None:
-
-                best = candidate
-
-                best_score = score
-
-            elif score > best_score:
-
-                best = candidate
-
-                best_score = score
-
-            elif (
-                score == best_score
-                and
-                candidate["Days"]
-                > best["Days"]
+            for group in combinations(
+                remaining,
+                size
             ):
 
-                best = candidate
+                overlap_start = max(
+                    p["start"]
+                    for p in group
+                )
+
+                overlap_end = min(
+                    p["end"]
+                    for p in group
+                )
+
+                duration = (
+                    overlap_end
+                    - overlap_start
+                ).days + 1
+
+                if duration < min_duration:
+                    continue
+
+                candidate = {
+                    "Period":
+                        f"Period {period_counter}",
+
+                    "Start":
+                        overlap_start,
+
+                    "End":
+                        overlap_end,
+
+                    "Days":
+                        duration,
+
+                    "Protocols":
+                        sorted(
+                            p["name"]
+                            for p in group
+                        ),
+
+                    "ProtocolCount":
+                        len(group)
+                }
+
+                if best is None:
+
+                    best = candidate
+
+                elif (
+                    candidate["ProtocolCount"]
+                    >
+                    best["ProtocolCount"]
+                ):
+
+                    best = candidate
+
+                elif (
+                    candidate["ProtocolCount"]
+                    ==
+                    best["ProtocolCount"]
+                    and
+                    candidate["Days"]
+                    >
+                    best["Days"]
+                ):
+
+                    best = candidate
+
+            if best is not None:
+
+                found_for_size = True
+
+            if found_for_size:
+                break
 
         if best is None:
             break
 
-        uncovered = sorted(
+        periods.append(best)
+
+        covered = set(
             best["Protocols"]
-            - assigned
         )
 
-        assigned.update(
-            uncovered
-        )
+        remaining = [
+            p
+            for p in remaining
+            if p["name"]
+            not in covered
+        ]
 
-        periods.append(
-            {
-                "Period":
-                    f"Period {period_number}",
-
-                "Start":
-                    best["Start"],
-
-                "End":
-                    best["End"],
-
-                "Days":
-                    best["Days"],
-
-                "Protocols":
-                    uncovered,
-
-                "ProtocolCount":
-                    len(uncovered),
-
-                "Score":
-                    len(uncovered)
-            }
-        )
-
-        period_number += 1
+        period_counter += 1
 
     return periods, special
 
