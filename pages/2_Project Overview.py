@@ -290,6 +290,108 @@ st.plotly_chart(
 )
 
 # --------------------------------------------------
+# OPTIMIZED SURVEY PERIODS
+# --------------------------------------------------
+
+optimized_periods = result["optimized_periods"]
+special_protocols = result["special_protocols"]
+
+period_rows = []
+
+for p in optimized_periods:
+
+    period_rows.append(
+        {
+            "Period": p["Period"],
+            "Start": p["Start"],
+            "End": p["End"],
+            "Days": p["Days"],
+            "Score": p["Score"],
+            "Protocols": "<br>".join(
+                p["Protocols"]
+            ),
+            "Type": "Period"
+        }
+    )
+
+for p in special_protocols:
+
+    period_rows.append(
+        {
+            "Period":
+                "Meervleermuis | satelliet",
+
+            "Start":
+                p["start"],
+
+            "End":
+                p["end"],
+
+            "Days":
+                (
+                    p["end"] - p["start"]
+                ).days + 1,
+
+            "Score":
+                0,
+
+            "Protocols":
+                "meervleermuis | satelliet",
+
+            "Type":
+                "Special"
+        }
+    )
+
+periods_df = pd.DataFrame(
+    period_rows
+)
+
+st.subheader(
+    "🎯 Optimized Survey Periods"
+)
+
+period_fig = px.timeline(
+    periods_df,
+    x_start="Start",
+    x_end="End",
+    y="Period",
+    color="Period",
+    custom_data=[
+        "Days",
+        "Score",
+        "Protocols"
+    ]
+)
+
+period_fig.update_traces(
+    hovertemplate=
+        "<b>%{y}</b><br><br>"
+        "Start: %{base|%d %b}<br>"
+        "End: %{x|%d %b}<br>"
+        "Days: %{customdata[0]}<br>"
+        "Score: %{customdata[1]}"
+        "<br><br>"
+        "<b>Protocols</b><br>"
+        "%{customdata[2]}"
+        "<extra></extra>"
+)
+
+period_fig.update_xaxes(
+    tickformat="%b",
+    dtick="M1"
+)
+
+period_fig.update_yaxes(
+    autorange="reversed"
+)
+
+st.plotly_chart(
+    period_fig,
+    use_container_width=True
+)
+
+# --------------------------------------------------
 # OPTIMIZED SURVEY PLAN
 # --------------------------------------------------
 
