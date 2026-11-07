@@ -275,6 +275,109 @@ def build_optimized_periods(
 
             if duration >= min_duration:
 
+                candidates.append(
+                    {
+                        "Start": start,
+                        "End": end,
+                        "Days": duration,
+                        "Protocols": protocols.copy(),
+                        "ProtocolCount": len(
+                            protocols
+                        )
+                    }
+                )
+
+    # ----------------------------------
+    # Greedy selection
+    # ----------------------------------
+
+    assigned = set()
+
+    periods = []
+
+    period_number = 1
+
+    while True:
+
+        best = None
+        best_score = -1
+
+        for candidate in candidates:
+
+            new_protocols = (
+                candidate["Protocols"]
+                - assigned
+            )
+
+            score = len(
+                new_protocols
+            )
+
+            if score == 0:
+                continue
+
+            if best is None:
+
+                best = candidate
+
+                best_score = score
+
+            elif score > best_score:
+
+                best = candidate
+
+                best_score = score
+
+            elif (
+                score == best_score
+                and
+                candidate["Days"]
+                > best["Days"]
+            ):
+
+                best = candidate
+
+        if best is None:
+            break
+
+        uncovered = sorted(
+            best["Protocols"]
+            - assigned
+        )
+
+        assigned.update(
+            uncovered
+        )
+
+        periods.append(
+            {
+                "Period":
+                    f"Period {period_number}",
+
+                "Start":
+                    best["Start"],
+
+                "End":
+                    best["End"],
+
+                "Days":
+                    best["Days"],
+
+                "Protocols":
+                    uncovered,
+
+                "ProtocolCount":
+                    len(uncovered),
+
+                "Score":
+                    len(uncovered)
+            }
+        )
+
+        period_number += 1
+
+    return periods, special
+
         
     
 def schedule_window(
