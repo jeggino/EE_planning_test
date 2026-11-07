@@ -368,6 +368,22 @@ if periods_df.empty:
 
 else:
 
+    periods_df["PeriodLabel"] = (
+        periods_df["Start"].dt.strftime("%d %b")
+        + " → "
+        + periods_df["End"].dt.strftime("%d %b")
+    )
+    
+    periods_df["ProtocolsTooltip"] = (
+        periods_df["Protocols"]
+        .str.replace("<br>", "<br>• ")
+    )
+    
+    periods_df["ProtocolsTooltip"] = (
+        "• "
+        + periods_df["ProtocolsTooltip"]
+    )
+
     period_fig = px.timeline(
         periods_df,
         x_start="Start",
@@ -375,11 +391,55 @@ else:
         y="Period",
         color="Period",
         custom_data=[
+            "PeriodLabel",
             "Days",
-            "Protocols"
+            "ProtocolsTooltip"
         ]
     )
-
+    
+    period_fig.update_traces(
+        width=0.35,
+        hovertemplate=
+            "<b>%{y}</b><br><br>"
+    
+            "📅 %{customdata[0]}<br>"
+            "⏱ %{customdata[1]} days"
+    
+            "<br><br>"
+    
+            "<b>Protocols</b><br>"
+            "%{customdata[2]}"
+    
+            "<extra></extra>"
+    )
+    
+    period_fig.update_xaxes(
+        tickformat="%b",
+        dtick="M1",
+        showgrid=True,
+        gridwidth=1,
+        gridcolor="rgba(180,180,180,0.3)"
+    )
+    
+    period_fig.update_yaxes(
+        autorange="reversed"
+    )
+    
+    period_fig.update_layout(
+        height=250,
+        showlegend=False,
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+        bargap=0.65,
+        xaxis_title=None,
+        yaxis_title=None,
+        hoverlabel=dict(
+            bgcolor="white",
+            font_size=13,
+            font_family="Arial"
+        )
+    )
+    
     st.plotly_chart(
         period_fig,
         use_container_width=True
