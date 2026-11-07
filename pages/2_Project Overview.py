@@ -351,6 +351,9 @@ st.subheader(
 )
 
 st.write(result["optimized_periods"])
+st.write(periods_df.columns.tolist())
+st.write(periods_df.head())
+
 
 periods_df["Start"] = pd.to_datetime(
     periods_df["Start"]
@@ -379,7 +382,6 @@ else:
         color="Period",
         custom_data=[
             "Days",
-            "Score",
             "Protocols"
         ]
     )
