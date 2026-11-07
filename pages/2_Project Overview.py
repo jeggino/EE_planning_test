@@ -799,193 +799,83 @@ survey_df = survey_df.sort_values(
 
 edited_plan = survey_df
 
-# --------------------------------------------------
-# SURVEY TIMELINE
-# --------------------------------------------------
-
-if not edited_plan.empty:
-
-    chart_df = edited_plan.copy()
-
-    chart_df["Date"] = pd.to_datetime(
-        chart_df["Date"]
-    )
+# # --------------------------------------------------
+# # SURVEY TIMELINE
+# # --------------------------------------------------
 
     st.subheader(
         "📍 Planned Survey Schedule"
     )
 
-    survey_fig = px.strip(
-        chart_df,
-        x="Date",
-        y="Type",
-        color="Type",
-        hover_data=[
-            "Protocols Covered",
-            "Protocols"
-        ]
-    )
-    
-    survey_fig.update_traces(
-        marker=dict(
-            size=15,
-            line=dict(width=1)
-        )
-    )
-    
-    survey_fig.update_xaxes(
-        tickformat="%d-%b"
-    )
-    
-    survey_fig.update_layout(
-        height=300,
-        xaxis_title="Survey Date",
-        yaxis_title="Survey Type"
-    )
-    
-    st.plotly_chart(
-        survey_fig,
-        use_container_width=True
+survey_options = []
+
+for i in range(
+    info["morning"]
+):
+    survey_options.append(
+        f"Morning {i+1}"
     )
 
-# # --------------------------------------------------
-# # SURVEY CARDS
-# # --------------------------------------------------
+for i in range(
+    info["evening"]
+):
+    survey_options.append(
+        f"Evening {i+1}"
+    )
 
-# st.subheader("📋 Planned Survey Visits")
+for i in range(
+    info["extra"]
+):
+    survey_options.append(
+        f"Flexible {i+1}"
+    )
 
-# card_df = survey_df.copy()
+selected_survey = st.selectbox(
+    "Survey",
+    survey_options
+)
+# if not edited_plan.empty:
 
-# card_df["Date"] = pd.to_datetime(
-#     card_df["Date"]
-# )
+#     chart_df = edited_plan.copy()
 
-# card_df = card_df.sort_values(
-#     "Date"
-# )
-
-# for _, row in card_df.iterrows():
-
-#     date_text = row["Date"].strftime(
-#         "%d %b"
+#     chart_df["Date"] = pd.to_datetime(
+#         chart_df["Date"]
 #     )
 
-#     survey_type = row["Type"]
-
-#     icon = (
-#         "🌙"
-#         if survey_type.lower() == "evening"
-#         else "☀️"
+#     st.subheader(
+#         "📍 Planned Survey Schedule"
 #     )
 
-#     protocols = sorted(
-#         row["Protocols"].split(", ")
-#     )
-
-#     with st.container(border=True):
-
-#         c1, c2 = st.columns(
-#             [3, 1]
-#         )
-
-#         with c1:
-#             st.markdown(
-#                 f"### {date_text}"
-#             )
-
-#         with c2:
-#             st.markdown(
-#                 f"### {icon}"
-#             )
-
-#         st.caption(
-#             f"{survey_type} • "
-#             f"{row['Protocols Covered']} protocols"
-#         )
-
-#         protocol_cols = st.columns(3)
-
-#         for i, protocol in enumerate(
-#             protocols
-#         ):
-#             with protocol_cols[
-#                 i % 3
-#             ]:
-#                 st.markdown(
-#                     f"🔹 {protocol}"
-#                 )
-
-# # --------------------------------------------------
-# # PLAN SUMMARY
-# # --------------------------------------------------
-
-# st.subheader(
-#     "📊 Plan Summary"
-# )
-
-# st.dataframe(
-#     pd.DataFrame(
-#         [
-#             {
-#                 "Protocol":
-#                     f"{p['species']} | {p['function']}",
-
-#                 "Evening":
-#                     p["evening"],
-
-#                 "Morning":
-#                     p["morning"],
-
-#                 "Free":
-#                     p["free"],
-
-#                 "Min Days":
-#                     p["min_days"]
-#             }
-#             for p in result["protocols"]
+#     survey_fig = px.strip(
+#         chart_df,
+#         x="Date",
+#         y="Type",
+#         color="Type",
+#         hover_data=[
+#             "Protocols Covered",
+#             "Protocols"
 #         ]
-#     ),
-#     use_container_width=True,
-#     hide_index=True
-# )
-
-# summary_col1, summary_col2, summary_col3 = (
-#     st.columns(3)
-# )
-
-# with summary_col1:
-#     st.metric(
-#         "Survey Visits",
-#         len(
-#             result["survey_plan"]
+#     )
+    
+#     survey_fig.update_traces(
+#         marker=dict(
+#             size=15,
+#             line=dict(width=1)
 #         )
 #     )
-
-# with summary_col2:
-#     st.metric(
-#         "Evening Surveys",
-#         len(
-#             [
-#                 s
-#                 for s in result["survey_plan"]
-#                 if s["type"] == "evening"
-#             ]
-#         )
+    
+#     survey_fig.update_xaxes(
+#         tickformat="%d-%b"
 #     )
-
-# with summary_col3:
-#     st.metric(
-#         "Morning Surveys",
-#         len(
-#             [
-#                 s
-#                 for s in result["survey_plan"]
-#                 if s["type"] == "morning"
-#             ]
-#         )
+    
+#     survey_fig.update_layout(
+#         height=300,
+#         xaxis_title="Survey Date",
+#         yaxis_title="Survey Type"
 #     )
-
-
-
-
+    
+#     st.plotly_chart(
+#         survey_fig,
+#         use_container_width=True
+#     )
 
