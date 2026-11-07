@@ -350,10 +350,6 @@ st.subheader(
     "🎯 Optimized Survey Periods"
 )
 
-st.write(result["optimized_periods"])
-st.write(periods_df.columns.tolist())
-st.write(periods_df.head())
-
 
 periods_df["Start"] = pd.to_datetime(
     periods_df["Start"]
@@ -491,72 +487,72 @@ if not edited_plan.empty:
         use_container_width=True
     )
 
-# --------------------------------------------------
-# SURVEY CARDS
-# --------------------------------------------------
+# # --------------------------------------------------
+# # SURVEY CARDS
+# # --------------------------------------------------
 
-st.subheader("📋 Planned Survey Visits")
+# st.subheader("📋 Planned Survey Visits")
 
-card_df = survey_df.copy()
+# card_df = survey_df.copy()
 
-card_df["Date"] = pd.to_datetime(
-    card_df["Date"]
-)
+# card_df["Date"] = pd.to_datetime(
+#     card_df["Date"]
+# )
 
-card_df = card_df.sort_values(
-    "Date"
-)
+# card_df = card_df.sort_values(
+#     "Date"
+# )
 
-for _, row in card_df.iterrows():
+# for _, row in card_df.iterrows():
 
-    date_text = row["Date"].strftime(
-        "%d %b"
-    )
+#     date_text = row["Date"].strftime(
+#         "%d %b"
+#     )
 
-    survey_type = row["Type"]
+#     survey_type = row["Type"]
 
-    icon = (
-        "🌙"
-        if survey_type.lower() == "evening"
-        else "☀️"
-    )
+#     icon = (
+#         "🌙"
+#         if survey_type.lower() == "evening"
+#         else "☀️"
+#     )
 
-    protocols = sorted(
-        row["Protocols"].split(", ")
-    )
+#     protocols = sorted(
+#         row["Protocols"].split(", ")
+#     )
 
-    with st.container(border=True):
+#     with st.container(border=True):
 
-        c1, c2 = st.columns(
-            [3, 1]
-        )
+#         c1, c2 = st.columns(
+#             [3, 1]
+#         )
 
-        with c1:
-            st.markdown(
-                f"### {date_text}"
-            )
+#         with c1:
+#             st.markdown(
+#                 f"### {date_text}"
+#             )
 
-        with c2:
-            st.markdown(
-                f"### {icon}"
-            )
+#         with c2:
+#             st.markdown(
+#                 f"### {icon}"
+#             )
 
-        st.caption(
-            f"{survey_type} • "
-            f"{row['Protocols Covered']} protocols"
-        )
+#         st.caption(
+#             f"{survey_type} • "
+#             f"{row['Protocols Covered']} protocols"
+#         )
 
-        protocol_cols = st.columns(3)
+#         protocol_cols = st.columns(3)
 
-        for i, protocol in enumerate(
-            protocols
-        ):
-            with protocol_cols[
-                i % 3
-            ]:
-                st.markdown(
-                    f"🔹 {protocol}"
-                )
+#         for i, protocol in enumerate(
+#             protocols
+#         ):
+#             with protocol_cols[
+#                 i % 3
+#             ]:
+#                 st.markdown(
+#                     f"🔹 {protocol}"
+#                 )
 
 # # --------------------------------------------------
 # # PLAN SUMMARY
