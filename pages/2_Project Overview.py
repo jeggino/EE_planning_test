@@ -354,6 +354,45 @@ period_rows = []
 
 for period in result["optimized_periods"]:
 
+    for p in result["special_protocols"]:
+    
+        period_rows.append(
+            {
+                "Period": "Special",
+    
+                "Label":
+                    "Meervleermuis | satelliet",
+    
+                "Start":
+                    pd.to_datetime(
+                        p["start"]
+                    ),
+    
+                "End":
+                    pd.to_datetime(
+                        p["end"]
+                    ),
+    
+                "PeriodLabel":
+                    f"{p['start'].strftime('%d %b')} → "
+                    f"{p['end'].strftime('%d %b')}",
+    
+                "Days":
+                    (
+                        p["end"]
+                        - p["start"]
+                    ).days + 1,
+    
+                "Morning": 1,
+                "Evening": 0,
+                "Flexible": 0,
+                "Total": 1,
+    
+                "Protocols":
+                    "meervleermuis | satelliet"
+            }
+        )
+
     info = period["SurveyInfo"]
 
     period_rows.append(
@@ -459,11 +498,19 @@ if not periods_df.empty:
     period_fig.update_xaxes(
         tickformat="%b",
         dtick="M1",
+    
+        range=[
+            datetime(2025, 1, 1),
+            datetime(2025, 12, 31)
+        ],
+    
         ticks="outside",
         ticklen=8,
+    
         showgrid=True,
         gridwidth=1,
         gridcolor="rgba(180,180,180,0.25)",
+    
         title=None
     )
 
@@ -474,8 +521,8 @@ if not periods_df.empty:
 
     period_fig.update_layout(
         height=max(
-            220,
-            len(periods_df) * 60
+            400,
+            len(periods_df) * 90
         ),
         showlegend=False,
         bargap=0.75,
