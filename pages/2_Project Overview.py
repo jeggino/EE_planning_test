@@ -360,6 +360,10 @@ for period in result[
         "SurveyInfo"
     ]
 
+    st.markdown(
+        f"### {period['Period']}"
+    )
+    
     col1, col2, col3 = (
         st.columns(3)
     )
