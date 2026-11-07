@@ -306,7 +306,6 @@ for p in optimized_periods:
             "Start": p["Start"],
             "End": p["End"],
             "Days": p["Days"],
-            "Score": p["Score"],
             "Protocols": "<br>".join(
                 p["Protocols"]
             ),
