@@ -947,6 +947,15 @@ if st.button("💾 Save Survey Planning"):
 
 if not timeline_df.empty:
 
+    saved_surveys = (
+        supabase.table("planning_surveys")
+        .select("*")
+        .eq("project", selected_project_name)
+        .execute()
+    )
+    
+    timeline_df = pd.DataFrame(saved_surveys.data)
+
     timeline_df["survey_date"] = pd.to_datetime(
         timeline_df["survey_date"]
     )
