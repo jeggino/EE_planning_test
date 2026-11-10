@@ -909,9 +909,28 @@ selected_date = st.date_input(
 # SAVE TO SUPABASE
 # --------------------------------------------------
 
+# --------------------------------------------------
+# SAVE SURVEY
+# --------------------------------------------------
+
 if st.button("💾 Save Survey Planning"):
 
-    try:
+    existing = (
+        supabase.table("planning_surveys")
+        .select("id")
+        .eq("project", selected_project_name)
+        .eq("period", selected_period)
+        .eq("survey", selected_survey)
+        .execute()
+    )
+
+    if existing.data:
+
+        st.warning(
+            f"{selected_survey} has already been planned in {selected_period}."
+        )
+
+    else:
 
         supabase.table(
             "planning_surveys"
@@ -926,23 +945,9 @@ if st.button("💾 Save Survey Planning"):
         ).execute()
 
         st.success(
-            f"""
-            "Survey planning successfully saved."
-            
-            Period: **{selected_period}**
-        
-            Survey: **{selected_survey}**
-        
-            Date: **{selected_date.strftime('%d %b %Y')}**
-            """
+            f"{selected_survey} scheduled for "
+            f"{selected_date.strftime('%d %b %Y')}."
         )
-        
-    except Exception:
-
-        st.error(
-            "This survey has already been planned for this project and period."
-        )
-
 
 
 
