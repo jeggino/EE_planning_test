@@ -937,7 +937,7 @@ else:
 # --------------------------------------------------
 
 with st.expander(
-    "Plan New Survey", type="step",icon"➕"
+    "Plan New Survey", type="step",icon="➕"
 ):
 
     selected_period = st.selectbox(
