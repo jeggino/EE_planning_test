@@ -1011,3 +1011,146 @@ with st.expander(
 
             st.rerun()
 
+# --------------------------------------------------
+# EDIT / DELETE SURVEY
+# --------------------------------------------------
+
+with st.expander(
+    "✏️ Manage Planned Surveys",
+    expanded=False
+):
+
+    st.caption(
+        """
+        Select an existing survey planning to edit its date or remove it entirely. Any edited survey must remain within the allowed survey period defined by the applicable protocols.
+        """
+    )
+
+    if timeline_df.empty:
+
+        st.info(
+            "No planned surveys available."
+        )
+
+    else:
+
+        timeline_df = timeline_df.sort_values(
+            "survey_date"
+        )
+
+        survey_options = []
+
+        for _, row in timeline_df.iterrows():
+
+            survey_options.append(
+                f"{pd.to_datetime(row['survey_date']).strftime('%d %b %Y')} | "
+                f"{row['period']} | "
+                f"{row['survey']}"
+            )
+
+        selected_option = st.selectbox(
+            "Select Planned Survey",
+            survey_options
+        )
+
+        selected_row = timeline_df.iloc[
+            survey_options.index(
+                selected_option
+            )
+        ]
+
+        action = st.radio(
+            "Action",
+            [
+                "Edit",
+                "Delete"
+            ],
+            horizontal=True
+        )
+
+        # ------------------------------------------
+        # EDIT
+        # ------------------------------------------
+
+        if action == "Edit":
+
+            st.markdown(
+                f"""
+                **Period:** {selected_row['period']}  
+                **Survey:** {selected_row['survey']}
+                """
+            )
+
+            period_name = selected_row["period"]
+
+            if period_name in period_data:
+
+                period_info = period_data[
+                    period_name
+                ]
+
+                edited_date = st.date_input(
+                    f"New Date ({period_info['start'].strftime('%d %b')} → "
+                    f"{period_info['end'].strftime('%d %b')})",
+                    value=pd.to_datetime(
+                        selected_row["survey_date"]
+                    ).date(),
+                    min_value=period_info["start"],
+                    max_value=period_info["end"]
+                )
+
+                if st.button(
+                    "💾 Save Changes"
+                ):
+
+                    supabase.table(
+                        "planning_surveys"
+                    ).update(
+                        {
+                            "survey_date":
+                                edited_date.isoformat()
+                        }
+                    ).eq(
+                        "id",
+                        int(selected_row["id"])
+                    ).execute()
+
+                    st.success(
+                        "Survey planning updated."
+                    )
+
+                    st.rerun()
+
+        # ------------------------------------------
+        # DELETE
+        # ------------------------------------------
+
+        else:
+
+            st.warning(
+                f"""
+                You are about to delete:
+
+                • {selected_row['survey']}
+                • {selected_row['period']}
+                • {pd.to_datetime(selected_row['survey_date']).strftime('%d %b %Y')}
+                """
+            )
+
+            if st.button(
+                "🗑️ Delete Survey",
+                type="primary"
+            ):
+
+                supabase.table(
+                    "planning_surveys"
+                ).delete().eq(
+                    "id",
+                    int(selected_row["id"])
+                ).execute()
+
+                st.success(
+                    "Survey planning deleted."
+                )
+
+                st.rerun()
