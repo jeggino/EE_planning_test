@@ -26,6 +26,12 @@ def pretty_date(mmdd):
 
 st.title("🧠 Project Overview")
 
+st.caption(
+    """
+    Select a project to open its planning dashboard. After choosing a project, three sections will appear below. The first section shows all species and ecological functions that must be surveyed, together with their survey windows and protocol requirements. The second section provides an overview of the optimized survey periods, helping you understand when fieldwork can be planned most efficiently. The third section allows you to schedule individual survey rounds by selecting a period, survey type, and date. This planning information enables project managers and ecologists to monitor survey progress and track the status of the research throughout the season.
+    """
+)
+
 # --------------------------------------------------
 # LOAD DATA
 # --------------------------------------------------
@@ -242,6 +248,12 @@ timeline_df = pd.DataFrame(
 
 st.subheader(
     "📅 Protocol Survey Periods"
+)
+
+st.caption(
+    """
+    This timeline displays the survey windows defined by the applicable protocols. Each bar represents a species-function combination and indicates the period in which surveys are allowed. Hover over a timeline item to view survey requirements, timing rules, weather conditions, and minimum intervals between survey rounds.
+    """
 )
 
 fig = px.timeline(
@@ -541,6 +553,12 @@ if not periods_df.empty:
         "🎯 Optimized Survey Periods"
     )
 
+    st.caption(
+        """
+        The optimized periods combine overlapping protocol requirements into practical fieldwork windows. These periods help reduce the number of site visits by identifying opportunities to survey multiple species or functions during the same timeframe. Hover over a period to see the required number of morning, evening, and flexible surveys, together with the covered protocols.
+        """
+    )
+
     st.plotly_chart(
         period_fig,
         use_container_width=True
@@ -804,6 +822,13 @@ edited_plan = survey_df
 # --------------------------------------------------
 
 st.subheader("📍 Planned Survey Schedule")
+
+st.caption(
+    """
+    Use this section to plan individual survey visits. First select an available survey period, then choose one of the survey rounds required within that period, and finally select a survey date. Only dates within the selected survey period can be chosen, ensuring that all planned visits remain compliant with the survey protocol requirements.
+    """
+)
+
 
 # --------------------------------------------------
 # BUILD PERIOD DATA
