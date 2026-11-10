@@ -951,6 +951,8 @@ if not timeline_df.empty:
         timeline_df["survey_date"]
     )
 
+    st.write(timeline_df.columns.tolist())
+
     st.subheader("📅 Planned Survey Timeline")
 
     st.caption(
