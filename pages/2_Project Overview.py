@@ -1000,7 +1000,7 @@ with st.expander(
 # --------------------------------------------------
 
 with st.expander(
-    "✏️ Manage Planned Surveys"
+    "Manage Planned Surveys", type="step",icon="✏️"
 ):
 
     if timeline_df.empty:
