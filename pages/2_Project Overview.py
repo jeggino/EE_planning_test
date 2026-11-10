@@ -247,7 +247,7 @@ timeline_df = pd.DataFrame(
 )
 
 st.subheader(
-    "📅 Protocol Survey Periods"
+    "⚖️ Protocol Survey Periods"
 )
 
 st.caption(
