@@ -945,7 +945,75 @@ if st.button("💾 Save Survey Planning"):
             f"{selected_date.strftime('%d %b %Y')}."
         )
 
+if not timeline_df.empty:
 
+    timeline_df["survey_date"] = pd.to_datetime(
+        timeline_df["survey_date"]
+    )
+
+    st.subheader("📅 Planned Survey Timeline")
+
+    st.caption(
+        """
+        This timeline provides an overview of all planned survey rounds for the selected project. Each survey is displayed separately and coloured according to its survey period, making it easy to track fieldwork progress and identify upcoming visits.
+        """
+    )
+
+    fig = px.scatter(
+        timeline_df,
+        x="survey_date",
+        y="survey",
+        color="period",
+        size_max=20,
+        hover_data=[
+            "project",
+            "period",
+            "survey_date",
+            "username"
+        ]
+    )
+
+    fig.update_traces(
+        marker=dict(
+            size=18,
+            symbol="diamond",
+            line=dict(
+                width=2,
+                color="white"
+            )
+        )
+    )
+
+    fig.update_xaxes(
+        tickformat="%d %b",
+        showgrid=True,
+        gridcolor="rgba(220,220,220,0.4)"
+    )
+
+    fig.update_yaxes(
+        title=None
+    )
+
+    fig.update_layout(
+        height=max(
+            350,
+            len(timeline_df) * 55
+        ),
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+        legend_title="Period",
+        margin=dict(
+            l=20,
+            r=20,
+            t=20,
+            b=20
+        )
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
 
 # if not edited_plan.empty:
 
