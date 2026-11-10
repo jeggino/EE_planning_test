@@ -131,31 +131,7 @@ result = get_survey_demand(
     PROTOCOLS
 )
 
-# col1, col2, col3, col4 = st.columns(4)
 
-# with col1:
-#     st.metric(
-#         "Minimum Visits",
-#         result["minimum_visits"]
-#     )
-
-# with col2:
-#     st.metric(
-#         "Evening Visits",
-#         result["evening_visits"]
-#     )
-
-# with col3:
-#     st.metric(
-#         "Morning Visits",
-#         result["morning_visits"]
-#     )
-
-# with col4:
-#     st.metric(
-#         "Free Visits",
-#         result["free_visits"]
-#     )
     
 # --------------------------------------------------
 # PROTOCOL TIMELINE
