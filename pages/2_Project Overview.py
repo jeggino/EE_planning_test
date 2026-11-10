@@ -858,23 +858,40 @@ if not timeline_df.empty:
         )
     )
 
+    timeline_df["formatted_date"] = (
+        timeline_df["survey_date"]
+        .dt.strftime("%d %B %Y")
+    )
+
     fig = px.scatter(
         timeline_df,
         x="survey_date",
         y="survey_type",
         color="period",
-        hover_data=[
+        custom_data=[
+            "formatted_date",
+            "username",
             "period",
-            "survey",
-            "survey_date"
+            "survey"
         ]
     )
 
     fig.update_traces(
         marker=dict(
             size=18,
-            symbol="circle"
-        )
+            symbol="circle",
+            line=dict(
+                width=2,
+                color="white"
+            )
+        ),
+        hovertemplate=
+            "<b style='font-size:16px'>📅 %{customdata[0]}</b><br><br>"
+            "👤 Planned by: <b>%{customdata[1]}</b><br><br>"
+            "<b>Survey Details</b><br>"
+            "Round: %{customdata[3]}<br>"
+            "Period: %{customdata[2]}"
+            "<extra></extra>"
     )
 
     fig.update_xaxes(
