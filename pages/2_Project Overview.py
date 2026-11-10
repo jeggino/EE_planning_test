@@ -909,10 +909,6 @@ selected_date = st.date_input(
 # SAVE TO SUPABASE
 # --------------------------------------------------
 
-# --------------------------------------------------
-# SAVE SURVEY
-# --------------------------------------------------
-
 if st.button("💾 Save Survey Planning"):
 
     existing = (
@@ -939,8 +935,8 @@ if st.button("💾 Save Survey Planning"):
                 "project": selected_project_name,
                 "period": selected_period,
                 "survey": selected_survey,
-                "date": selected_date.isoformat(),
-                "user": "unknown"
+                "survey_date": selected_date.isoformat(),
+                "username": "unknown"
             }
         ).execute()
 
