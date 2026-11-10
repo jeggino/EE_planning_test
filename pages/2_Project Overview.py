@@ -904,19 +904,46 @@ selected_date = st.date_input(
     max_value=period_info["end"]
 )
 
+
 # --------------------------------------------------
-# SUMMARY
+# SAVE TO SUPABASE
 # --------------------------------------------------
 
-st.success(
-    f"""
-    Period: **{selected_period}**
+if st.button("💾 Save Survey Planning"):
 
-    Survey: **{selected_survey}**
+    try:
 
-    Date: **{selected_date.strftime('%d %b %Y')}**
-    """
-)
+        supabase.table(
+            "planning_surveys"
+        ).insert(
+            {
+                "project": selected_project_name,
+                "period": selected_period,
+                "survey": selected_survey,
+                "date": selected_date.isoformat(),
+                "user": "unknown"
+            }
+        ).execute()
+
+        st.success(
+            f"""
+            "Survey planning successfully saved."
+            
+            Period: **{selected_period}**
+        
+            Survey: **{selected_survey}**
+        
+            Date: **{selected_date.strftime('%d %b %Y')}**
+            """
+        )
+        
+    except Exception:
+
+        st.error(
+            "This survey has already been planned for this project and period."
+        )
+
+
 
 
 # if not edited_plan.empty:
