@@ -794,6 +794,369 @@ survey_df = survey_df.sort_values(
 edited_plan = survey_df
 
 
+# # --------------------------------------------------
+# # LOAD SAVED SURVEYS
+# # --------------------------------------------------
+
+# saved_surveys = (
+#     supabase.table("planning_surveys")
+#     .select("*")
+#     .eq("project", selected_project_name)
+#     .execute()
+# )
+
+# timeline_df = pd.DataFrame(saved_surveys.data)
+
+# # --------------------------------------------------
+# # SURVEY TIMELINE
+# # --------------------------------------------------
+
+# st.subheader("📅 Planned Survey Timeline")
+
+# st.caption(
+#     """
+#     This timeline shows all planned surveys for the selected project. Survey visits are grouped by survey type and coloured according to their survey period, providing a clear overview of upcoming fieldwork and survey progress.
+#     """
+# )
+
+# if not timeline_df.empty:
+
+#     timeline_df["survey_date"] = pd.to_datetime(
+#         timeline_df["survey_date"]
+#     )
+
+#     timeline_df["survey_type"] = (
+#         timeline_df["survey"]
+#         .str.replace(
+#             r"\s+\d+$",
+#             "",
+#             regex=True
+#         )
+#     )
+
+#     timeline_df["formatted_date"] = (
+#         timeline_df["survey_date"]
+#         .dt.strftime("%d %B %Y")
+#     )
+
+#     fig = px.scatter(
+#         timeline_df,
+#         x="survey_date",
+#         y="survey_type",
+#         color="period",
+#         custom_data=[
+#             "formatted_date",
+#             "username",
+#             "period",
+#             "survey"
+#         ]
+#     )
+
+#     fig.update_traces(
+#         marker=dict(
+#             size=18,
+#             symbol="circle",
+#             line=dict(
+#                 width=2,
+#                 color="white"
+#             )
+#         ),
+#         hovertemplate=
+#             "<b style='font-size:16px'>📅 %{customdata[0]}</b><br><br>"
+#             "👤 Planned by: <b>%{customdata[1]}</b><br><br>"
+#             "<b>Survey Details</b><br>"
+#             "Round: %{customdata[3]}<br>"
+#             "Period: %{customdata[2]}"
+#             "<extra></extra>"
+#     )
+
+#     fig.update_xaxes(
+#         title=None,
+#         tickformat="%d %b"
+#     )
+
+#     fig.update_yaxes(
+#         title=None,
+#         categoryorder="array",
+#         categoryarray=[
+#             "Morning",
+#             "Evening",
+#             "Flexible"
+#         ]
+#     )
+
+#     st.plotly_chart(
+#         fig,
+#         use_container_width=True
+#     )
+
+# else:
+
+#     st.info(
+#         "No surveys have been planned yet."
+#     )
+
+# # --------------------------------------------------
+# # NEW SURVEY
+# # --------------------------------------------------
+
+# with st.expander(
+#     "➕ Plan New Survey"
+# ):
+
+#     period_data = {}
+
+#     for period in result["optimized_periods"]:
+
+#         info = period["SurveyInfo"]
+
+#         surveys = (
+#             [f"Morning {i+1}" for i in range(info["morning"])]
+#             + [f"Evening {i+1}" for i in range(info["evening"])]
+#             + [f"Flexible {i+1}" for i in range(info["extra"])]
+#         )
+
+#         period_data[period["Period"]] = {
+#             "surveys": surveys,
+#             "start": period["Start"],
+#             "end": period["End"]
+#         }
+
+#     for special in result["special_protocols"]:
+
+#         period_data[
+#             "Meervleermuis | satelliet"
+#         ] = {
+#             "surveys": ["Morning 1"],
+#             "start": special["start"],
+#             "end": special["end"]
+#         }
+
+#     selected_period = st.selectbox(
+#         "Period",
+#         list(period_data.keys())
+#     )
+
+#     period_info = period_data[selected_period]
+
+#     selected_survey = st.selectbox(
+#         "Survey",
+#         period_info["surveys"]
+#     )
+
+#     selected_date = st.date_input(
+#         f"Date ({period_info['start'].strftime('%d %b')} → "
+#         f"{period_info['end'].strftime('%d %b')})",
+#         value=period_info["start"],
+#         min_value=period_info["start"],
+#         max_value=period_info["end"]
+#     )
+
+#     if st.button(
+#         "💾 Save Survey Planning"
+#     ):
+
+#         existing = (
+#             supabase.table("planning_surveys")
+#             .select("id")
+#             .eq("project", selected_project_name)
+#             .eq("period", selected_period)
+#             .eq("survey", selected_survey)
+#             .execute()
+#         )
+
+#         if existing.data:
+
+#             st.warning(
+#                 "Survey already planned."
+#             )
+
+#         else:
+
+#             supabase.table(
+#                 "planning_surveys"
+#             ).insert(
+#                 {
+#                     "project": selected_project_name,
+#                     "period": selected_period,
+#                     "survey": selected_survey,
+#                     "survey_date": selected_date.isoformat(),
+#                     "username": "unknown"
+#                 }
+#             ).execute()
+
+#             st.rerun()
+
+# # --------------------------------------------------
+# # EDIT / DELETE SURVEY
+# # --------------------------------------------------
+
+# with st.expander(
+#     "✏️ Manage Planned Surveys",
+#     expanded=False
+# ):
+
+#     st.caption(
+#         """
+#         Select an existing survey planning to edit its date or remove it entirely. Any edited survey must remain within the allowed survey period defined by the applicable protocols.
+#         """
+#     )
+
+#     if timeline_df.empty:
+
+#         st.info(
+#             "No planned surveys available."
+#         )
+
+#     else:
+
+#         timeline_df = timeline_df.sort_values(
+#             "survey_date"
+#         )
+
+#         survey_options = []
+
+#         for _, row in timeline_df.iterrows():
+
+#             survey_options.append(
+#                 f"{pd.to_datetime(row['survey_date']).strftime('%d %b %Y')} | "
+#                 f"{row['period']} | "
+#                 f"{row['survey']}"
+#             )
+
+#         selected_option = st.selectbox(
+#             "Select Planned Survey",
+#             survey_options
+#         )
+
+#         selected_row = timeline_df.iloc[
+#             survey_options.index(
+#                 selected_option
+#             )
+#         ]
+
+#         action = st.radio(
+#             "Action",
+#             [
+#                 "Edit",
+#                 "Delete"
+#             ],
+#             horizontal=True
+#         )
+
+#         # ------------------------------------------
+#         # EDIT
+#         # ------------------------------------------
+
+#         if action == "Edit":
+
+#             st.markdown(
+#                 f"""
+#                 **Period:** {selected_row['period']}  
+#                 **Survey:** {selected_row['survey']}
+#                 """
+#             )
+
+#             period_name = selected_row["period"]
+
+#             if period_name in period_data:
+
+#                 period_info = period_data[
+#                     period_name
+#                 ]
+
+#                 edited_date = st.date_input(
+#                     f"New Date ({period_info['start'].strftime('%d %b')} → "
+#                     f"{period_info['end'].strftime('%d %b')})",
+#                     value=pd.to_datetime(
+#                         selected_row["survey_date"]
+#                     ).date(),
+#                     min_value=period_info["start"],
+#                     max_value=period_info["end"]
+#                 )
+
+#                 if st.button(
+#                     "💾 Save Changes"
+#                 ):
+
+#                     supabase.table(
+#                         "planning_surveys"
+#                     ).update(
+#                         {
+#                             "survey_date":
+#                                 edited_date.isoformat()
+#                         }
+#                     ).eq(
+#                         "id",
+#                         int(selected_row["id"])
+#                     ).execute()
+
+#                     st.success(
+#                         "Survey planning updated."
+#                     )
+
+#                     st.rerun()
+
+#         # ------------------------------------------
+#         # DELETE
+#         # ------------------------------------------
+
+#         else:
+
+#             st.warning(
+#                 f"""
+#                 You are about to delete:
+
+#                 • {selected_row['survey']}
+#                 • {selected_row['period']}
+#                 • {pd.to_datetime(selected_row['survey_date']).strftime('%d %b %Y')}
+#                 """
+#             )
+
+#             if st.button(
+#                 "🗑️ Delete Survey",
+#                 type="primary"
+#             ):
+
+#                 supabase.table(
+#                     "planning_surveys"
+#                 ).delete().eq(
+#                     "id",
+#                     int(selected_row["id"])
+#                 ).execute()
+
+#                 st.success(
+#                     "Survey planning deleted."
+#                 )
+
+#                 st.rerun()
+# --------------------------------------------------
+# PERIOD DATA
+# --------------------------------------------------
+
+period_data = {}
+
+for period in result["optimized_periods"]:
+
+    info = period["SurveyInfo"]
+
+    period_data[period["Period"]] = {
+        "surveys":
+            [f"Morning {i+1}" for i in range(info["morning"])]
+            + [f"Evening {i+1}" for i in range(info["evening"])]
+            + [f"Flexible {i+1}" for i in range(info["extra"])],
+        "start": period["Start"],
+        "end": period["End"]
+    }
+
+for special in result["special_protocols"]:
+
+    period_data["Meervleermuis | satelliet"] = {
+        "surveys": ["Morning 1"],
+        "start": special["start"],
+        "end": special["end"]
+    }
+
 # --------------------------------------------------
 # LOAD SAVED SURVEYS
 # --------------------------------------------------
@@ -808,7 +1171,7 @@ saved_surveys = (
 timeline_df = pd.DataFrame(saved_surveys.data)
 
 # --------------------------------------------------
-# SURVEY TIMELINE
+# PLANNED SURVEY TIMELINE
 # --------------------------------------------------
 
 st.subheader("📅 Planned Survey Timeline")
@@ -885,6 +1248,13 @@ if not timeline_df.empty:
         ]
     )
 
+    fig.update_layout(
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+        legend_title="Period",
+        height=400
+    )
+
     st.plotly_chart(
         fig,
         use_container_width=True
@@ -897,40 +1267,12 @@ else:
     )
 
 # --------------------------------------------------
-# NEW SURVEY
+# CREATE SURVEY
 # --------------------------------------------------
 
 with st.expander(
     "➕ Plan New Survey"
 ):
-
-    period_data = {}
-
-    for period in result["optimized_periods"]:
-
-        info = period["SurveyInfo"]
-
-        surveys = (
-            [f"Morning {i+1}" for i in range(info["morning"])]
-            + [f"Evening {i+1}" for i in range(info["evening"])]
-            + [f"Flexible {i+1}" for i in range(info["extra"])]
-        )
-
-        period_data[period["Period"]] = {
-            "surveys": surveys,
-            "start": period["Start"],
-            "end": period["End"]
-        }
-
-    for special in result["special_protocols"]:
-
-        period_data[
-            "Meervleermuis | satelliet"
-        ] = {
-            "surveys": ["Morning 1"],
-            "start": special["start"],
-            "end": special["end"]
-        }
 
     selected_period = st.selectbox(
         "Period",
@@ -968,7 +1310,7 @@ with st.expander(
         if existing.data:
 
             st.warning(
-                "Survey already planned."
+                "Survey is already planned."
             )
 
         else:
@@ -988,19 +1330,12 @@ with st.expander(
             st.rerun()
 
 # --------------------------------------------------
-# EDIT / DELETE SURVEY
+# MANAGE SURVEYS
 # --------------------------------------------------
 
 with st.expander(
-    "✏️ Manage Planned Surveys",
-    expanded=False
+    "✏️ Manage Planned Surveys"
 ):
-
-    st.caption(
-        """
-        Select an existing survey planning to edit its date or remove it entirely. Any edited survey must remain within the allowed survey period defined by the applicable protocols.
-        """
-    )
 
     if timeline_df.empty:
 
@@ -1014,65 +1349,48 @@ with st.expander(
             "survey_date"
         )
 
-        survey_options = []
+        options = []
 
         for _, row in timeline_df.iterrows():
 
-            survey_options.append(
-                f"{pd.to_datetime(row['survey_date']).strftime('%d %b %Y')} | "
-                f"{row['period']} | "
-                f"{row['survey']}"
+            options.append(
+                f"📅 {pd.to_datetime(row['survey_date']).strftime('%d %b %Y')} | "
+                f"{row['survey']} | "
+                f"{row['period']}"
             )
 
         selected_option = st.selectbox(
-            "Select Planned Survey",
-            survey_options
+            "Planned Survey",
+            options
         )
 
         selected_row = timeline_df.iloc[
-            survey_options.index(
-                selected_option
-            )
+            options.index(selected_option)
         ]
 
-        action = st.radio(
-            "Action",
+        tab_edit, tab_delete = st.tabs(
             [
-                "Edit",
-                "Delete"
-            ],
-            horizontal=True
+                "✏️ Edit",
+                "🗑️ Delete"
+            ]
         )
 
-        # ------------------------------------------
-        # EDIT
-        # ------------------------------------------
-
-        if action == "Edit":
-
-            st.markdown(
-                f"""
-                **Period:** {selected_row['period']}  
-                **Survey:** {selected_row['survey']}
-                """
-            )
+        with tab_edit:
 
             period_name = selected_row["period"]
 
             if period_name in period_data:
 
-                period_info = period_data[
-                    period_name
-                ]
+                info = period_data[period_name]
 
                 edited_date = st.date_input(
-                    f"New Date ({period_info['start'].strftime('%d %b')} → "
-                    f"{period_info['end'].strftime('%d %b')})",
+                    f"New Date ({info['start'].strftime('%d %b')} → "
+                    f"{info['end'].strftime('%d %b')})",
                     value=pd.to_datetime(
                         selected_row["survey_date"]
                     ).date(),
-                    min_value=period_info["start"],
-                    max_value=period_info["end"]
+                    min_value=info["start"],
+                    max_value=info["end"]
                 )
 
                 if st.button(
@@ -1091,25 +1409,17 @@ with st.expander(
                         int(selected_row["id"])
                     ).execute()
 
-                    st.success(
-                        "Survey planning updated."
-                    )
-
                     st.rerun()
 
-        # ------------------------------------------
-        # DELETE
-        # ------------------------------------------
-
-        else:
+        with tab_delete:
 
             st.warning(
                 f"""
-                You are about to delete:
+                Survey: {selected_row['survey']}
 
-                • {selected_row['survey']}
-                • {selected_row['period']}
-                • {pd.to_datetime(selected_row['survey_date']).strftime('%d %b %Y')}
+                Period: {selected_row['period']}
+
+                Date: {pd.to_datetime(selected_row['survey_date']).strftime('%d %b %Y')}
                 """
             )
 
@@ -1124,9 +1434,5 @@ with st.expander(
                     "id",
                     int(selected_row["id"])
                 ).execute()
-
-                st.success(
-                    "Survey planning deleted."
-                )
 
                 st.rerun()
