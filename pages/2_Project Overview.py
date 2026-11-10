@@ -910,8 +910,13 @@ if not timeline_df.empty:
     fig.update_layout(
         plot_bgcolor="white",
         paper_bgcolor="white",
-        legend_title="Period",
         height=400
+    )
+    
+    fig.update_layout(
+        legend=dict(
+            title=None
+        )
     )
 
     st.plotly_chart(
@@ -919,11 +924,7 @@ if not timeline_df.empty:
         use_container_width=True
     )
 
-    fig.update_layout(
-        legend=dict(
-            title=None
-        )
-    )
+
 
 else:
 
