@@ -866,8 +866,14 @@ selected_survey = st.selectbox(
 # STEP 3 - DATE
 # --------------------------------------------------
 
+date_label = (
+    f"3️⃣ Select Date "
+    f"({period_info['start'].strftime('%d %b')} → "
+    f"{period_info['end'].strftime('%d %b')})"
+)
+
 selected_date = st.date_input(
-    "3️⃣ Select Date",
+    date_label,
     value=period_info["start"],
     min_value=period_info["start"],
     max_value=period_info["end"]
@@ -887,11 +893,7 @@ st.success(
     """
 )
 
-st.caption(
-    f"Available dates: "
-    f"{period_info['start'].strftime('%d %b')} → "
-    f"{period_info['end'].strftime('%d %b')}"
-)
+
 # if not edited_plan.empty:
 
 #     chart_df = edited_plan.copy()
