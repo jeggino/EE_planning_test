@@ -945,49 +945,71 @@ if st.button("💾 Save Survey Planning"):
             f"{selected_date.strftime('%d %b %Y')}."
         )
 
-if not timeline_df.empty:
+# --------------------------------------------------
+# LOAD SAVED SURVEYS
+# --------------------------------------------------
 
-    saved_surveys = (
-        supabase.table("planning_surveys")
-        .select("*")
-        .eq("project", selected_project_name)
-        .execute()
-    )
-    
-    timeline_df = pd.DataFrame(saved_surveys.data)
+saved_surveys = (
+    supabase.table("planning_surveys")
+    .select("*")
+    .eq("project", selected_project_name)
+    .execute()
+)
+
+timeline_df = pd.DataFrame(
+    saved_surveys.data
+)
+
+# --------------------------------------------------
+# PLANNED SURVEY TIMELINE
+# --------------------------------------------------
+
+if not timeline_df.empty:
 
     timeline_df["survey_date"] = pd.to_datetime(
         timeline_df["survey_date"]
     )
 
-    st.write(timeline_df.columns.tolist())
+    # Remove numbering so Morning 1 and Morning 2
+    # appear on the same line
+    timeline_df["survey_type"] = (
+        timeline_df["survey"]
+        .str.replace(
+            r"\s+\d+$",
+            "",
+            regex=True
+        )
+    )
 
-    st.subheader("📅 Planned Survey Timeline")
+    st.subheader(
+        "📅 Planned Survey Timeline"
+    )
 
     st.caption(
         """
-        This timeline provides an overview of all planned survey rounds for the selected project. Each survey is displayed separately and coloured according to its survey period, making it easy to track fieldwork progress and identify upcoming visits.
+        This timeline provides an overview of all planned survey rounds for the selected project. Survey visits are grouped by survey type and coloured according to their survey period, allowing project managers and ecologists to quickly monitor fieldwork progress and upcoming visits.
         """
     )
 
     fig = px.scatter(
         timeline_df,
         x="survey_date",
-        y="survey",
+        y="survey_type",
         color="period",
-        size_max=20,
         hover_data=[
             "project",
             "period",
+            "survey",
             "survey_date",
             "username"
-        ]
+        ],
+        color_discrete_sequence=px.colors.qualitative.Set2
     )
 
     fig.update_traces(
         marker=dict(
             size=18,
-            symbol="diamond",
+            symbol="circle",
             line=dict(
                 width=2,
                 color="white"
@@ -996,27 +1018,33 @@ if not timeline_df.empty:
     )
 
     fig.update_xaxes(
+        title=None,
         tickformat="%d %b",
         showgrid=True,
-        gridcolor="rgba(220,220,220,0.4)"
+        gridcolor="rgba(210,210,210,0.4)",
+        zeroline=False
     )
 
     fig.update_yaxes(
-        title=None
+        title=None,
+        categoryorder="array",
+        categoryarray=[
+            "Morning",
+            "Evening",
+            "Flexible"
+        ]
     )
 
     fig.update_layout(
-        height=max(
-            350,
-            len(timeline_df) * 55
-        ),
+        height=400,
         plot_bgcolor="white",
         paper_bgcolor="white",
         legend_title="Period",
+        hovermode="closest",
         margin=dict(
             l=20,
             r=20,
-            t=20,
+            t=10,
             b=20
         )
     )
@@ -1026,48 +1054,9 @@ if not timeline_df.empty:
         use_container_width=True
     )
 
-# if not edited_plan.empty:
+else:
 
-#     chart_df = edited_plan.copy()
-
-#     chart_df["Date"] = pd.to_datetime(
-#         chart_df["Date"]
-#     )
-
-#     st.subheader(
-#         "📍 Planned Survey Schedule"
-#     )
-
-#     survey_fig = px.strip(
-#         chart_df,
-#         x="Date",
-#         y="Type",
-#         color="Type",
-#         hover_data=[
-#             "Protocols Covered",
-#             "Protocols"
-#         ]
-#     )
-    
-#     survey_fig.update_traces(
-#         marker=dict(
-#             size=15,
-#             line=dict(width=1)
-#         )
-#     )
-    
-#     survey_fig.update_xaxes(
-#         tickformat="%d-%b"
-#     )
-    
-#     survey_fig.update_layout(
-#         height=300,
-#         xaxis_title="Survey Date",
-#         yaxis_title="Survey Type"
-#     )
-    
-#     st.plotly_chart(
-#         survey_fig,
-#         use_container_width=True
-#     )
+    st.info(
+        "No surveys have been planned yet."
+    )
 
