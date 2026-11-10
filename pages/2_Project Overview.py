@@ -1076,14 +1076,14 @@ saved_surveys = (
 timeline_df = pd.DataFrame(saved_surveys.data)
 
 # --------------------------------------------------
-# PLANNED SURVEY TIMELINE
+# SURVEY TIMELINE
 # --------------------------------------------------
 
 st.subheader("📅 Planned Survey Timeline")
 
 st.caption(
     """
-    This timeline shows all planned surveys for the selected project. Survey visits are grouped by survey type and coloured according to their survey period, providing a clear overview of upcoming fieldwork and survey progress. Use the planner below to schedule additional survey visits.
+    This timeline shows all planned surveys for the selected project. Survey visits are grouped by survey type and coloured according to their survey period, providing a clear overview of upcoming fieldwork and survey progress.
     """
 )
 
@@ -1108,32 +1108,22 @@ if not timeline_df.empty:
         y="survey_type",
         color="period",
         hover_data=[
-            "project",
             "period",
             "survey",
-            "survey_date",
-            "username"
-        ],
-        color_discrete_sequence=px.colors.qualitative.Set2
+            "survey_date"
+        ]
     )
 
     fig.update_traces(
         marker=dict(
             size=18,
-            symbol="circle",
-            line=dict(
-                width=2,
-                color="white"
-            )
+            symbol="circle"
         )
     )
 
     fig.update_xaxes(
         title=None,
-        tickformat="%d %b",
-        showgrid=True,
-        gridcolor="rgba(210,210,210,0.4)",
-        zeroline=False
+        tickformat="%d %b"
     )
 
     fig.update_yaxes(
@@ -1144,20 +1134,6 @@ if not timeline_df.empty:
             "Evening",
             "Flexible"
         ]
-    )
-
-    fig.update_layout(
-        height=400,
-        plot_bgcolor="white",
-        paper_bgcolor="white",
-        legend_title="Period",
-        hovermode="closest",
-        margin=dict(
-            l=20,
-            r=20,
-            t=10,
-            b=20
-        )
     )
 
     st.plotly_chart(
@@ -1172,23 +1148,12 @@ else:
     )
 
 # --------------------------------------------------
-# SURVEY PLANNER
+# NEW SURVEY
 # --------------------------------------------------
 
 with st.expander(
-    "➕ Plan New Survey",
-    expanded=False
+    "➕ Plan New Survey"
 ):
-
-    st.caption(
-        """
-        Plan a new survey visit by selecting a survey period, choosing one of the required survey rounds, and assigning a survey date. Only dates within the selected period can be chosen, ensuring compliance with the applicable survey protocols.
-        """
-    )
-
-    # --------------------------------------------------
-    # BUILD PERIOD DATA
-    # --------------------------------------------------
 
     period_data = {}
 
@@ -1196,22 +1161,11 @@ with st.expander(
 
         info = period["SurveyInfo"]
 
-        surveys = []
-
-        for i in range(info["morning"]):
-            surveys.append(
-                f"Morning {i+1}"
-            )
-
-        for i in range(info["evening"]):
-            surveys.append(
-                f"Evening {i+1}"
-            )
-
-        for i in range(info["extra"]):
-            surveys.append(
-                f"Flexible {i+1}"
-            )
+        surveys = (
+            [f"Morning {i+1}" for i in range(info["morning"])]
+            + [f"Evening {i+1}" for i in range(info["evening"])]
+            + [f"Flexible {i+1}" for i in range(info["extra"])]
+        )
 
         period_data[period["Period"]] = {
             "surveys": surveys,
@@ -1229,46 +1183,25 @@ with st.expander(
             "end": special["end"]
         }
 
-    # --------------------------------------------------
-    # PERIOD
-    # --------------------------------------------------
-
     selected_period = st.selectbox(
-        "1️⃣ Select Period",
+        "Period",
         list(period_data.keys())
     )
 
     period_info = period_data[selected_period]
 
-    # --------------------------------------------------
-    # SURVEY
-    # --------------------------------------------------
-
     selected_survey = st.selectbox(
-        "2️⃣ Select Survey",
+        "Survey",
         period_info["surveys"]
     )
 
-    # --------------------------------------------------
-    # DATE
-    # --------------------------------------------------
-
-    date_label = (
-        f"3️⃣ Select Date "
-        f"({period_info['start'].strftime('%d %b')} → "
-        f"{period_info['end'].strftime('%d %b')})"
-    )
-
     selected_date = st.date_input(
-        date_label,
+        f"Date ({period_info['start'].strftime('%d %b')} → "
+        f"{period_info['end'].strftime('%d %b')})",
         value=period_info["start"],
         min_value=period_info["start"],
         max_value=period_info["end"]
     )
-
-    # --------------------------------------------------
-    # SAVE
-    # --------------------------------------------------
 
     if st.button(
         "💾 Save Survey Planning"
@@ -1277,26 +1210,16 @@ with st.expander(
         existing = (
             supabase.table("planning_surveys")
             .select("id")
-            .eq(
-                "project",
-                selected_project_name
-            )
-            .eq(
-                "period",
-                selected_period
-            )
-            .eq(
-                "survey",
-                selected_survey
-            )
+            .eq("project", selected_project_name)
+            .eq("period", selected_period)
+            .eq("survey", selected_survey)
             .execute()
         )
 
         if existing.data:
 
             st.warning(
-                f"{selected_survey} has already been "
-                f"planned in {selected_period}."
+                "Survey already planned."
             )
 
         else:
@@ -1305,23 +1228,13 @@ with st.expander(
                 "planning_surveys"
             ).insert(
                 {
-                    "project":
-                        selected_project_name,
-                    "period":
-                        selected_period,
-                    "survey":
-                        selected_survey,
-                    "survey_date":
-                        selected_date.isoformat(),
-                    "username":
-                        "unknown"
+                    "project": selected_project_name,
+                    "period": selected_period,
+                    "survey": selected_survey,
+                    "survey_date": selected_date.isoformat(),
+                    "username": "unknown"
                 }
             ).execute()
-
-            st.success(
-                f"{selected_survey} scheduled for "
-                f"{selected_date.strftime('%d %b %Y')}."
-            )
 
             st.rerun()
 
