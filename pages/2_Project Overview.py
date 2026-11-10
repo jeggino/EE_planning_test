@@ -803,55 +803,121 @@ edited_plan = survey_df
 # SURVEY TIMELINE
 # --------------------------------------------------
 
-st.subheader(
-    "📍 Planned Survey Schedule"
-)
+st.subheader("📍 Planned Survey Schedule")
 
-period_options = []
+# ------------------------------------------------------------------
+# BUILD PERIOD -> SURVEY MAPPING
+# ------------------------------------------------------------------
 
-for p in result["optimized_periods"]:
+period_survey_map = {}
 
-    period_options.append(
-        p["Period"]
-    )
+# Regular optimized periods
+for period in result["optimized_periods"]:
 
-for p in result["special_protocols"]:
+    period_name = period["Period"]
 
-    period_options.append(
+    surveys = []
+
+    # Example 1:
+    # If surveys are already stored in the period
+    if "surveys" in period:
+        surveys = period["surveys"]
+
+    # Example 2:
+    # If counts are stored per period
+    else:
+        morning = period.get("morning", 0)
+        evening = period.get("evening", 0)
+        extra = period.get("extra", 0)
+
+        for i in range(morning):
+            surveys.append(f"Morning {i+1}")
+
+        for i in range(evening):
+            surveys.append(f"Evening {i+1}")
+
+        for i in range(extra):
+            surveys.append(f"Flexible {i+1}")
+
+    period_survey_map[period_name] = surveys
+
+
+# Special protocols
+for protocol in result["special_protocols"]:
+
+    protocol_name = protocol.get(
+        "Period",
         "Meervleermuis | satelliet"
     )
 
+    surveys = []
+
+    morning = protocol.get("morning", 0)
+    evening = protocol.get("evening", 0)
+    extra = protocol.get("extra", 0)
+
+    for i in range(morning):
+        surveys.append(f"Morning {i+1}")
+
+    for i in range(evening):
+        surveys.append(f"Evening {i+1}")
+
+    for i in range(extra):
+        surveys.append(f"Flexible {i+1}")
+
+    # If no survey information available
+    if not surveys:
+        surveys = ["Round 1"]
+
+    period_survey_map[protocol_name] = surveys
+
+
+# ------------------------------------------------------------------
+# STEP 1 - SELECT PERIOD
+# ------------------------------------------------------------------
+
 selected_period = st.selectbox(
-    "Period",
-    period_options
+    "Select Period",
+    list(period_survey_map.keys())
 )
 
-survey_options = []
 
-for i in range(
-    info["morning"]
-):
-    survey_options.append(
-        f"Morning {i+1}"
-    )
+# ------------------------------------------------------------------
+# STEP 2 - SELECT SURVEY ROUND
+# ------------------------------------------------------------------
 
-for i in range(
-    info["evening"]
-):
-    survey_options.append(
-        f"Evening {i+1}"
-    )
-
-for i in range(
-    info["extra"]
-):
-    survey_options.append(
-        f"Flexible {i+1}"
-    )
+available_surveys = period_survey_map.get(
+    selected_period,
+    []
+)
 
 selected_survey = st.selectbox(
-    "Survey",
-    survey_options
+    "Select Survey Round",
+    available_surveys
+)
+
+
+# ------------------------------------------------------------------
+# STEP 3 - SELECT DATE
+# ------------------------------------------------------------------
+
+selected_date = st.date_input(
+    "Select Survey Date"
+)
+
+
+# ------------------------------------------------------------------
+# DISPLAY SELECTION
+# ------------------------------------------------------------------
+
+st.info(
+    f"""
+    **Period:** {selected_period}
+
+    **Survey:** {selected_survey}
+
+    **Date:** {selected_date}
+    """
 )
 # if not edited_plan.empty:
 
